@@ -1,0 +1,161 @@
+{
+  "assignments": [
+    {
+      "udyam_number": "UDYAM-MH-01-0012345",
+      "snp_id": "SNP001",
+      "status": "live",
+      "assigned_at": "2026-01-15T10:00:00"
+    },
+    {
+      "udyam_number": "UDYAM-KA-02-0054321",
+      "snp_id": "SNP002",
+      "status": "catalogue_review",
+      "assigned_at": "2026-01-20T14:30:00"
+    },
+    {
+      "udyam_number": "UDYAM-TN-03-0098765",
+      "snp_id": "SNP004",
+      "status": "onboarding",
+      "assigned_at": "2026-02-01T09:15:00"
+    },
+    {
+      "udyam_number": "UDYAM-RJ-04-0011111",
+      "snp_id": "SNP005",
+      "status": "catalogue_pending",
+      "assigned_at": "2026-02-05T11:45:00"
+    },
+    {
+      "udyam_number": "UDYAM-UP-05-0022222",
+      "snp_id": "SNP003",
+      "status": "live",
+      "assigned_at": "2026-01-10T08:00:00"
+    }
+  ],
+  "catalogues": {
+    "UDYAM-MH-01-0012345": [
+      {"name": "Turmeric Powder 500g", "price": 120, "mrp": 150, "description": "Pure turmeric powder from Sangli, Maharashtra", "unit": "500g pack", "quantity": 200},
+      {"name": "Red Chili Powder 250g", "price": 85, "mrp": 100, "description": "Premium Guntur red chili powder", "unit": "250g pack", "quantity": 150},
+      {"name": "Garam Masala 100g", "price": 65, "mrp": 80, "description": "Traditional blend of 12 spices", "unit": "100g pack", "quantity": 300},
+      {"name": "Coriander Powder 200g", "price": 45, "mrp": 55, "description": "Freshly ground coriander seeds", "unit": "200g pack", "quantity": 250},
+      {"name": "Cumin Seeds 100g", "price": 55, "mrp": 70, "description": "Whole cumin seeds, premium quality", "unit": "100g pack", "quantity": 180}
+    ],
+    "UDYAM-KA-02-0054321": [
+      {"name": "Cotton Saree - Mysore Silk", "price": 2500, "mrp": 3200, "description": "Traditional Mysore silk cotton blend saree", "unit": "piece", "quantity": 50},
+      {"name": "Men's Kurta - Block Print", "price": 800, "mrp": 1000, "description": "Hand block printed cotton kurta", "unit": "piece", "quantity": 80},
+      {"name": "Women's Palazzo Pants", "price": 600, "mrp": 750, "description": "Comfortable cotton palazzo pants", "unit": "piece", "quantity": 100}
+    ],
+    "UDYAM-RJ-04-0011111": [
+      {"name": "Wooden Jewelry Box", "price": 450, "mrp": 600, "description": "Hand-carved sheesham wood box with brass inlay", "unit": "piece", "quantity": 40},
+      {"name": "Wooden Photo Frame Set", "price": 350, "mrp": 450, "description": "Set of 3 mango wood photo frames", "unit": "set of 3", "quantity": 60},
+      {"name": "Rajasthani Puppet Holder", "price": 280, "mrp": 350, "description": "Decorative wall-mounted puppet display stand", "unit": "piece", "quantity": 30}
+    ],
+    "UDYAM-UP-05-0022222": [
+      {"name": "Fresh Paneer 500g", "price": 180, "mrp": 200, "description": "Fresh cottage cheese from farm milk", "unit": "500g block", "quantity": 100},
+      {"name": "Dahi 1kg", "price": 60, "mrp": 70, "description": "Thick set curd from full cream milk", "unit": "1kg tub", "quantity": 200},
+      {"name": "Flavored Lassi 250ml", "price": 25, "mrp": 30, "description": "Rose flavored lassi drink", "unit": "250ml bottle", "quantity": 500},
+      {"name": "Ghee 500ml", "price": 350, "mrp": 400, "description": "Pure desi ghee from A2 cow milk", "unit": "500ml jar", "quantity": 80}
+    ]
+  },
+  "claims": [
+    {
+      "snp_id": "SNP001",
+      "udyam_number": "UDYAM-MH-01-0012345",
+      "claim_type": "onboarding",
+      "amount": 450,
+      "sku_count": 0,
+      "status": "approved",
+      "reviewed_by": "NSIC-001",
+      "review_notes": "Verified - MSE is live on ONDC",
+      "evidence": {"ondc_seller_id": "SELLER-MH-001", "onboarded_date": "2026-01-18"}
+    },
+    {
+      "snp_id": "SNP001",
+      "udyam_number": "UDYAM-MH-01-0012345",
+      "claim_type": "catalogue",
+      "amount": 250,
+      "sku_count": 5,
+      "status": "approved",
+      "reviewed_by": "NSIC-002",
+      "review_notes": "5 SKUs catalogued and verified",
+      "evidence": {"sku_ids": ["SKU-001", "SKU-002", "SKU-003", "SKU-004", "SKU-005"]}
+    },
+    {
+      "snp_id": "SNP001",
+      "udyam_number": "UDYAM-MH-01-0012345",
+      "claim_type": "account_management",
+      "amount": 2250,
+      "sku_count": 0,
+      "status": "pending",
+      "evidence": {"net_sales": 45000, "delivered_orders": 12, "period": "2026-01 to 2026-02"}
+    },
+    {
+      "snp_id": "SNP002",
+      "udyam_number": "UDYAM-KA-02-0054321",
+      "claim_type": "onboarding",
+      "amount": 450,
+      "sku_count": 0,
+      "status": "pending",
+      "evidence": {"ondc_seller_id": "SELLER-KA-002", "onboarded_date": "2026-01-25"}
+    },
+    {
+      "snp_id": "SNP002",
+      "udyam_number": "UDYAM-KA-02-0054321",
+      "claim_type": "catalogue",
+      "amount": 150,
+      "sku_count": 3,
+      "status": "pending",
+      "evidence": {"sku_ids": ["SKU-101", "SKU-102", "SKU-103"]}
+    },
+    {
+      "snp_id": "SNP003",
+      "udyam_number": "UDYAM-UP-05-0022222",
+      "claim_type": "onboarding",
+      "amount": 450,
+      "sku_count": 0,
+      "status": "approved",
+      "reviewed_by": "NSIC-001",
+      "review_notes": "Approved",
+      "evidence": {"ondc_seller_id": "SELLER-UP-005", "onboarded_date": "2026-01-12"}
+    },
+    {
+      "snp_id": "SNP003",
+      "udyam_number": "UDYAM-UP-05-0022222",
+      "claim_type": "catalogue",
+      "amount": 200,
+      "sku_count": 4,
+      "status": "approved",
+      "reviewed_by": "NSIC-002",
+      "review_notes": "4 SKUs verified",
+      "evidence": {"sku_ids": ["SKU-201", "SKU-202", "SKU-203", "SKU-204"]}
+    },
+    {
+      "snp_id": "SNP004",
+      "udyam_number": "UDYAM-TN-03-0098765",
+      "claim_type": "onboarding",
+      "amount": 450,
+      "sku_count": 0,
+      "status": "rejected",
+      "reviewed_by": "NSIC-003",
+      "review_notes": "MSE not yet live on ONDC - onboarding incomplete",
+      "evidence": {"ondc_seller_id": null}
+    },
+    {
+      "snp_id": "SNP005",
+      "udyam_number": "UDYAM-RJ-04-0011111",
+      "claim_type": "onboarding",
+      "amount": 450,
+      "sku_count": 0,
+      "status": "pending",
+      "evidence": {"ondc_seller_id": "SELLER-RJ-004", "onboarded_date": "2026-02-10"}
+    },
+    {
+      "snp_id": "SNP003",
+      "udyam_number": "UDYAM-UP-05-0022222",
+      "claim_type": "account_management",
+      "amount": 900,
+      "sku_count": 0,
+      "status": "pending",
+      "evidence": {"net_sales": 18000, "delivered_orders": 8, "period": "2026-01 to 2026-02"}
+    }
+  ]
+}

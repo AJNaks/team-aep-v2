@@ -1,0 +1,7 @@
+.env
+__pycache__/
+*.pyc
+data/team_aep.db
+.claude/
+.DS_Store
+*.venv/

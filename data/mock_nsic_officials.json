@@ -1,0 +1,22 @@
+{
+  "officials": [
+    {
+      "employee_id": "NSIC-001",
+      "name": "Priya Sharma",
+      "mobile": "9000000001",
+      "role": "admin"
+    },
+    {
+      "employee_id": "NSIC-002",
+      "name": "Amit Verma",
+      "mobile": "9000000002",
+      "role": "verifier"
+    },
+    {
+      "employee_id": "NSIC-003",
+      "name": "Kavita Patel",
+      "mobile": "9000000003",
+      "role": "verifier"
+    }
+  ]
+}
