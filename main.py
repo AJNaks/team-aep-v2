@@ -939,6 +939,17 @@ async def product_followup(req: ProductFollowupRequest, request: Request, _=Depe
 
 # ── Routes: OCR / Document Intelligence (Sarvam Vision) ──
 
+def _image_to_pdf(image_bytes: bytes) -> bytes:
+    """Convert image bytes (JPEG/PNG/etc) to a single-page PDF."""
+    from PIL import Image
+    img = Image.open(io.BytesIO(image_bytes))
+    if img.mode in ("RGBA", "P"):
+        img = img.convert("RGB")
+    pdf_buffer = io.BytesIO()
+    img.save(pdf_buffer, format="PDF")
+    return pdf_buffer.getvalue()
+
+
 def _run_sarvam_ocr(file_bytes: bytes, filename: str, language: str = "en-IN", output_format: str = "md") -> str:
     """Run Sarvam Document Intelligence OCR (synchronous — call via run_in_executor).
     Returns the extracted text as a string."""
@@ -951,8 +962,14 @@ def _run_sarvam_ocr(file_bytes: bytes, filename: str, language: str = "en-IN", o
     )
     print(f"[OCR] Job created: {job.job_id}")
 
+    # Sarvam only accepts PDF/ZIP — convert images to PDF
+    suffix = Path(filename).suffix.lower() or ".jpg"
+    if suffix not in (".pdf", ".zip"):
+        print(f"[OCR] Converting {suffix} image to PDF...")
+        file_bytes = _image_to_pdf(file_bytes)
+        suffix = ".pdf"
+
     # Write bytes to a temp file for upload
-    suffix = Path(filename).suffix or ".jpg"
     with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as tmp:
         tmp.write(file_bytes)
         tmp_path = tmp.name
