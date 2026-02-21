@@ -48,6 +48,8 @@ GRIDLINES_KEY      = os.getenv("GRIDLINES_API_KEY", "test-credential-46558501720
 GRIDLINES_BASE     = os.getenv("GRIDLINES_BASE_URL", "https://stoplight.io/mocks/gridlines/gridlines-api-docs/133154723")
 SARVAM_KEY         = os.getenv("SARVAM_API_KEY", "")
 ANTHROPIC_KEY      = os.getenv("ANTHROPIC_API_KEY", "")
+print(f"[BOOT] SARVAM_KEY set: {bool(SARVAM_KEY)} (len={len(SARVAM_KEY)})")
+print(f"[BOOT] ANTHROPIC_KEY set: {bool(ANTHROPIC_KEY)} (len={len(ANTHROPIC_KEY)})")
 SESSION_TOKENS     = set()
 ROLE_SESSIONS      = {}   # session_token -> {role, identifier, profile}
 
