@@ -949,7 +949,7 @@ def _run_sarvam_ocr(file_bytes: bytes, filename: str, language: str = "en-IN", o
         language=language,
         output_format=output_format,
     )
-    print(f"[OCR] Job created: {job.job_id}, state={job.job_state}")
+    print(f"[OCR] Job created: {job.job_id}")
 
     # Write bytes to a temp file for upload
     suffix = Path(filename).suffix or ".jpg"
@@ -965,10 +965,11 @@ def _run_sarvam_ocr(file_bytes: bytes, filename: str, language: str = "en-IN", o
 
         # Wait for completion (SDK blocks internally)
         status = job.wait_until_complete()
-        print(f"[OCR] Job completed: state={status.job_state}")
+        print(f"[OCR] Job completed: state={getattr(status, 'job_state', 'unknown')}")
 
-        if status.job_state not in ("Completed", "PartiallyCompleted"):
-            raise Exception(f"OCR job failed: state={status.job_state}")
+        state = getattr(status, 'job_state', None) or getattr(status, 'state', None) or 'Unknown'
+        if state not in ("Completed", "PartiallyCompleted"):
+            raise Exception(f"OCR job failed: state={state}")
 
         # Download results to temp dir
         with tempfile.TemporaryDirectory() as out_dir:
