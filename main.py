@@ -30,6 +30,16 @@ except ImportError:
     PIL_AVAILABLE = False
     print("[BOOT] PIL/Pillow not installed — /api/enhance-image will return images unprocessed")
 
+# Firebase Admin SDK (optional — falls back to demo OTP if not configured)
+FIREBASE_ENABLED = False
+try:
+    import firebase_admin
+    from firebase_admin import credentials as fb_credentials, auth as fb_auth
+    FIREBASE_SDK_AVAILABLE = True
+except ImportError:
+    FIREBASE_SDK_AVAILABLE = False
+    print("[BOOT] firebase-admin not installed — Firebase Phone Auth disabled")
+
 from services.entity_extractor import extract_entities
 from services.categorisation import categorise_mse
 from services.snp_matcher import match_mse_to_snps, estimate_digital_readiness
@@ -60,6 +70,24 @@ GOOGLE_API_KEY     = os.getenv("GOOGLE_API_KEY", "")
 print(f"[BOOT] SARVAM_KEY set: {bool(SARVAM_KEY)} (len={len(SARVAM_KEY)})")
 print(f"[BOOT] ANTHROPIC_KEY set: {bool(ANTHROPIC_KEY)} (len={len(ANTHROPIC_KEY)})")
 print(f"[BOOT] GOOGLE_API_KEY set: {bool(GOOGLE_API_KEY)} (len={len(GOOGLE_API_KEY)})")
+
+# ── Firebase Phone Auth Config (optional) ─────────────────
+FIREBASE_API_KEY      = os.getenv("FIREBASE_API_KEY", "")
+FIREBASE_AUTH_DOMAIN  = os.getenv("FIREBASE_AUTH_DOMAIN", "")
+FIREBASE_PROJECT_ID   = os.getenv("FIREBASE_PROJECT_ID", "")
+FIREBASE_SERVICE_ACCT = os.getenv("FIREBASE_SERVICE_ACCOUNT", "")  # path to JSON
+
+if FIREBASE_SDK_AVAILABLE and FIREBASE_SERVICE_ACCT and Path(FIREBASE_SERVICE_ACCT).exists():
+    try:
+        cred = fb_credentials.Certificate(FIREBASE_SERVICE_ACCT)
+        firebase_admin.initialize_app(cred)
+        FIREBASE_ENABLED = True
+        print(f"[BOOT] Firebase Admin SDK initialised (project: {FIREBASE_PROJECT_ID})")
+    except Exception as e:
+        print(f"[BOOT] Firebase init failed: {e} — falling back to demo OTP")
+else:
+    print("[BOOT] Firebase not configured — using demo OTP flow")
+
 SESSION_TOKENS     = set()
 ROLE_SESSIONS      = {}   # session_token -> {role, identifier, profile}
 
@@ -152,8 +180,9 @@ class VerifyPANRequest(BaseModel):
     pan: str
 
 class OTPVerifyRequest(BaseModel):
-    otp: str
+    otp: Optional[str] = None          # demo OTP code (fallback)
     session_id: str
+    firebase_token: Optional[str] = None  # Firebase ID token (preferred)
 
 class CategoriseRequest(BaseModel):
     nic_code: str
@@ -297,6 +326,21 @@ async def logout(request: Request):
     return resp
 
 
+# ── Routes: Firebase Config ───────────────────────────────
+
+@app.get("/api/config/firebase")
+async def firebase_config():
+    """Return Firebase client config for frontend SDK init."""
+    if not FIREBASE_API_KEY:
+        return {"enabled": False}
+    return {
+        "enabled": FIREBASE_ENABLED,
+        "apiKey": FIREBASE_API_KEY,
+        "authDomain": FIREBASE_AUTH_DOMAIN,
+        "projectId": FIREBASE_PROJECT_ID,
+    }
+
+
 # ── Routes: Gridlines Udyam Verification ──────────────────
 
 @app.post("/api/verify-udyam")
@@ -347,6 +391,7 @@ async def verify_udyam(req: VerifyUdyamRequest, request: Request, _=Depends(requ
         "status": "otp_sent",
         "session_id": session_id,
         "masked_mobile": masked_mobile,
+        "mobile": enterprise.get("mobile", ""),  # unmasked — for Firebase OTP
         "enterprise_name": enterprise.get("name", ""),
         "demo_otp": otp_code,  # REMOVE IN PRODUCTION — shown for demo purposes
     }
@@ -402,6 +447,7 @@ async def verify_mobile(req: VerifyMobileRequest, request: Request, _=Depends(re
         "status": "otp_sent",
         "session_id": session_id,
         "masked_mobile": enterprise.get("mobile", "N/A"),
+        "mobile": enterprise.get("mobile", ""),  # unmasked — for Firebase OTP
         "enterprise_name": enterprise.get("name", ""),
         "udyam_number": enterprise.get("document_id", ""),
         "demo_otp": otp_code,
@@ -458,6 +504,7 @@ async def verify_pan(req: VerifyPANRequest, request: Request, _=Depends(require_
         "status": "otp_sent",
         "session_id": session_id,
         "masked_mobile": enterprise.get("mobile", "N/A"),
+        "mobile": enterprise.get("mobile", ""),  # unmasked — for Firebase OTP
         "enterprise_name": enterprise.get("name", ""),
         "udyam_number": enterprise.get("document_id", ""),
         "demo_otp": otp_code,
@@ -466,15 +513,33 @@ async def verify_pan(req: VerifyPANRequest, request: Request, _=Depends(require_
 
 @app.post("/api/verify-otp")
 async def verify_otp(req: OTPVerifyRequest, request: Request, _=Depends(require_auth)):
-    """Verify OTP and return full enterprise data."""
+    """Verify OTP and return full enterprise data.
+    Supports two verification paths:
+      A) Firebase ID token (preferred when Firebase is enabled)
+      B) Demo OTP code (fallback / development mode)
+    """
     session = OTP_STORE.get(req.session_id)
     if not session:
         return JSONResponse({"status": "error", "message": "Session expired. Please start again."}, status_code=400)
 
-    if req.otp != session["otp_code"]:
-        return JSONResponse({"status": "error", "message": "Invalid OTP. Please try again."}, status_code=400)
+    # Path A: Firebase token verification (preferred)
+    if req.firebase_token and FIREBASE_ENABLED:
+        try:
+            decoded = fb_auth.verify_id_token(req.firebase_token)
+            print(f"[OTP] Firebase verified: {decoded.get('phone_number', 'unknown')}")
+            session["verified"] = True
+        except Exception as e:
+            return JSONResponse({"status": "error", "message": f"Firebase verification failed: {str(e)}"}, status_code=400)
 
-    session["verified"] = True
+    # Path B: Demo OTP verification (fallback)
+    elif req.otp:
+        if req.otp != session["otp_code"]:
+            return JSONResponse({"status": "error", "message": "Invalid OTP. Please try again."}, status_code=400)
+        session["verified"] = True
+
+    else:
+        return JSONResponse({"status": "error", "message": "No OTP or Firebase token provided."}, status_code=400)
+
     enterprise = session["enterprise_data"]
     nic_data = session.get("nic_data", {})
     nic_list = session.get("nic_data_list", [])

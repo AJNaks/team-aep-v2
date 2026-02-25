@@ -5,3 +5,4 @@ data/team_aep.db
 .claude/
 .DS_Store
 *.venv/
+data/firebase-service-account.json
