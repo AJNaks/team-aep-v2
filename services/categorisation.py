@@ -102,10 +102,16 @@ def categorise_mse(
     nic_code: str,
     product_description: str,
     mapping_path: str,
+    image_analysis: Optional[Dict] = None,
 ) -> Dict[str, Any]:
     """
-    Full categorisation pipeline.
-    
+    Full multi-signal categorisation pipeline.
+
+    Signals:
+        1. NIC code → direct lookup in curated mapping
+        2. Product description → LLM classification
+        3. Image analysis (optional) → VLM-detected category + extracted fields
+
     Returns:
         Dict with primary_domain, confidence, reasoning, and optional secondary mappings
     """
@@ -133,23 +139,72 @@ def categorise_mse(
             "nic_description": nic_desc,
         }
 
-    # Stage 1b + 2: LLM classification (with NIC lookup as context)
+    # Stage 1c: Image analysis signal (if available)
+    image_desc = ""
+    image_category = None
+    if image_analysis:
+        image_category = image_analysis.get("detected_category")
+        image_fields = image_analysis.get("extracted_fields", {})
+        image_desc_parts = []
+        if image_analysis.get("description"):
+            image_desc_parts.append(f"Image description: {image_analysis['description']}")
+        if image_fields:
+            field_str = ", ".join(f"{k}: {v}" for k, v in image_fields.items() if v)
+            image_desc_parts.append(f"Extracted from photo: {field_str}")
+        image_desc = ". ".join(image_desc_parts)
+
+    # Combine all text signals for LLM
+    combined_desc = " ".join(filter(None, [product_description, image_desc]))
+
+    # Stage 1b + 2: LLM classification (with NIC lookup + image as context)
     llm_result = classify_with_llm(
-        product_description or "",
+        combined_desc or "",
         nic_desc,
         ondc_domains,
         nic_result,
     )
 
-    llm_result["method"] = "nic_lookup+llm" if nic_result else "llm_only"
+    # Build method string showing which signals were used
+    signals = []
+    if nic_result:
+        signals.append("nic_lookup")
+    if product_description:
+        signals.append("text")
+    if image_analysis:
+        signals.append("image")
+    signals.append("llm")
+    llm_result["method"] = "+".join(signals)
     llm_result["nic_code"] = nic_code
     llm_result["nic_description"] = nic_desc
 
-    # Stage 3: If NIC lookup and LLM agree, boost confidence
+    # Stage 3: Multi-signal agreement boosting
+    agreement_count = 0
+
+    # Check NIC ↔ LLM agreement
     if nic_result and llm_result.get("primary_domain") == nic_result["ondc_domain"]:
+        agreement_count += 1
         llm_result["confidence"] = min(
             1.0, max(llm_result.get("confidence", 0), nic_result["confidence"]) + 0.05
         )
-        llm_result["reasoning"] += " (NIC lookup and LLM classification agree)"
+        llm_result["reasoning"] += " (NIC lookup and LLM agree)"
+
+    # Check image ↔ LLM agreement
+    if image_category:
+        # Map image category to expected domain
+        cat_domain_map = {
+            "food": "ONDC:RET10", "food_packaged": "ONDC:RET10",
+            "textiles": "ONDC:RET12", "textiles_handloom": "ONDC:RET12",
+            "handicrafts": "ONDC:RET14", "agriculture": "ONDC:RET10",
+        }
+        expected_domain = cat_domain_map.get(image_category)
+        if expected_domain and expected_domain == llm_result.get("primary_domain"):
+            agreement_count += 1
+            llm_result["confidence"] = min(1.0, llm_result.get("confidence", 0) + 0.05)
+            llm_result["reasoning"] += " (Image analysis confirms category)"
+
+    # Triple agreement → highest confidence
+    if agreement_count >= 2:
+        llm_result["confidence"] = min(1.0, llm_result.get("confidence", 0) + 0.05)
+        llm_result["ambiguous"] = False
 
     return llm_result

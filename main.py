@@ -22,6 +22,14 @@ from pydantic import BaseModel
 from typing import Optional, List
 from sarvamai import SarvamAI
 
+try:
+    from PIL import Image as PILImage
+    PIL_AVAILABLE = True
+except ImportError:
+    PILImage = None
+    PIL_AVAILABLE = False
+    print("[BOOT] PIL/Pillow not installed — /api/enhance-image will return images unprocessed")
+
 from services.entity_extractor import extract_entities
 from services.categorisation import categorise_mse
 from services.snp_matcher import match_mse_to_snps, estimate_digital_readiness
@@ -48,8 +56,10 @@ GRIDLINES_KEY      = os.getenv("GRIDLINES_API_KEY", "test-credential-46558501720
 GRIDLINES_BASE     = os.getenv("GRIDLINES_BASE_URL", "https://stoplight.io/mocks/gridlines/gridlines-api-docs/133154723")
 SARVAM_KEY         = os.getenv("SARVAM_API_KEY", "")
 ANTHROPIC_KEY      = os.getenv("ANTHROPIC_API_KEY", "")
+GOOGLE_API_KEY     = os.getenv("GOOGLE_API_KEY", "")
 print(f"[BOOT] SARVAM_KEY set: {bool(SARVAM_KEY)} (len={len(SARVAM_KEY)})")
 print(f"[BOOT] ANTHROPIC_KEY set: {bool(ANTHROPIC_KEY)} (len={len(ANTHROPIC_KEY)})")
+print(f"[BOOT] GOOGLE_API_KEY set: {bool(GOOGLE_API_KEY)} (len={len(GOOGLE_API_KEY)})")
 SESSION_TOKENS     = set()
 ROLE_SESSIONS      = {}   # session_token -> {role, identifier, profile}
 
@@ -222,6 +232,11 @@ class VerifyDocumentsRequest(BaseModel):
 
 class VerifyClaimRequest(BaseModel):
     claim_id: int
+
+class AnalyzeProductImageRequest(BaseModel):
+    image_base64: str            # base64-encoded image data (no data URI prefix)
+    category_hint: Optional[str] = None   # e.g. "food", "textiles", "handicrafts"
+    mime_type: Optional[str] = "image/jpeg"
 
 
 # ── In-memory image store (PoC) ─────────────────────────
@@ -1484,6 +1499,824 @@ Return ONLY a JSON object: {"summary": "...", "recommendation": "approve|flag|re
         "checks": checks,
         "auto_recommendation": recommendation,
         "summary": summary,
+    }
+
+
+# ── Routes: Product Image Analysis (Tiered VLM) ─────────
+
+# Category-specific extraction prompts for Gemini Vision
+_VLM_PROMPTS = {
+    "food": """You are an expert product analyst for Indian food and packaged goods listed on ONDC (Open Network for Digital Commerce).
+Analyze this product image carefully. Extract every detail you can see on the packaging, label, or product.
+
+Pay special attention to:
+- Brand name, product name, variant
+- MRP, selling price (look for "MRP ₹" or "M.R.P." markings)
+- Weight/volume (net quantity)
+- FSSAI license number (14-digit number, often near FSSAI logo)
+- Veg/Non-veg indicator (green dot = veg, brown/red dot = non-veg)
+- Ingredients list
+- Nutritional information
+- Manufacturing date, expiry date, best before
+- Manufacturer name and address
+- Country of origin
+- Barcode/EAN number
+- Any text in Indian languages (Hindi, Tamil, etc.)
+
+Return ONLY a valid JSON object with this structure:
+{
+  "detected_category": "food_packaged",
+  "confidence": 0.0 to 1.0,
+  "extracted_fields": {
+    "name": "product name" or null,
+    "brand": "brand name" or null,
+    "short_description": "brief description" or null,
+    "mrp": number or null,
+    "selling_price": number or null,
+    "currency": "INR",
+    "net_quantity": "value with unit" or null,
+    "unit_of_measure": "gram/kg/ml/litre/piece/pack" or null,
+    "unit_value": "numeric value" or null,
+    "veg_nonveg": "veg" or "non-veg" or "egg" or null,
+    "fssai_license": "14-digit number" or null,
+    "ingredients": "comma-separated list" or null,
+    "nutritional_info": "key nutritional facts" or null,
+    "manufacturer_name": "name" or null,
+    "manufacturer_address": "address" or null,
+    "country_of_origin": "country" or null,
+    "mfg_date": "date" or null,
+    "expiry_date": "date" or null,
+    "barcode": "barcode number" or null,
+    "category": "food subcategory" or null,
+    "subcategory": "specific type" or null
+  },
+  "description": "AI-generated 2-3 sentence product description suitable for an e-commerce listing",
+  "ocr_text": "all readable text from the image, including Indian language text",
+  "suggested_category_fields": ["list of additional ONDC fields that should be filled based on this product type"]
+}""",
+
+    "textiles": """You are an expert product analyst for Indian textiles, handloom, and fashion items listed on ONDC.
+Analyze this product image carefully. Identify fabric type, weave pattern, craftsmanship details, and any labels.
+
+Pay special attention to:
+- Type of textile (saree, kurta, fabric, shawl, dupatta, etc.)
+- Fabric/material (cotton, silk, wool, polyester, blended)
+- Weave type (handloom, power loom, specific weave names like Banarasi, Kanjeevaram, Chanderi, etc.)
+- Color(s) and pattern description
+- GI (Geographical Indication) tag if visible
+- Handloom mark or silk mark
+- Care instructions
+- Size/dimensions
+- Any price tags or labels
+- Origin/region
+
+Return ONLY a valid JSON object with this structure:
+{
+  "detected_category": "textiles_handloom",
+  "confidence": 0.0 to 1.0,
+  "extracted_fields": {
+    "name": "product name" or null,
+    "brand": "brand/artisan name" or null,
+    "short_description": "brief description" or null,
+    "material": "fabric type" or null,
+    "weave_type": "handloom/powerloom/specific weave" or null,
+    "colour": "primary color(s)" or null,
+    "pattern": "pattern description" or null,
+    "size": "size or dimensions" or null,
+    "gender": "male/female/unisex" or null,
+    "care_instructions": "washing/care info" or null,
+    "gi_tag": "GI tag name" or null,
+    "origin_region": "region of origin" or null,
+    "handloom_mark": true/false or null,
+    "craft_technique": "specific technique" or null,
+    "mrp": number or null,
+    "selling_price": number or null,
+    "currency": "INR",
+    "category": "textiles subcategory" or null,
+    "subcategory": "specific type" or null
+  },
+  "description": "AI-generated 2-3 sentence product description highlighting craftsmanship and uniqueness",
+  "ocr_text": "all readable text from the image",
+  "suggested_category_fields": ["list of additional ONDC fields that should be filled"]
+}""",
+
+    "handicrafts": """You are an expert product analyst for Indian handicrafts and artisanal products listed on ONDC.
+Analyze this product image carefully. Identify the craft form, materials, techniques, and cultural significance.
+
+Pay special attention to:
+- Type of handicraft (pottery, woodwork, metalwork, painting, jewelry, basketry, etc.)
+- Material (wood, clay, metal, stone, bamboo, jute, etc.)
+- Craft tradition (Madhubani, Warli, Blue Pottery, Dhokra, Bidri, etc.)
+- Dimensions/size
+- Color and finish
+- GI tag if applicable
+- Artisan/maker details
+- Region of origin
+- Any labels or certifications
+
+Return ONLY a valid JSON object with this structure:
+{
+  "detected_category": "handicrafts",
+  "confidence": 0.0 to 1.0,
+  "extracted_fields": {
+    "name": "product name" or null,
+    "brand": "artisan/brand name" or null,
+    "short_description": "brief description" or null,
+    "material": "primary material" or null,
+    "craft_tradition": "specific craft form" or null,
+    "craft_technique": "technique used" or null,
+    "dimensions": "size/dimensions" or null,
+    "colour": "color(s)" or null,
+    "weight": "weight" or null,
+    "gi_tag": "GI tag name" or null,
+    "origin_region": "region of origin" or null,
+    "artisan_name": "maker name" or null,
+    "is_handmade": true/false or null,
+    "mrp": number or null,
+    "selling_price": number or null,
+    "currency": "INR",
+    "category": "handicraft subcategory" or null,
+    "subcategory": "specific type" or null
+  },
+  "description": "AI-generated 2-3 sentence product description highlighting cultural significance and craftsmanship",
+  "ocr_text": "all readable text from the image",
+  "suggested_category_fields": ["list of additional ONDC fields that should be filled"]
+}""",
+
+    "agriculture": """You are an expert product analyst for Indian agricultural products listed on ONDC.
+Analyze this product image carefully. Identify the crop, variety, packaging, and quality markers.
+
+Pay special attention to:
+- Product type (grain, spice, fruit, vegetable, seed, fertilizer, etc.)
+- Variety/grade
+- Organic certification (India Organic, NPOP, etc.)
+- Weight/quantity
+- Packaging type
+- FSSAI / AGMARK markings
+- Brand or FPO name
+- Region of origin
+- Best before / harvest date
+
+Return ONLY a valid JSON object with this structure:
+{
+  "detected_category": "agriculture",
+  "confidence": 0.0 to 1.0,
+  "extracted_fields": {
+    "name": "product name" or null,
+    "brand": "brand/FPO name" or null,
+    "short_description": "brief description" or null,
+    "variety": "crop variety/grade" or null,
+    "organic_certified": true/false or null,
+    "certification": "certification name" or null,
+    "net_quantity": "weight/quantity" or null,
+    "unit_of_measure": "kg/quintal/piece/dozen" or null,
+    "unit_value": "numeric value" or null,
+    "mrp": number or null,
+    "selling_price": number or null,
+    "currency": "INR",
+    "fssai_license": "license number" or null,
+    "agmark_grade": "grade" or null,
+    "origin_region": "region" or null,
+    "harvest_date": "date" or null,
+    "expiry_date": "date" or null,
+    "category": "agriculture subcategory" or null,
+    "subcategory": "specific type" or null
+  },
+  "description": "AI-generated 2-3 sentence product description",
+  "ocr_text": "all readable text from the image",
+  "suggested_category_fields": ["list of additional ONDC fields that should be filled"]
+}""",
+
+    "general": """You are an expert product analyst for products listed on ONDC (Open Network for Digital Commerce) in India.
+Analyze this product image carefully and extract all visible product information.
+
+First, determine what category this product belongs to:
+- textiles_handloom (clothing, fabrics, handloom items)
+- food_packaged (food, beverages, packaged goods)
+- handicrafts (artisanal crafts, pottery, woodwork, paintings)
+- agriculture (crops, seeds, farm products)
+- general (electronics, home goods, beauty, health, or other)
+
+Then extract all relevant product details visible in the image.
+
+Return ONLY a valid JSON object with this structure:
+{
+  "detected_category": "one of: textiles_handloom, food_packaged, handicrafts, agriculture, general",
+  "confidence": 0.0 to 1.0,
+  "extracted_fields": {
+    "name": "product name" or null,
+    "brand": "brand name" or null,
+    "short_description": "brief description" or null,
+    "long_description": "detailed description" or null,
+    "mrp": number or null,
+    "selling_price": number or null,
+    "currency": "INR",
+    "net_quantity": "quantity with unit" or null,
+    "unit_of_measure": "unit" or null,
+    "unit_value": "value" or null,
+    "material": "material" or null,
+    "colour": "color" or null,
+    "size": "size" or null,
+    "manufacturer_name": "name" or null,
+    "country_of_origin": "country" or null,
+    "category": "product category" or null,
+    "subcategory": "subcategory" or null
+  },
+  "description": "AI-generated 2-3 sentence product description suitable for e-commerce",
+  "ocr_text": "all readable text from the image",
+  "suggested_category_fields": ["list of additional ONDC fields that should be filled based on detected category"]
+}""",
+}
+
+# Suggested extra fields per category for the frontend
+_CATEGORY_SUGGESTED_FIELDS = {
+    "food_packaged": [
+        "veg_nonveg", "fssai_license", "ingredients", "nutritional_info",
+        "allergen_info", "mfg_date", "expiry_date", "storage_instructions",
+        "additives_info", "barcode",
+    ],
+    "textiles_handloom": [
+        "material", "weave_type", "colour", "pattern", "size", "gender",
+        "care_instructions", "gi_tag", "handloom_mark", "craft_technique",
+        "wash_care", "origin_region",
+    ],
+    "handicrafts": [
+        "material", "craft_tradition", "craft_technique", "dimensions",
+        "weight", "gi_tag", "origin_region", "artisan_name", "is_handmade",
+        "finish_type",
+    ],
+    "agriculture": [
+        "variety", "organic_certified", "certification", "agmark_grade",
+        "harvest_date", "expiry_date", "storage_instructions", "origin_region",
+        "soil_type", "season",
+    ],
+    "general": [
+        "model_name", "warranty", "manufacturer_name", "manufacturer_address",
+        "country_of_origin", "barcode", "return_policy",
+    ],
+}
+
+
+async def _gemini_analyze_image(image_b64: str, mime_type: str, prompt: str) -> dict:
+    """Send an image to Gemini Flash for analysis. Returns parsed JSON dict."""
+    import google.generativeai as genai
+    genai.configure(api_key=GOOGLE_API_KEY)
+    model = genai.GenerativeModel("gemini-2.0-flash")
+
+    response = model.generate_content(
+        [
+            {"mime_type": mime_type, "data": base64.b64decode(image_b64)},
+            prompt,
+        ],
+        generation_config={"temperature": 0.2, "max_output_tokens": 4096},
+    )
+    raw_text = response.text
+    print(f"[GeminiVLM] Response ({len(raw_text)} chars): {raw_text[:200]}")
+    return json.loads(_clean_json_response(raw_text))
+
+
+async def _claude_analyze_image(image_b64: str, mime_type: str, prompt: str) -> dict:
+    """Send an image to Claude for analysis (fallback). Returns parsed JSON dict."""
+    async with httpx.AsyncClient(timeout=60) as client:
+        resp = await client.post(
+            "https://api.anthropic.com/v1/messages",
+            headers={
+                "x-api-key": ANTHROPIC_KEY,
+                "anthropic-version": "2023-06-01",
+                "content-type": "application/json",
+            },
+            json={
+                "model": "claude-haiku-4-20250514",
+                "max_tokens": 4096,
+                "messages": [{
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "image",
+                            "source": {
+                                "type": "base64",
+                                "media_type": mime_type,
+                                "data": image_b64,
+                            },
+                        },
+                        {"type": "text", "text": prompt},
+                    ],
+                }],
+            },
+        )
+        result = resp.json()
+    raw_text = result["content"][0]["text"]
+    print(f"[ClaudeVLM] Response ({len(raw_text)} chars): {raw_text[:200]}")
+    return json.loads(_clean_json_response(raw_text))
+
+
+def _resolve_category_key(category_hint: str | None) -> str:
+    """Map user-provided category_hint to an internal prompt key."""
+    if not category_hint:
+        return "general"
+    hint = category_hint.lower().strip()
+    if hint in ("food", "food_packaged", "grocery", "fmcg", "packaged", "beverage"):
+        return "food"
+    if hint in ("textiles", "textiles_handloom", "handloom", "clothing", "fashion", "fabric"):
+        return "textiles"
+    if hint in ("handicrafts", "handicraft", "crafts", "artisan", "pottery", "woodwork"):
+        return "handicrafts"
+    if hint in ("agriculture", "agri", "farm", "seeds", "crop", "organic"):
+        return "agriculture"
+    return "general"
+
+
+@app.post("/api/analyze-product-image")
+async def analyze_product_image(
+    request: Request,
+    _=Depends(require_auth),
+    # Support both JSON body and multipart form upload
+    image: Optional[UploadFile] = File(None),
+    category_hint: Optional[str] = Form(None),
+):
+    """
+    Tiered VLM product photo intelligence.
+
+    Accepts either:
+      - Multipart form with `image` file upload + optional `category_hint`
+      - JSON body with `image_base64`, `mime_type`, and optional `category_hint`
+
+    Routing:
+      - food     → Sarvam OCR (Indian language labels) + Gemini extraction
+      - textiles/handicrafts → Gemini Flash primary, Claude fallback for complex items
+      - default  → Gemini Flash general analysis
+    """
+    # ── Parse input: file upload or JSON body ──
+    image_b64 = None
+    mime_type = "image/jpeg"
+
+    if image and image.filename:
+        # Multipart file upload
+        img_bytes = await image.read()
+        if len(img_bytes) > 10 * 1024 * 1024:
+            return JSONResponse({"status": "error", "message": "Image too large (max 10MB)"}, status_code=400)
+        image_b64 = base64.b64encode(img_bytes).decode("utf-8")
+        mime_type = image.content_type or "image/jpeg"
+    else:
+        # JSON body
+        try:
+            body = await request.json()
+        except Exception:
+            return JSONResponse({"status": "error", "message": "Provide either a file upload or JSON body with image_base64"}, status_code=400)
+        image_b64 = body.get("image_base64", "")
+        mime_type = body.get("mime_type", "image/jpeg")
+        category_hint = category_hint or body.get("category_hint")
+
+    if not image_b64:
+        return JSONResponse({"status": "error", "message": "No image data provided"}, status_code=400)
+
+    # Strip data URI prefix if present
+    if image_b64.startswith("data:"):
+        # e.g. "data:image/jpeg;base64,/9j/4AAQ..."
+        header, image_b64 = image_b64.split(",", 1)
+        if "image/" in header:
+            mime_type = header.split(";")[0].split(":")[1]
+
+    # ── Resolve category and prompt ──
+    cat_key = _resolve_category_key(category_hint)
+    prompt = _VLM_PROMPTS[cat_key]
+    print(f"[AnalyzeImage] category_hint={category_hint}, resolved_key={cat_key}, mime={mime_type}")
+
+    # ── Tiered routing ──
+    result = None
+    ocr_text_from_sarvam = None
+
+    try:
+        if cat_key == "food":
+            # TIER: Food → Sarvam OCR first (for Indian language labels), then Gemini for extraction
+            # Step 1: Try Sarvam OCR for Indian text on packaging
+            if SARVAM_KEY:
+                try:
+                    img_bytes_for_ocr = base64.b64decode(image_b64)
+                    ocr_text_from_sarvam = await sarvam_ocr(
+                        img_bytes_for_ocr, "product_label.jpg", language="en-IN"
+                    )
+                    print(f"[AnalyzeImage/Food] Sarvam OCR text ({len(ocr_text_from_sarvam)} chars): {ocr_text_from_sarvam[:150]}")
+                except Exception as ocr_err:
+                    print(f"[AnalyzeImage/Food] Sarvam OCR failed (falling back to Gemini-only): {ocr_err}")
+                    ocr_text_from_sarvam = None
+
+            # Step 2: Gemini for structured extraction (with OCR text appended if available)
+            if not GOOGLE_API_KEY:
+                return JSONResponse({"status": "error", "message": "Google API key not configured"}, status_code=500)
+
+            enhanced_prompt = prompt
+            if ocr_text_from_sarvam:
+                enhanced_prompt += f"\n\nADDITIONAL CONTEXT — OCR text extracted from the product label (may include Indian language text):\n{ocr_text_from_sarvam}"
+
+            result = await _gemini_analyze_image(image_b64, mime_type, enhanced_prompt)
+
+            # Merge OCR text if Sarvam provided it but Gemini didn't capture it all
+            if ocr_text_from_sarvam and result.get("ocr_text"):
+                gemini_ocr = result["ocr_text"]
+                if len(ocr_text_from_sarvam) > len(gemini_ocr):
+                    result["ocr_text"] = ocr_text_from_sarvam + "\n---\n" + gemini_ocr
+            elif ocr_text_from_sarvam and not result.get("ocr_text"):
+                result["ocr_text"] = ocr_text_from_sarvam
+
+        elif cat_key in ("textiles", "handicrafts"):
+            # TIER: Textiles/Handicrafts → Gemini Flash primary, Claude fallback
+            if not GOOGLE_API_KEY:
+                # No Gemini key — go straight to Claude
+                if not ANTHROPIC_KEY:
+                    return JSONResponse({"status": "error", "message": "Neither Google nor Anthropic API key configured"}, status_code=500)
+                result = await _claude_analyze_image(image_b64, mime_type, prompt)
+            else:
+                try:
+                    result = await _gemini_analyze_image(image_b64, mime_type, prompt)
+                    # Check confidence — if low, try Claude for better analysis
+                    confidence = result.get("confidence", 0)
+                    if confidence < 0.5 and ANTHROPIC_KEY:
+                        print(f"[AnalyzeImage] Gemini confidence low ({confidence}), falling back to Claude")
+                        result = await _claude_analyze_image(image_b64, mime_type, prompt)
+                except Exception as gemini_err:
+                    print(f"[AnalyzeImage] Gemini failed, falling back to Claude: {gemini_err}")
+                    if ANTHROPIC_KEY:
+                        result = await _claude_analyze_image(image_b64, mime_type, prompt)
+                    else:
+                        raise gemini_err
+
+        else:
+            # TIER: Default → Gemini Flash general analysis
+            if not GOOGLE_API_KEY:
+                if ANTHROPIC_KEY:
+                    result = await _claude_analyze_image(image_b64, mime_type, prompt)
+                else:
+                    return JSONResponse({"status": "error", "message": "No VLM API key configured (Google or Anthropic)"}, status_code=500)
+            else:
+                result = await _gemini_analyze_image(image_b64, mime_type, prompt)
+
+    except json.JSONDecodeError as e:
+        print(f"[AnalyzeImage] JSON parse error from VLM: {e}")
+        return JSONResponse({"status": "error", "message": "VLM returned invalid JSON"}, status_code=502)
+    except Exception as e:
+        print(f"[AnalyzeImage] Error: {e}")
+        return JSONResponse({"status": "error", "message": f"Image analysis failed: {str(e)}"}, status_code=502)
+
+    if not result:
+        return JSONResponse({"status": "error", "message": "No analysis result"}, status_code=502)
+
+    # ── Normalise and enrich the response ──
+    detected_category = result.get("detected_category", "general")
+    confidence = result.get("confidence", 0)
+
+    # Ensure suggested_category_fields is populated
+    suggested = result.get("suggested_category_fields", [])
+    if not suggested:
+        suggested = _CATEGORY_SUGGESTED_FIELDS.get(detected_category, _CATEGORY_SUGGESTED_FIELDS["general"])
+
+    return {
+        "status": "success",
+        "detected_category": detected_category,
+        "confidence": confidence,
+        "extracted_fields": result.get("extracted_fields", {}),
+        "description": result.get("description", ""),
+        "ocr_text": result.get("ocr_text", ""),
+        "suggested_category_fields": suggested,
+    }
+
+
+# ── Route: Image Enhancement ─────────────────────────────
+
+@app.post("/api/enhance-image")
+async def enhance_image(
+    request: Request,
+    _=Depends(require_auth),
+    image: Optional[UploadFile] = File(None),
+):
+    """
+    Enhance a product image for catalogue use.
+
+    Accepts either:
+      - Multipart form with `image` file upload
+      - JSON body with `image_base64` and `mime_type`
+
+    Current stub performs basic PIL processing (auto-crop, colour
+    optimisation, dimension checks).  Full background-removal via
+    rembg + BiRefNet will replace this once the dependency is added.
+    """
+    # ── Parse input: file upload or JSON body ──
+    image_b64 = None
+    mime_type = "image/jpeg"
+
+    if image and image.filename:
+        img_bytes = await image.read()
+        if len(img_bytes) > 10 * 1024 * 1024:
+            return JSONResponse(
+                {"status": "error", "message": "Image too large (max 10MB)"},
+                status_code=400,
+            )
+        image_b64 = base64.b64encode(img_bytes).decode("utf-8")
+        mime_type = image.content_type or "image/jpeg"
+    else:
+        try:
+            body = await request.json()
+        except Exception:
+            return JSONResponse(
+                {"status": "error", "message": "Provide either a file upload or JSON body with image_base64"},
+                status_code=400,
+            )
+        image_b64 = body.get("image_base64", "")
+        mime_type = body.get("mime_type", "image/jpeg")
+
+    if not image_b64:
+        return JSONResponse(
+            {"status": "error", "message": "No image data provided"},
+            status_code=400,
+        )
+
+    # Strip data URI prefix if present
+    if image_b64.startswith("data:"):
+        header, image_b64 = image_b64.split(",", 1)
+        if "image/" in header:
+            mime_type = header.split(";")[0].split(":")[1]
+
+    enhancements_applied: list[str] = []
+
+    try:
+        raw_bytes = base64.b64decode(image_b64)
+
+        if not PIL_AVAILABLE:
+            # Pillow not installed — return the image unchanged
+            print("[EnhanceImage] PIL not available, returning image as-is")
+            return {
+                "status": "success",
+                "enhanced_image_base64": image_b64,
+                "mime_type": mime_type,
+                "enhancements_applied": [],
+                "note": "PIL/Pillow not installed; image returned unprocessed",
+            }
+
+        img = PILImage.open(io.BytesIO(raw_bytes))
+
+        # ── 1. Convert to RGB (drop alpha / palette) ──
+        if img.mode in ("RGBA", "P", "LA", "L"):
+            img = img.convert("RGB")
+            enhancements_applied.append("convert-to-rgb")
+
+        # ── 2. Auto-crop whitespace / uniform borders ──
+        # Use getbbox on a slightly thresholded version to detect content bounds
+        try:
+            bg = PILImage.new(img.mode, img.size, (255, 255, 255))
+            diff = PILImage.eval(
+                PILImage.merge("RGB", [
+                    PILImage.eval(img.split()[c], lambda px: abs(px - 255))
+                    for c in range(3)
+                ]),
+                lambda px: 255 if px > 15 else 0,
+            )
+            bbox = diff.convert("L").getbbox()
+            if bbox:
+                # Add a small padding (2% of dimension) so the crop isn't too tight
+                pad_x = max(int(img.width * 0.02), 4)
+                pad_y = max(int(img.height * 0.02), 4)
+                crop_box = (
+                    max(bbox[0] - pad_x, 0),
+                    max(bbox[1] - pad_y, 0),
+                    min(bbox[2] + pad_x, img.width),
+                    min(bbox[3] + pad_y, img.height),
+                )
+                cropped = img.crop(crop_box)
+                # Only apply if we actually trimmed something meaningful (>5% per side)
+                if cropped.width < img.width * 0.95 or cropped.height < img.height * 0.95:
+                    img = cropped
+                    enhancements_applied.append("auto-crop")
+        except Exception as crop_err:
+            print(f"[EnhanceImage] Auto-crop failed (non-fatal): {crop_err}")
+
+        # ── 3. Ensure minimum dimensions (pad if too small) ──
+        MIN_DIM = 200
+        if img.width < MIN_DIM or img.height < MIN_DIM:
+            new_w = max(img.width, MIN_DIM)
+            new_h = max(img.height, MIN_DIM)
+            padded = PILImage.new("RGB", (new_w, new_h), (255, 255, 255))
+            paste_x = (new_w - img.width) // 2
+            paste_y = (new_h - img.height) // 2
+            padded.paste(img, (paste_x, paste_y))
+            img = padded
+            enhancements_applied.append("min-dimension-pad")
+
+        # ── 4. Basic colour optimisation (auto-contrast) ──
+        try:
+            from PIL import ImageOps
+            img = ImageOps.autocontrast(img, cutoff=0.5)
+            enhancements_applied.append("color-optimize")
+        except Exception as contrast_err:
+            print(f"[EnhanceImage] Auto-contrast failed (non-fatal): {contrast_err}")
+
+        # TODO: Integrate rembg + BiRefNet for background removal.
+        #   When ready:
+        #     1. pip install rembg[gpu]  (or rembg for CPU-only)
+        #     2. from rembg import remove
+        #     3. img_no_bg = remove(raw_bytes, model_name="birefnet-general")
+        #     4. Composite onto white/transparent background as needed
+        #     5. Add "background-removal" to enhancements_applied
+
+        # ── Encode result ──
+        buf = io.BytesIO()
+        img.save(buf, format="JPEG", quality=92)
+        result_b64 = base64.b64encode(buf.getvalue()).decode("utf-8")
+
+        print(f"[EnhanceImage] Done — enhancements={enhancements_applied}, "
+              f"original_size={len(raw_bytes)}, result_size={buf.tell()}")
+
+        return {
+            "status": "success",
+            "enhanced_image_base64": result_b64,
+            "mime_type": "image/jpeg",
+            "enhancements_applied": enhancements_applied,
+        }
+
+    except Exception as e:
+        print(f"[EnhanceImage] Error: {e}")
+        return JSONResponse(
+            {"status": "error", "message": f"Image enhancement failed: {str(e)}"},
+            status_code=500,
+        )
+
+
+# ── Route: AI Product Enrichment ─────────────────────────
+
+@app.post("/api/enrich-product")
+async def enrich_product(request: Request, _=Depends(require_auth)):
+    """Use Claude Haiku to enrich / improve product listing fields."""
+    if not ANTHROPIC_KEY:
+        return JSONResponse(
+            {"status": "error", "message": "Anthropic API key not configured"},
+            status_code=500,
+        )
+
+    try:
+        body = await request.json()
+    except Exception:
+        return JSONResponse(
+            {"status": "error", "message": "Invalid JSON body"},
+            status_code=400,
+        )
+
+    product = body.get("product", {})
+    domain = body.get("domain", "ONDC:RET10")
+    language = body.get("language", "en-IN")
+    category_hint = body.get("category_hint")
+
+    if not product:
+        return JSONResponse(
+            {"status": "error", "message": "product dict is required"},
+            status_code=400,
+        )
+
+    # ── Determine which fields need enrichment ──
+    needs = []
+    short_desc = (product.get("short_description") or "").strip()
+    long_desc = (product.get("long_description") or "").strip()
+    generic_name = (product.get("generic_name") or "").strip()
+    category = (product.get("category") or "").strip()
+    subcategory = (product.get("subcategory") or "").strip()
+
+    if not short_desc or len(short_desc) < 50:
+        needs.append("short_description")
+    if not long_desc:
+        needs.append("long_description")
+    if not generic_name:
+        needs.append("generic_name")
+    if not category:
+        needs.append("category")
+    if not subcategory:
+        needs.append("subcategory")
+
+    # Check if description might need English translation
+    needs_translation = language and not language.startswith("en")
+
+    if not needs and not needs_translation:
+        return {
+            "status": "success",
+            "enriched_fields": {},
+            "enrichment_count": 0,
+        }
+
+    # ── Load category-specific context if available ──
+    category_context = ""
+    if category_hint:
+        try:
+            with open(DATA_DIR / "category_templates.json") as f:
+                cat_templates = json.load(f)
+            cat_data = cat_templates.get("categories", {}).get(category_hint, {})
+            if cat_data.get("ai_description_context"):
+                category_context = cat_data["ai_description_context"]
+        except Exception as e:
+            print(f"[EnrichProduct] Failed to load category templates: {e}")
+
+    # ── Build Claude prompt ──
+    product_summary = json.dumps(product, ensure_ascii=False, indent=2)
+
+    prompt_parts = [
+        "You are a product listing expert for ONDC (Open Network for Digital Commerce) in India.",
+        f"Domain: {domain}",
+        f"User language: {language}",
+        "",
+        f"Current product data:\n{product_summary}",
+        "",
+    ]
+
+    if category_context:
+        prompt_parts.append(f"Category-specific guidance:\n{category_context}\n")
+
+    prompt_parts.append("Generate or improve the following fields for this product listing. Return ONLY a JSON object with the fields you are providing.\n")
+
+    field_instructions = []
+    if "short_description" in needs:
+        existing = f' Current value: "{short_desc}".' if short_desc else ""
+        field_instructions.append(
+            f'- "short_description": A compelling 50-120 character summary suitable for search results and cards.{existing}'
+        )
+    if "long_description" in needs:
+        field_instructions.append(
+            '- "long_description": A detailed 80-200 word product description highlighting features, materials, usage, and appeal for Indian buyers.'
+        )
+    if "generic_name" in needs:
+        field_instructions.append(
+            '- "generic_name": The common/generic name of the product (e.g. "Banarasi Silk Saree", "Organic Turmeric Powder").'
+        )
+    if "category" in needs:
+        field_instructions.append(
+            '- "category": The most appropriate ONDC product category for this item.'
+        )
+    if "subcategory" in needs:
+        field_instructions.append(
+            '- "subcategory": The most appropriate ONDC subcategory.'
+        )
+    if needs_translation and (short_desc or long_desc):
+        field_instructions.append(
+            '- "description_english": An English translation of the product description (translate from the existing short or long description).'
+        )
+
+    prompt_parts.append("\n".join(field_instructions))
+    prompt_parts.append(
+        "\nIMPORTANT: Respond with ONLY valid JSON, no markdown fences, no extra text."
+    )
+
+    prompt = "\n".join(prompt_parts)
+    print(f"[EnrichProduct] needs={needs}, needs_translation={needs_translation}, category_hint={category_hint}")
+
+    # ── Call Claude Haiku ──
+    try:
+        async with httpx.AsyncClient(timeout=30) as client:
+            resp = await client.post(
+                "https://api.anthropic.com/v1/messages",
+                headers={
+                    "x-api-key": ANTHROPIC_KEY,
+                    "anthropic-version": "2023-06-01",
+                    "content-type": "application/json",
+                },
+                json={
+                    "model": "claude-haiku-4-20250514",
+                    "max_tokens": 1024,
+                    "messages": [{"role": "user", "content": prompt}],
+                },
+            )
+            resp.raise_for_status()
+            data = resp.json()
+            raw_text = data["content"][0]["text"]
+    except httpx.HTTPStatusError as e:
+        print(f"[EnrichProduct] Claude API HTTP error: {e.response.status_code} {e.response.text[:300]}")
+        return JSONResponse(
+            {"status": "error", "message": f"Claude API error: {e.response.status_code}"},
+            status_code=502,
+        )
+    except Exception as e:
+        print(f"[EnrichProduct] Claude API call failed: {e}")
+        return JSONResponse(
+            {"status": "error", "message": f"Claude API call failed: {str(e)}"},
+            status_code=502,
+        )
+
+    # ── Parse response ──
+    try:
+        enriched = json.loads(_clean_json_response(raw_text))
+    except json.JSONDecodeError as e:
+        print(f"[EnrichProduct] JSON parse error: {e}, raw: {raw_text[:300]}")
+        return JSONResponse(
+            {"status": "error", "message": "Claude returned invalid JSON"},
+            status_code=502,
+        )
+
+    # Only keep the fields we actually requested
+    allowed_keys = set(needs)
+    if needs_translation:
+        allowed_keys.add("description_english")
+    enriched = {k: v for k, v in enriched.items() if k in allowed_keys}
+
+    print(f"[EnrichProduct] Enriched {len(enriched)} fields: {list(enriched.keys())}")
+
+    return {
+        "status": "success",
+        "enriched_fields": enriched,
+        "enrichment_count": len(enriched),
     }
 
 

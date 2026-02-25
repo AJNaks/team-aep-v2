@@ -462,6 +462,141 @@ body::before{
 .role-card .role-title{font-size:18px;font-weight:700;color:var(--text)}
 .role-card .role-desc{font-size:14px;color:var(--text2);line-height:1.5}
 
+/* ═══ Mode Picker (Voice vs Form) ═══ */
+.mode-picker{width:100%;max-width:600px}
+.mode-picker .mode-hero{text-align:center;margin-bottom:32px}
+.mode-picker .mode-hero h2{font-size:22px;font-weight:700;margin-bottom:8px}
+.mode-picker .mode-hero p{font-size:15px;color:var(--text2)}
+.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;width:100%}
+@media(max-width:480px){.mode-grid{grid-template-columns:1fr;gap:14px}}
+.mode-card{
+  background:var(--bg3);border:2px solid var(--bg4);border-radius:20px;
+  padding:32px 24px;text-align:center;cursor:pointer;
+  transition:all 0.25s;display:flex;flex-direction:column;align-items:center;gap:12px;
+}
+.mode-card:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,0.15);border-color:var(--accent)}
+.mode-card .mode-icon{font-size:48px;line-height:1}
+.mode-card .mode-title{font-size:18px;font-weight:700;color:var(--text)}
+.mode-card .mode-desc{font-size:13px;color:var(--text2);line-height:1.5}
+.mode-card.recommended{border-color:var(--accent);position:relative}
+.mode-card.recommended::after{
+  content:'Recommended';position:absolute;top:-12px;right:16px;
+  background:var(--accent);color:#fff;font-size:11px;font-weight:700;
+  padding:4px 12px;border-radius:20px;letter-spacing:0.5px;
+}
+
+/* ═══ Voice Journey Page ═══ */
+.voice-journey{
+  width:100%;max-width:600px;height:calc(100vh - 80px);
+  display:flex;flex-direction:column;
+}
+.vj-step-indicator{
+  display:flex;align-items:center;justify-content:center;gap:4px;
+  padding:12px 0;flex-shrink:0;
+}
+.vj-step{
+  width:8px;height:8px;border-radius:50%;background:var(--bg4);
+  transition:all 0.3s;
+}
+.vj-step.active{background:var(--accent);width:24px;border-radius:4px}
+.vj-step.done{background:var(--green)}
+.vj-phase-label{
+  text-align:center;font-size:12px;color:var(--text2);
+  font-weight:600;text-transform:uppercase;letter-spacing:1px;
+  padding-bottom:8px;flex-shrink:0;
+}
+.vj-transcript{
+  flex:1;overflow-y:auto;padding:12px 0;
+  display:flex;flex-direction:column;gap:10px;
+  -webkit-overflow-scrolling:touch;
+}
+.vj-msg{
+  max-width:85%;padding:12px 16px;border-radius:18px;
+  font-size:14px;line-height:1.5;animation:fadeSlideUp 0.3s ease;
+}
+.vj-msg.ai{
+  align-self:flex-start;background:var(--bg3);border:1px solid var(--bg4);
+  border-bottom-left-radius:4px;
+}
+.vj-msg.user{
+  align-self:flex-end;background:var(--accent);color:#fff;
+  border-bottom-right-radius:4px;
+}
+.vj-msg.system{
+  align-self:center;background:transparent;color:var(--text2);
+  font-size:12px;font-style:italic;text-align:center;padding:6px;
+}
+.vj-msg .field-badge{
+  display:inline-block;background:rgba(255,107,0,0.15);color:var(--accent);
+  font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px;margin:2px 4px 2px 0;
+}
+.vj-controls{
+  flex-shrink:0;padding:16px 0 24px;display:flex;flex-direction:column;
+  align-items:center;gap:12px;
+}
+.vj-mic-btn{
+  width:72px;height:72px;border-radius:50%;border:none;
+  background:var(--accent);color:#fff;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.2s;box-shadow:0 4px 16px rgba(255,107,0,0.3);
+}
+.vj-mic-btn:hover{transform:scale(1.05)}
+.vj-mic-btn.recording{
+  background:#ef4444;animation:pulse 1.2s infinite;
+  box-shadow:0 4px 20px rgba(239,68,68,0.4);
+}
+.vj-mic-btn svg{width:32px;height:32px}
+.vj-mic-hint{font-size:12px;color:var(--text2)}
+.vj-action-row{
+  display:flex;gap:10px;width:100%;justify-content:center;flex-wrap:wrap;
+}
+.vj-action-btn{
+  padding:10px 20px;border-radius:12px;font-size:13px;font-weight:600;
+  border:2px solid var(--bg4);background:var(--bg3);color:var(--text);
+  cursor:pointer;transition:all 0.2s;font-family:'Noto Sans',sans-serif;
+}
+.vj-action-btn:hover{border-color:var(--accent);background:rgba(255,107,0,0.08)}
+.vj-action-btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.vj-action-btn.primary:hover{background:#e66500}
+.vj-switch-mode{
+  font-size:13px;color:var(--text2);background:none;border:none;
+  cursor:pointer;text-decoration:underline;padding:8px;
+  font-family:'Noto Sans',sans-serif;
+}
+.vj-photo-prompt{
+  display:flex;gap:10px;margin-top:8px;
+}
+.vj-photo-btn{
+  padding:8px 16px;border-radius:10px;font-size:13px;
+  border:1.5px solid var(--bg4);background:var(--bg3);
+  cursor:pointer;display:flex;align-items:center;gap:6px;
+  font-family:'Noto Sans',sans-serif;color:var(--text);
+}
+.vj-photo-btn:hover{border-color:var(--accent)}
+.vj-confirm-card{
+  background:var(--bg3);border:1.5px solid var(--bg4);border-radius:16px;
+  padding:16px;margin-top:8px;
+}
+.vj-confirm-card h4{font-size:14px;font-weight:700;margin-bottom:10px;color:var(--text)}
+.vj-confirm-card .confirm-field{
+  display:flex;justify-content:space-between;padding:6px 0;
+  border-bottom:1px solid var(--bg4);font-size:13px;
+}
+.vj-confirm-card .confirm-field:last-child{border-bottom:none}
+.vj-confirm-card .confirm-field .cf-label{color:var(--text2);font-weight:500}
+.vj-confirm-card .confirm-field .cf-value{color:var(--text);font-weight:600;text-align:right}
+.vj-typing{display:flex;gap:4px;padding:12px 16px}
+.vj-typing span{
+  width:8px;height:8px;border-radius:50%;background:var(--text2);
+  animation:vjBounce 1.4s infinite ease-in-out both;
+}
+.vj-typing span:nth-child(2){animation-delay:0.16s}
+.vj-typing span:nth-child(3){animation-delay:0.32s}
+@keyframes vjBounce{
+  0%,80%,100%{transform:scale(0.6);opacity:0.4}
+  40%{transform:scale(1);opacity:1}
+}
+
 /* ═══ SNP/NSIC Login Pages ═══ */
 .login-page{padding-top:100px}
 .login-container{
@@ -847,6 +982,24 @@ body::before{
 .snp-select-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(255,107,0,0.3)}
 .snp-select-btn.selected{background:var(--green)}
 
+/* SNP Factor Score Bars */
+.snp-factors{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:6px 12px;
+  margin:10px 0 6px;padding:10px 0;border-top:1px solid var(--bg4);
+}
+@media(max-width:480px){.snp-factors{grid-template-columns:repeat(2,1fr)}}
+.snp-factor{display:flex;flex-direction:column;gap:2px}
+.snp-factor .factor-label{font-size:11px;color:var(--text2);font-weight:500;display:flex;justify-content:space-between}
+.snp-factor .factor-bar{
+  height:6px;border-radius:3px;background:var(--bg4);overflow:hidden;
+}
+.snp-factor .factor-fill{
+  height:100%;border-radius:3px;transition:width 0.6s ease;
+}
+.factor-fill.high{background:var(--green)}
+.factor-fill.medium{background:var(--accent)}
+.factor-fill.low{background:#ef4444}
+
 /* ═══ Catalogue Builder ═══ */
 .cat-ai-zone{
   background:linear-gradient(135deg,#FFF7ED,#FEF3C7);border:1px solid rgba(255,107,0,0.15);
@@ -913,6 +1066,19 @@ body::before{
 .cat-form-row input:focus,.cat-form-row textarea:focus,.cat-form-row select:focus{border-color:var(--accent);outline:none}
 .cat-form-row textarea{resize:vertical;min-height:50px}
 .cat-form-row .ai-filled{border-color:var(--accent);background:rgba(255,107,0,0.04)}
+/* Source indicators for multi-modal fusion */
+.cat-form-row .source-voice{border-color:#8B5CF6!important;background:rgba(139,92,246,0.04)!important}
+.cat-form-row .source-photo{border-color:#0891B2!important;background:rgba(8,145,178,0.04)!important}
+.cat-form-row .source-ocr{border-color:var(--green)!important;background:rgba(22,163,74,0.04)!important}
+.cat-form-row .source-lookup{border-color:#6366F1!important;background:rgba(99,102,241,0.04)!important}
+.source-indicator{
+  display:inline-flex;align-items:center;gap:3px;font-size:10px;
+  padding:1px 6px;border-radius:6px;margin-left:4px;font-weight:500;
+}
+.source-indicator.voice{background:rgba(139,92,246,0.1);color:#7C3AED}
+.source-indicator.photo{background:rgba(8,145,178,0.1);color:#0891B2}
+.source-indicator.ocr{background:rgba(22,163,74,0.1);color:#15803D}
+.source-indicator.ai{background:rgba(255,107,0,0.1);color:var(--accent)}
 .cat-form-row .ai-tag{font-size:10px;color:var(--accent);margin-left:4px}
 .cat-form-row .field-error{border-color:#DC2626;background:#FEF2F2}
 .cat-form-row .error-hint{font-size:11px;color:#DC2626;margin-top:2px}
@@ -951,7 +1117,7 @@ body::before{
 .product-card .product-info{flex:1;min-width:0}
 .product-card .product-info h4{font-size:15px;font-weight:600;color:var(--text1);margin-bottom:2px}
 .product-card .product-info .prod-meta{font-size:12px;color:var(--text3);display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px}
-.product-card .product-info .prod-desc{font-size:12px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px}
+.product-card .product-info .prod-desc{font-size:12px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 .product-card .prod-prices{text-align:right;white-space:nowrap}
 .product-card .prod-prices .sell-price{font-size:16px;font-weight:700;color:var(--accent)}
 .product-card .prod-prices .mrp-price{font-size:12px;color:var(--text3);text-decoration:line-through}
@@ -970,6 +1136,56 @@ body::before{
   cursor:pointer;transition:all 0.2s;margin-top:16px;
 }
 .cat-save-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(255,107,0,0.3)}
+
+/* Listing Quality Index */
+.lqi-widget{
+  background:var(--bg3);border:1.5px solid var(--bg4);border-radius:16px;
+  padding:16px;margin:16px 0;transition:border-color 0.3s;
+}
+.lqi-widget.score-high{border-color:var(--green)}
+.lqi-widget.score-medium{border-color:var(--accent)}
+.lqi-widget.score-low{border-color:#ef4444}
+.lqi-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.lqi-header h4{font-size:14px;font-weight:700;color:var(--text);margin:0}
+.lqi-score-badge{
+  font-size:20px;font-weight:800;padding:4px 14px;border-radius:12px;
+}
+.lqi-score-badge.high{background:rgba(22,163,74,0.12);color:var(--green)}
+.lqi-score-badge.medium{background:rgba(255,107,0,0.12);color:var(--accent)}
+.lqi-score-badge.low{background:rgba(239,68,68,0.12);color:#ef4444}
+.lqi-bar{height:8px;border-radius:4px;background:var(--bg4);overflow:hidden;margin-bottom:10px}
+.lqi-bar-fill{height:100%;border-radius:4px;transition:width 0.5s ease,background 0.3s}
+.lqi-bar-fill.high{background:var(--green)}
+.lqi-bar-fill.medium{background:var(--accent)}
+.lqi-bar-fill.low{background:#ef4444}
+.lqi-factors{display:flex;flex-wrap:wrap;gap:6px}
+.lqi-factor{
+  font-size:11px;padding:4px 10px;border-radius:8px;font-weight:500;
+  display:flex;align-items:center;gap:4px;
+}
+.lqi-factor.done{background:rgba(22,163,74,0.08);color:var(--green)}
+.lqi-factor.missing{background:rgba(239,68,68,0.08);color:#ef4444;cursor:pointer}
+.lqi-factor.missing:hover{background:rgba(239,68,68,0.15)}
+.lqi-tip{font-size:12px;color:var(--text2);margin-top:8px;font-style:italic}
+
+/* AI Enrich Button */
+.cat-enrich-btn{
+  display:inline-flex;align-items:center;gap:6px;padding:8px 16px;
+  border-radius:10px;border:1.5px solid var(--accent);background:rgba(255,107,0,0.06);
+  color:var(--accent);font-size:13px;font-weight:600;cursor:pointer;
+  transition:all 0.2s;font-family:'Noto Sans',sans-serif;
+}
+.cat-enrich-btn:hover{background:rgba(255,107,0,0.12);transform:translateY(-1px)}
+.cat-enrich-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+
+/* Image Enhance Button */
+.img-enhance-btn{
+  position:absolute;bottom:4px;right:4px;width:28px;height:28px;
+  border-radius:50%;border:none;background:var(--accent);color:#fff;
+  font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:opacity 0.2s;
+}
+.cat-img-thumb:hover .img-enhance-btn{opacity:1}
 
 /* Status banners */
 .cat-status{
@@ -1110,6 +1326,113 @@ body::before{
   .step-label{display:none}
   .step-progress{gap:4px}
   .login-container{padding:24px 16px}
+  /* SNP pros/cons — collapse to 1 column */
+  .snp-pros-cons{grid-template-columns:1fr;gap:8px}
+  /* Page top padding reduction */
+  .verify-page,.otp-page,.login-page{padding-top:60px}
+  .details-page{padding-top:60px}
+  .dashboard-page{padding-top:56px}
+  /* Touch-friendly buttons — minimum 44px height */
+  .cat-action-btns button{padding:12px 18px;font-size:14px;min-height:44px}
+  .dash-nav-item{padding:10px 14px;font-size:13px;min-height:44px;display:flex;align-items:center}
+  .snp-select-btn{padding:12px;min-height:44px}
+  .doc-type-btn{padding:10px 14px;min-height:44px}
+  /* Font minimum — no 11px on mobile */
+  .detail-item .label{font-size:12px}
+  .cat-form-row label{font-size:13px}
+  /* Product card layout on mobile */
+  .product-card .prod-prices{text-align:left;margin-top:4px}
+  .product-card .product-actions{margin-left:0;margin-top:8px}
+}
+
+/* ═══ Language Carousel (mobile only) ═══ */
+.lang-carousel{display:none}
+@media(max-width:600px){
+  .lang-grid{display:none!important}
+  .lang-carousel{
+    display:flex;flex-direction:column;align-items:center;gap:16px;width:100%;
+  }
+  .carousel-card{
+    width:100%;max-width:300px;background:var(--bg3);border:2px solid var(--accent);
+    border-radius:20px;padding:28px 20px;text-align:center;
+    transition:opacity 0.3s,transform 0.3s;
+  }
+  .carousel-card .native{font-size:32px;font-weight:700;margin-bottom:4px}
+  .carousel-card .english{font-size:16px;color:var(--text2);margin-bottom:16px}
+  .carousel-card .select-btn{
+    padding:12px 28px;border-radius:12px;border:none;
+    background:var(--accent);color:#fff;font-size:15px;font-weight:600;
+    cursor:pointer;font-family:'Noto Sans',sans-serif;
+  }
+  .carousel-nav{display:flex;align-items:center;gap:16px}
+  .carousel-arrow{
+    width:40px;height:40px;border-radius:50%;border:2px solid var(--bg4);
+    background:var(--bg3);cursor:pointer;font-size:18px;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Noto Sans',sans-serif;color:var(--text);
+  }
+  .carousel-arrow:hover{border-color:var(--accent);background:rgba(255,107,0,0.08)}
+  .carousel-dots{display:flex;gap:6px}
+  .carousel-dot{width:8px;height:8px;border-radius:50%;background:var(--bg4);transition:all 0.3s}
+  .carousel-dot.active{background:var(--accent);width:20px;border-radius:4px}
+  .carousel-chips{
+    display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:8px;
+  }
+  .carousel-chip{
+    padding:8px 14px;border-radius:10px;border:1.5px solid var(--bg4);
+    background:var(--bg3);cursor:pointer;font-size:14px;font-weight:600;
+    font-family:'Noto Sans',sans-serif;color:var(--text);transition:all 0.2s;
+  }
+  .carousel-chip:hover,.carousel-chip.active{border-color:var(--accent);background:rgba(255,107,0,0.08)}
+}
+
+/* ═══ Tablet breakpoint ═══ */
+@media(max-width:768px){
+  .dashboard-container{padding:16px 16px 40px}
+  .stats-row{gap:12px}
+  .lang-page{max-width:100%}
+}
+
+/* ═══ Small phone (360px — dominant in India) ═══ */
+@media(max-width:360px){
+  .page{padding:14px}
+  .lang-grid{grid-template-columns:repeat(2,1fr);gap:8px}
+  .lang-btn{padding:16px 8px;min-height:72px}
+  .lang-btn .native{font-size:18px}
+  .lang-btn .english{font-size:11px}
+  .lang-page .hero h1{font-size:20px}
+  .lang-page .hero p{font-size:13px}
+  .lang-page .hero .logo-big{font-size:16px;padding:8px 16px}
+  .verify-page,.otp-page,.details-page,.login-page{padding-top:50px}
+  .dashboard-page{padding-top:48px}
+  .header-bar{padding:8px 12px}
+  .header-bar .logo-sm{font-size:14px}
+  .ai-bubble{padding:14px 16px}
+  .ai-bubble .msg{font-size:13px}
+  .method-tab{padding:12px 4px}
+  .method-tab .icon{font-size:20px}
+  .method-tab .label{font-size:12px}
+  .otp-inputs input{width:40px;height:50px;font-size:20px}
+  .otp-inputs{gap:6px}
+  .submit-btn{padding:12px 20px;font-size:14px}
+  .mic-btn{width:50px;height:50px}
+  .mic-btn svg{width:20px;height:20px}
+  .role-card{padding:20px 14px;gap:10px}
+  .role-card .role-icon{width:48px;height:48px;font-size:20px}
+  .role-card .role-title{font-size:15px}
+  .role-card .role-desc{font-size:13px}
+  .stat-card .stat-value{font-size:20px}
+  .stat-card{padding:12px}
+  .detail-card{padding:14px 16px}
+  .snp-match-card{padding:14px}
+  .snp-match-card .snp-name{font-size:14px}
+  .cat-section-header{padding:12px 14px}
+  .cat-form-row input,.cat-form-row textarea,.cat-form-row select{padding:10px;font-size:13px}
+  .product-card{padding:12px}
+  .product-card .prod-thumb{width:44px;height:44px}
+  .cat-img-thumb{width:56px;height:56px}
+  .step-dot{width:24px;height:24px;font-size:10px}
+  .step-line{width:10px}
 }
 </style>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
@@ -1149,6 +1472,20 @@ body::before{
       <p class="sub">Choose your preferred language to get started</p>
     </div>
     <div class="lang-grid" id="langGrid"></div>
+    <!-- Mobile Language Carousel (visible < 600px via CSS) -->
+    <div class="lang-carousel" id="langCarousel">
+      <div class="carousel-card" id="carouselCard">
+        <div class="native" id="carouselNative"></div>
+        <div class="english" id="carouselEnglish"></div>
+        <button class="select-btn" id="carouselSelectBtn" onclick="carouselSelect()">Select</button>
+      </div>
+      <div class="carousel-nav">
+        <button class="carousel-arrow" onclick="carouselPrev()">◀</button>
+        <div class="carousel-dots" id="carouselDots"></div>
+        <button class="carousel-arrow" onclick="carouselNext()">▶</button>
+      </div>
+      <div class="carousel-chips" id="carouselChips"></div>
+    </div>
   </div>
 </div>
 
@@ -1160,6 +1497,53 @@ body::before{
       <p id="roleSubtitle">Choose how you'd like to use the platform</p>
     </div>
     <div class="role-grid" id="roleGrid"></div>
+  </div>
+</div>
+
+<!-- ═══ MODE PICKER: Voice vs Form ═══ -->
+<div class="page" id="pageModePicker">
+  <div class="mode-picker">
+    <div class="mode-hero">
+      <h2 id="modeTitle">How would you like to proceed?</h2>
+      <p id="modeSubtitle">Choose the way that's easiest for you</p>
+    </div>
+    <div class="mode-grid">
+      <div class="mode-card recommended" onclick="startVoiceMode()">
+        <div class="mode-icon">🎤</div>
+        <div class="mode-title" id="modeVoiceTitle">Voice Mode</div>
+        <div class="mode-desc" id="modeVoiceDesc">Just talk — I'll guide you through everything step by step using voice</div>
+      </div>
+      <div class="mode-card" onclick="startFormMode()">
+        <div class="mode-icon">📝</div>
+        <div class="mode-title" id="modeFormTitle">Form Mode</div>
+        <div class="mode-desc" id="modeFormDesc">Fill forms manually with AI assistance and voice input on each field</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ VOICE JOURNEY PAGE ═══ -->
+<div class="page" id="pageVoiceJourney">
+  <div class="voice-journey">
+    <div class="vj-step-indicator" id="vjStepIndicator"></div>
+    <div class="vj-phase-label" id="vjPhaseLabel">Registration</div>
+    <div class="vj-transcript" id="vjTranscript"></div>
+    <div class="vj-controls" id="vjControls">
+      <button class="vj-mic-btn" id="vjMicBtn" onclick="vjToggleRecording()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+          <line x1="12" y1="19" x2="12" y2="23"/>
+          <line x1="8" y1="23" x2="16" y2="23"/>
+        </svg>
+      </button>
+      <div class="vj-mic-hint" id="vjMicHint">Tap to speak</div>
+      <div class="vj-action-row" id="vjActionRow"></div>
+      <button class="vj-switch-mode" onclick="switchToFormMode()" id="vjSwitchBtn">Switch to form mode →</button>
+    </div>
+    <!-- Hidden file inputs for photo capture in voice mode -->
+    <input type="file" accept="image/*" capture="environment" id="vjCameraInput" style="display:none" onchange="vjHandlePhoto(event)">
+    <input type="file" accept="image/*" id="vjGalleryInput" style="display:none" onchange="vjHandlePhoto(event)">
   </div>
 </div>
 
@@ -1436,6 +1820,42 @@ const I18N = {
     roleSnpDesc: 'Manage your assigned MSEs, catalogues and incentive claims',
     roleNsic: 'NSIC Official',
     roleNsicDesc: 'Verify claims, monitor MSE onboarding, and generate reports',
+    // Mode picker
+    modeTitle: 'How would you like to proceed?',
+    modeSubtitle: "Choose the way that's easiest for you",
+    modeVoiceTitle: 'Voice Mode',
+    modeVoiceDesc: "Just talk — I'll guide you through everything step by step using voice",
+    modeFormTitle: 'Form Mode',
+    modeFormDesc: 'Fill forms manually with AI assistance and voice input on each field',
+    modeVoicePrompt: "How would you like to proceed? You can talk to me using voice mode, or fill the forms yourself.",
+    // Voice Journey
+    vjPhaseReg: 'Registration',
+    vjPhaseDocs: 'Documents',
+    vjPhaseCat: 'Catalogue',
+    vjPhaseSnp: 'SNP Match',
+    vjTapToSpeak: 'Tap to speak',
+    vjListening: 'Listening... tap to stop',
+    vjDidntCatch: "Sorry, I didn't catch that. Please try again.",
+    vjSkip: 'Skip',
+    vjCamera: 'Camera',
+    vjGallery: 'Gallery',
+    vjAddMore: 'Add another product',
+    vjFindSNP: 'Find platforms',
+    vjViewDetails: 'View in form',
+    vjCorrect: 'Correct',
+    vjEdit: 'Edit',
+    vjProductSummary: 'Product Summary',
+    vjWhatToCorrect: 'What would you like to correct? Tell me the field and the new value.',
+    vjVerifying: 'Verifying your Udyam number...',
+    vjOtpSent: 'Verified! OTP sent to {mobile}. Please tell me the code.',
+    vjVerifyFailed: "Could not verify that number. Let me ask for your mobile number instead.",
+    vjNetworkError: "Network error. Let's try your mobile number instead.",
+    vjOtpWrong: "That OTP didn't match. Please try again.",
+    vjInvalidMobile: "That doesn't seem like a valid mobile number. Please tell me your 10-digit mobile number.",
+    vjInvalidOTP: 'I need a 6-digit code. Please tell me the OTP again.',
+    vjPhotoAnalyzed: "I've analyzed the photo and extracted some details.",
+    vjPhotoError: "Couldn't analyze the photo, but let's continue.",
+    vjNoSNP: 'No matching platforms found. You can switch to form mode to search manually.',
     resumeTitle: 'Welcome back!',
     resumeMsg: 'You have a saved session. Resume from where you left off?',
     resumeStep: 'Last step: {step}',
@@ -1625,6 +2045,16 @@ const I18N = {
     barcodeFound: 'Barcode found',
     barcodeClose: 'Close Scanner',
     continueBtn: 'Continue',
+    // LQI & Enrichment
+    lqiTitle: 'Listing Quality Index',
+    lqiPerfect: 'Your listing is complete! Great job.',
+    lqiGood: 'Good listing! Add a few more details to improve it.',
+    lqiNeedsWork: 'Add more details to improve discoverability on ONDC.',
+    catEnrich: 'AI Enrich Listing',
+    catEnriching: 'Enriching...',
+    catEnriched: 'AI enriched your listing!',
+    catEnhance: 'Enhance Photo',
+    catEnhancing: 'Enhancing...',
   },
   hi: {
     aiName: 'एआई सहायक',
@@ -1678,6 +2108,42 @@ const I18N = {
     roleSnpDesc: 'आपके निर्धारित MSEs, सूचीपत्रों और प्रोत्साहन दावों का प्रबंधन करें।',
     roleNsic: 'एन.एस.आई.सी. आधिकारिक',
     roleNsicDesc: 'दावों का सत्यापन करें, MSE ऑनबोर्डिंग पर निगरानी रखें, और रिपोर्ट तैयार करें।',
+    // Mode picker
+    modeTitle: 'आप कैसे आगे बढ़ना चाहेंगे?',
+    modeSubtitle: 'आपके लिए जो सबसे आसान हो वह तरीका चुनें',
+    modeVoiceTitle: 'वॉइस मोड',
+    modeVoiceDesc: 'बस बोलिए — मैं आपको हर कदम पर आवाज़ से गाइड करूँगा',
+    modeFormTitle: 'फ़ॉर्म मोड',
+    modeFormDesc: 'AI सहायता और वॉइस इनपुट के साथ फ़ॉर्म भरें',
+    modeVoicePrompt: 'आप कैसे आगे बढ़ना चाहेंगे? आप मुझसे वॉइस मोड में बात कर सकते हैं, या फ़ॉर्म खुद भर सकते हैं।',
+    // Voice Journey
+    vjPhaseReg: 'पंजीकरण',
+    vjPhaseDocs: 'कागज़ात',
+    vjPhaseCat: 'कैटलॉग',
+    vjPhaseSnp: 'प्लेटफॉर्म',
+    vjTapToSpeak: 'बोलने के लिए दबाएं',
+    vjListening: 'सुन रहा हूँ... रुकने के लिए दबाएं',
+    vjDidntCatch: 'माफ़ कीजिए, मैं समझ नहीं पाया। कृपया फिर से बोलिए।',
+    vjSkip: 'छोड़ें',
+    vjCamera: 'कैमरा',
+    vjGallery: 'गैलरी',
+    vjAddMore: 'एक और उत्पाद जोड़ें',
+    vjFindSNP: 'प्लेटफॉर्म ढूंढें',
+    vjViewDetails: 'फॉर्म में देखें',
+    vjCorrect: 'सही है',
+    vjEdit: 'बदलें',
+    vjProductSummary: 'उत्पाद सारांश',
+    vjWhatToCorrect: 'क्या बदलना चाहेंगे? फ़ील्ड का नाम और नई वैल्यू बताइए।',
+    vjVerifying: 'आपका उद्यम नंबर वेरिफ़ाई कर रहा हूँ...',
+    vjOtpSent: 'वेरिफ़ाई हो गया! {mobile} पर OTP भेज दिया। कृपया कोड बताइए।',
+    vjVerifyFailed: 'वह नंबर वेरिफ़ाई नहीं हो पाया। चलिए मोबाइल नंबर से करते हैं।',
+    vjNetworkError: 'नेटवर्क एरर। चलिए मोबाइल नंबर से करते हैं।',
+    vjOtpWrong: 'OTP मैच नहीं हुआ। कृपया फिर से बताइए।',
+    vjInvalidMobile: 'यह सही मोबाइल नंबर नहीं लग रहा। कृपया 10 अंकों का मोबाइल नंबर बताइए।',
+    vjInvalidOTP: 'मुझे 6 अंकों का कोड चाहिए। कृपया OTP फिर से बताइए।',
+    vjPhotoAnalyzed: 'फोटो से जानकारी निकाल ली है।',
+    vjPhotoError: 'फोटो से जानकारी नहीं मिली, लेकिन चलिए आगे बढ़ते हैं।',
+    vjNoSNP: 'कोई मैचिंग प्लेटफॉर्म नहीं मिला। आप फॉर्म मोड में जाकर मैन्युअली खोज सकते हैं।',
     resumeTitle: 'वापस स्वागत है!',
     resumeMsg: 'आपका सत्र सहेजा गया है। जहाँ आपने छोड़ा था, वहाँ से पुनः आरंभ करें?',
     resumeStep: 'अंतिम चरण:',
@@ -4349,6 +4815,7 @@ let nsicDemoOtp = '';
 function init() {
   buildLangGrid();
   buildLangSwitcher();
+  buildLangCarousel();
   setupOTPInputs();
   // Enter key on main input
   document.getElementById('mainInput').addEventListener('keydown', e => {
@@ -4374,6 +4841,96 @@ function buildLangSwitcher() {
 }
 
 // ═══════════════════════════════════════════════════════════
+// LANGUAGE CAROUSEL (mobile only, <600px)
+// ═══════════════════════════════════════════════════════════
+let _carouselIdx = 0;
+let _carouselTimer = null;
+
+function buildLangCarousel() {
+  // Only build if the carousel container exists
+  const carousel = document.getElementById('langCarousel');
+  if (!carousel) return;
+
+  // Build dots
+  const dots = document.getElementById('carouselDots');
+  dots.innerHTML = LANGUAGES.map((_, i) =>
+    `<div class="carousel-dot${i === 0 ? ' active' : ''}" onclick="carouselGoTo(${i})"></div>`
+  ).join('');
+
+  // Build chips (small native-script buttons)
+  const chips = document.getElementById('carouselChips');
+  chips.innerHTML = LANGUAGES.map((l, i) =>
+    `<div class="carousel-chip${i === 0 ? ' active' : ''}" onclick="carouselGoTo(${i})">${l.native.substring(0, 2)}</div>`
+  ).join('');
+
+  // Auto-detect device language
+  const browserLang = (navigator.language || '').split('-')[0];
+  const matchIdx = LANGUAGES.findIndex(l => l.code === browserLang);
+  if (matchIdx >= 0) _carouselIdx = matchIdx;
+
+  carouselRender();
+  carouselStartAuto();
+}
+
+function carouselRender() {
+  const lang = LANGUAGES[_carouselIdx];
+  if (!lang) return;
+  document.getElementById('carouselNative').textContent = lang.native;
+  document.getElementById('carouselEnglish').textContent = lang.label;
+  document.getElementById('carouselSelectBtn').textContent =
+    lang.code === 'hi' ? 'इसे चुनें' :
+    lang.code === 'ta' ? 'இதைத் தேர்ந்தெடுக்கவும்' :
+    lang.code === 'te' ? 'దీన్ని ఎంచుకోండి' :
+    lang.code === 'bn' ? 'এটি নির্বাচন করুন' :
+    lang.code === 'mr' ? 'हे निवडा' :
+    lang.code === 'gu' ? 'આ પસંદ કરો' :
+    lang.code === 'kn' ? 'ಇದನ್ನು ಆಯ್ಕೆಮಾಡಿ' :
+    lang.code === 'ml' ? 'ഇത് തിരഞ്ഞെടുക്കുക' :
+    lang.code === 'pa' ? 'ਇਹ ਚੁਣੋ' :
+    lang.code === 'od' ? 'ଏହାକୁ ବାଛନ୍ତୁ' :
+    lang.code === 'as' ? 'এইটো বাছক' :
+    'Select this';
+  // Update dots
+  document.querySelectorAll('.carousel-dot').forEach((d, i) => d.classList.toggle('active', i === _carouselIdx));
+  document.querySelectorAll('.carousel-chip').forEach((c, i) => c.classList.toggle('active', i === _carouselIdx));
+}
+
+function carouselNext() {
+  _carouselIdx = (_carouselIdx + 1) % LANGUAGES.length;
+  carouselRender();
+  carouselStartAuto();
+}
+
+function carouselPrev() {
+  _carouselIdx = (_carouselIdx - 1 + LANGUAGES.length) % LANGUAGES.length;
+  carouselRender();
+  carouselStartAuto();
+}
+
+function carouselGoTo(idx) {
+  _carouselIdx = idx;
+  carouselRender();
+  carouselStartAuto();
+}
+
+function carouselSelect() {
+  carouselStopAuto();
+  selectLanguage(LANGUAGES[_carouselIdx].code);
+}
+
+function carouselStartAuto() {
+  carouselStopAuto();
+  _carouselTimer = setInterval(() => {
+    _carouselIdx = (_carouselIdx + 1) % LANGUAGES.length;
+    carouselRender();
+  }, 4000);
+}
+
+function carouselStopAuto() {
+  if (_carouselTimer) { clearInterval(_carouselTimer); _carouselTimer = null; }
+}
+
+// ═══════════════════════════════════════════════════════════
 // LANGUAGE
 // ═══════════════════════════════════════════════════════════
 function selectLanguage(code) {
@@ -4392,6 +4949,8 @@ function switchLanguage(code) {
   // Re-render whatever page is active
   const activePage = document.querySelector('.page.active');
   if (activePage.id === 'pageRole') renderRolePage();
+  else if (activePage.id === 'pageModePicker') renderModePicker();
+  else if (activePage.id === 'pageVoiceJourney') { /* voice journey handles its own language */ }
   else if (activePage.id === 'page2') {
     initVerificationPage();
     // Restart TTS in the new language
@@ -4428,7 +4987,7 @@ function goToPage(id) {
 
   const header = document.getElementById('headerBar');
   const stepProgress = document.getElementById('stepProgress');
-  const hideHeaderPages = ['page1', 'pageRole'];
+  const hideHeaderPages = ['page1', 'pageRole', 'pageModePicker'];
   const dashPages = ['pageSnpDashboard', 'pageNsicDashboard'];
 
   if (hideHeaderPages.includes(id)) {
@@ -5562,6 +6121,28 @@ function continueToSNPMatch() {
 // ═══════════════════════════════════════════════════════════
 // PAGE 5: SNP Matching
 // ═══════════════════════════════════════════════════════════
+function renderFactorScores(factors) {
+  if (!factors || typeof factors !== 'object') return '';
+  const labels = {
+    domain: { en: 'Domain', icon: '🏷' },
+    geography: { en: 'Geography', icon: '📍' },
+    readiness: { en: 'Readiness', icon: '💡' },
+    success_rate: { en: 'Success Rate', icon: '📈' },
+    capacity: { en: 'Capacity', icon: '📦' },
+    language: { en: 'Language', icon: '🗣' },
+  };
+  const bars = Object.entries(factors).map(([key, val]) => {
+    const info = labels[key] || { en: key, icon: '•' };
+    const pct = Math.round((val || 0) * 100);
+    const cls = pct >= 70 ? 'high' : pct >= 40 ? 'medium' : 'low';
+    return `<div class="snp-factor">
+      <div class="factor-label"><span>${info.icon} ${info.en}</span><span>${pct}%</span></div>
+      <div class="factor-bar"><div class="factor-fill ${cls}" style="width:${pct}%"></div></div>
+    </div>`;
+  }).join('');
+  return `<div class="snp-factors">${bars}</div>`;
+}
+
 function renderSNPMatchPage() {
   const container = document.getElementById('snpMatchContainer');
   const matches = pipelineData?.matches || [];
@@ -5588,6 +6169,7 @@ function renderSNPMatchPage() {
             ${m.geography ? `<span class="snp-tag">📍 ${escHtml(Array.isArray(m.geography) ? m.geography.join(', ') : m.geography)}</span>` : ''}
             ${m.language_support ? `<span class="snp-tag">🗣 ${escHtml(Array.isArray(m.language_support) ? m.language_support.join(', ') : m.language_support)}</span>` : ''}
           </div>
+          ${renderFactorScores(m.factor_scores)}
           <div class="snp-pros-cons">
             <div class="snp-pros">
               ${(Array.isArray(pros) ? pros : [pros]).slice(0, 3).map(p => `<div class="pro-item">${escHtml(String(p))}</div>`).join('')}
@@ -6001,6 +6583,17 @@ function renderCataloguePage() {
               <input type="text" id="catF_additives_info" placeholder="e.g. No artificial colours or preservatives">
             </div>
           </div>
+          <!-- FSSAI Compliance Helper -->
+          <div style="margin-top:12px;padding:12px 14px;background:rgba(255,107,0,0.06);border:1px solid rgba(255,107,0,0.15);border-radius:12px">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+              <span style="font-size:16px">🛡️</span>
+              <strong style="font-size:13px;color:var(--accent)">${t('fssaiHelper') || 'FSSAI Compliance Helper'}</strong>
+            </div>
+            <div style="font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:8px">
+              ${t('fssaiHelperDesc') || 'All packaged food sold on ONDC requires FSSAI compliance. Missing fields are highlighted below.'}
+            </div>
+            <div id="fssaiChecklist" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+          </div>
         </div>
       </div>
 
@@ -6087,6 +6680,22 @@ function renderCataloguePage() {
 
     </div>
 
+    <!-- Listing Quality Index -->
+    <div class="lqi-widget" id="lqiWidget">
+      <div class="lqi-header">
+        <h4>📊 ${t('lqiTitle') || 'Listing Quality Index'}</h4>
+        <span class="lqi-score-badge" id="lqiScoreBadge">0</span>
+      </div>
+      <div class="lqi-bar"><div class="lqi-bar-fill" id="lqiBarFill" style="width:0%"></div></div>
+      <div class="lqi-factors" id="lqiFactors"></div>
+      <div class="lqi-tip" id="lqiTip"></div>
+    </div>
+
+    <!-- AI Enrich Button -->
+    <button class="cat-enrich-btn" id="catEnrichBtn" onclick="catalogueEnrich()" style="margin-bottom:12px">
+      ✨ ${t('catEnrich') || 'AI Enrich Listing'}
+    </button>
+
     <!-- Add / Save Product Button -->
     <button class="cat-save-btn" id="catSaveBtn" onclick="addCatalogueProduct()">
       + ${t('catAddProduct') || 'Add Product to Catalogue'}
@@ -6105,6 +6714,8 @@ function renderCataloguePage() {
   renderCatImageStrip();
   // Auto-fill FSSAI from doc verifications (if scanned on Page 2)
   setTimeout(() => autofillFromDocVerifications(), 500);
+  // Attach LQI listeners for real-time scoring
+  setTimeout(() => attachLQIListeners(), 600);
   // Speak AI narration
   speakCatalogueNarration();
 }
@@ -6218,7 +6829,8 @@ async function catalogueExtract() {
   }
 }
 
-function cataloguePrefillForm(fields, extractedKeys) {
+function cataloguePrefillForm(fields, extractedKeys, source = 'ai') {
+  // source: 'voice', 'photo', 'ocr', 'ai', 'lookup'
   const fieldMap = {
     name: 'catF_name', generic_name: 'catF_generic_name',
     short_description: 'catF_short_description', long_description: 'catF_long_description',
@@ -6240,14 +6852,29 @@ function cataloguePrefillForm(fields, extractedKeys) {
     model_name: 'catF_model_name', specifications: 'catF_specifications',
   };
 
+  const sourceIcons = { voice: '🎤', photo: '📷', ocr: '📄', ai: '✨', lookup: '📊' };
   for (const [key, elId] of Object.entries(fieldMap)) {
     const val = fields[key];
     if (val === null || val === undefined) continue;
     const el = document.getElementById(elId);
     if (!el) continue;
     el.value = String(val);
-    if (extractedKeys.includes(key)) el.classList.add('ai-filled');
+    if (extractedKeys.includes(key)) {
+      el.classList.add('ai-filled');
+      if (source !== 'ai') el.classList.add(`source-${source}`);
+      el.dataset.source = sourceIcons[source] || '✨';
+      // Add source indicator to label
+      const label = el.parentElement?.querySelector('label');
+      if (label && !label.querySelector('.source-indicator')) {
+        const indicator = document.createElement('span');
+        indicator.className = `source-indicator ${source}`;
+        indicator.textContent = `${sourceIcons[source] || '✨'} ${source}`;
+        label.appendChild(indicator);
+      }
+    }
   }
+  // Update LQI if available
+  if (typeof updateLQI === 'function') updateLQI();
 }
 
 // ── Catalogue: AI Follow-up ─────────────────────────────
@@ -6343,11 +6970,35 @@ function renderCatImageStrip() {
   else if (area) area.style.display = '';
 
   strip.innerHTML = _catCurrentImages.map(img => `
-    <div class="cat-img-thumb">
+    <div class="cat-img-thumb" style="position:relative">
       <img src="${img.data}" alt="Product">
       <button class="img-remove" onclick="removeCatImage(${img.id})">✕</button>
+      <button class="img-enhance-btn" onclick="enhanceCatImage(${img.id})" title="${t('catEnhance') || 'Enhance Photo'}">✨</button>
     </div>
   `).join('');
+}
+
+async function enhanceCatImage(imgId) {
+  const img = _catCurrentImages.find(i => i.id === imgId);
+  if (!img) return;
+  showCatStatus('loading', t('catEnhancing') || 'Enhancing photo...');
+  try {
+    const resp = await fetch('/api/enhance-image', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ image_base64: img.data.split(',')[1] || img.data, mime_type: 'image/jpeg' }),
+    });
+    const data = await resp.json();
+    if (data.status === 'success' && data.enhanced_image_base64) {
+      img.data = 'data:image/jpeg;base64,' + data.enhanced_image_base64;
+      renderCatImageStrip();
+      showCatStatus('success', '✨ ' + (t('catEnhanced') || 'Photo enhanced!'));
+    } else {
+      showCatStatus('error', data.message || 'Enhancement failed.');
+    }
+  } catch (e) {
+    showCatStatus('error', 'Image enhancement failed.');
+  }
 }
 
 // ── Catalogue: Status Messages ──────────────────────────
@@ -6478,17 +7129,67 @@ function closeBarcodeScanner() {
   if (overlay) overlay.remove();
 }
 
-// ── Catalogue: Auto-fill FSSAI from doc verification ────
+// ── Catalogue: Smart Defaults from verification pipeline ────
 function autofillFromDocVerifications() {
-  if (!_docVerifications || _docVerifications.length === 0) return;
-  const fssaiDoc = _docVerifications.find(d => d.type === 'fssai_license');
-  if (fssaiDoc && fssaiDoc.extracted) {
-    const fssaiNum = fssaiDoc.extracted.fssai_number;
-    if (fssaiNum) {
-      const field = document.getElementById('catF_fssai');
-      if (field && !field.value) {
-        field.value = fssaiNum;
-        field.classList.add('ai-filled');
+  // 1. Auto-fill FSSAI from doc verification
+  if (_docVerifications && _docVerifications.length > 0) {
+    const fssaiDoc = _docVerifications.find(d => d.type === 'fssai_license');
+    if (fssaiDoc && fssaiDoc.extracted) {
+      const fssaiNum = fssaiDoc.extracted.fssai_number;
+      if (fssaiNum) {
+        const field = document.getElementById('catF_fssai_license');
+        if (field && !field.value) {
+          field.value = fssaiNum;
+          field.classList.add('ai-filled');
+        }
+      }
+    }
+  }
+
+  // 2. Auto-fill manufacturer name & address from enterpriseData (Udyam/GST)
+  if (enterpriseData) {
+    const mfgName = document.getElementById('catF_manufacturer_name');
+    if (mfgName && !mfgName.value && enterpriseData.name) {
+      mfgName.value = enterpriseData.name;
+      mfgName.classList.add('ai-filled');
+    }
+
+    const addr = enterpriseData.address || {};
+    const mfgAddr = document.getElementById('catF_manufacturer_address');
+    if (mfgAddr && !mfgAddr.value) {
+      const parts = [addr.building, addr.street, addr.city, addr.district, addr.state, addr.pincode].filter(Boolean);
+      if (parts.length > 0) {
+        mfgAddr.value = parts.join(', ');
+        mfgAddr.classList.add('ai-filled');
+      }
+    }
+
+    // Auto-fill country of origin
+    const country = document.getElementById('catF_country_of_origin');
+    if (country && !country.value) {
+      country.value = 'India';
+      country.classList.add('ai-filled');
+    }
+  }
+
+  // 3. Auto-fill from voice journey data if available
+  if (window._vjBusinessData) {
+    const vj = window._vjBusinessData;
+    const mfgName = document.getElementById('catF_manufacturer_name');
+    if (mfgName && !mfgName.value && vj.business_name) {
+      mfgName.value = vj.business_name;
+      mfgName.classList.add('ai-filled');
+    }
+    const mfgAddr = document.getElementById('catF_manufacturer_address');
+    if (mfgAddr && !mfgAddr.value && vj.location) {
+      mfgAddr.value = vj.location;
+      mfgAddr.classList.add('ai-filled');
+    }
+    if (vj.fssai) {
+      const fssaiField = document.getElementById('catF_fssai_license');
+      if (fssaiField && !fssaiField.value) {
+        fssaiField.value = vj.fssai;
+        fssaiField.classList.add('ai-filled');
       }
     }
   }
@@ -6496,6 +7197,182 @@ function autofillFromDocVerifications() {
 
 
 // ── Catalogue: Collect Form Data ────────────────────────
+// ── Listing Quality Index (LQI) ─────────────────────────
+const LQI_FACTORS = [
+  { id: 'name', label: 'Product Name', weight: 15, check: () => !!val('catF_name') },
+  { id: 'description', label: 'Description', weight: 15, check: () => (val('catF_short_description') || '').length >= 20 },
+  { id: 'price', label: 'Price', weight: 15, check: () => !!val('catF_selling_price') && !!val('catF_mrp') },
+  { id: 'images', label: 'Photos', weight: 20, check: () => (_catCurrentImages || []).length >= 1, bonus: () => (_catCurrentImages || []).length >= 3 ? 5 : 0 },
+  { id: 'category', label: 'Category', weight: 10, check: () => !!val('catF_category') },
+  { id: 'manufacturer', label: 'Manufacturer', weight: 10, check: () => !!val('catF_manufacturer_name') },
+  { id: 'shipping', label: 'Shipping Info', weight: 8, check: () => !!val('catF_time_to_ship') },
+  { id: 'quantity', label: 'Stock Info', weight: 7, check: () => !!val('catF_available_quantity') },
+];
+
+function val(id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; }
+
+function calculateLQI() {
+  let score = 0;
+  const results = [];
+  for (const f of LQI_FACTORS) {
+    const done = f.check();
+    if (done) {
+      score += f.weight;
+      if (f.bonus) score += f.bonus();
+    }
+    results.push({ ...f, done });
+  }
+  return { score: Math.min(100, score), factors: results };
+}
+
+function updateLQI() {
+  const widget = document.getElementById('lqiWidget');
+  if (!widget) return;
+  const { score, factors } = calculateLQI();
+
+  // Score badge
+  const badge = document.getElementById('lqiScoreBadge');
+  badge.textContent = score;
+  const cls = score >= 70 ? 'high' : score >= 40 ? 'medium' : 'low';
+  badge.className = `lqi-score-badge ${cls}`;
+  widget.className = `lqi-widget score-${cls}`;
+
+  // Bar
+  const bar = document.getElementById('lqiBarFill');
+  bar.style.width = score + '%';
+  bar.className = `lqi-bar-fill ${cls}`;
+
+  // Factors
+  const container = document.getElementById('lqiFactors');
+  container.innerHTML = factors.map(f => {
+    const icon = f.done ? '✓' : '✗';
+    const type = f.done ? 'done' : 'missing';
+    return `<span class="lqi-factor ${type}" ${!f.done ? `onclick="focusField('${f.id}')"` : ''}>${icon} ${f.label}</span>`;
+  }).join('');
+
+  // Tip
+  const tip = document.getElementById('lqiTip');
+  const missing = factors.filter(f => !f.done);
+  if (missing.length === 0) {
+    tip.textContent = '🎉 ' + (t('lqiPerfect') || 'Your listing is complete! Great job.');
+  } else if (score >= 70) {
+    tip.textContent = '💡 ' + (t('lqiGood') || `Add ${missing[0].label.toLowerCase()} to improve your listing further.`);
+  } else {
+    tip.textContent = '⚡ ' + (t('lqiNeedsWork') || `Add ${missing[0].label.toLowerCase()} and ${missing.length - 1} more fields to improve discoverability.`);
+  }
+}
+
+function focusField(factorId) {
+  const fieldMap = {
+    name: 'catF_name', description: 'catF_short_description', price: 'catF_selling_price',
+    images: 'catImgArea', category: 'catF_category', manufacturer: 'catF_manufacturer_name',
+    shipping: 'catF_time_to_ship', quantity: 'catF_available_quantity',
+  };
+  // Try fieldMap first, then treat factorId as direct element ID
+  const elId = fieldMap[factorId] || factorId;
+  if (!elId) return;
+  const el = document.getElementById(elId);
+  if (!el) return;
+  // Expand the parent section if collapsed
+  const section = el.closest('.cat-section-body');
+  if (section && !section.classList.contains('open')) {
+    section.classList.add('open');
+  }
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  el.focus?.();
+  el.style.outline = '2px solid var(--accent)';
+  setTimeout(() => { el.style.outline = ''; }, 2000);
+}
+
+// ── FSSAI Compliance Checklist ──────────────────────────
+function updateFSSAIChecklist() {
+  const checklist = document.getElementById('fssaiChecklist');
+  if (!checklist) return;
+  const items = [
+    { id: 'catF_fssai_license', label: 'FSSAI License', required: true },
+    { id: 'catF_veg_nonveg', label: 'Veg/Non-Veg', required: true },
+    { id: 'catF_ingredients', label: 'Ingredients', required: true },
+    { id: 'catF_nutritional_info', label: 'Nutritional Info', required: false },
+    { id: 'catF_additives_info', label: 'Additives', required: false },
+    { id: 'catF_manufacturer_name', label: 'Manufacturer', required: true },
+    { id: 'catF_mfg_date', label: 'Mfg Date', required: false },
+    { id: 'catF_country_of_origin', label: 'Origin', required: true },
+  ];
+  checklist.innerHTML = items.map(item => {
+    const el = document.getElementById(item.id);
+    const filled = el && el.value.trim();
+    const icon = filled ? '✓' : (item.required ? '✗' : '○');
+    const cls = filled ? 'done' : (item.required ? 'missing' : '');
+    return `<span class="lqi-factor ${cls}" onclick="focusField('${item.id}')" style="cursor:pointer">${icon} ${item.label}${item.required ? ' *' : ''}</span>`;
+  }).join('');
+}
+
+// Attach LQI listeners to form fields for real-time updates
+function attachLQIListeners() {
+  const ids = ['catF_name', 'catF_short_description', 'catF_selling_price', 'catF_mrp',
+    'catF_category', 'catF_manufacturer_name', 'catF_time_to_ship', 'catF_available_quantity',
+    'catF_fssai_license', 'catF_veg_nonveg', 'catF_ingredients', 'catF_nutritional_info',
+    'catF_additives_info', 'catF_mfg_date', 'catF_country_of_origin'];
+  const handler = () => { updateLQI(); updateFSSAIChecklist(); };
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('input', handler);
+      el.addEventListener('change', handler);
+    }
+  });
+  // Initial calculation
+  setTimeout(handler, 600);
+}
+
+// ── AI Catalogue Enrichment ─────────────────────────────
+async function catalogueEnrich() {
+  const btn = document.getElementById('catEnrichBtn');
+  btn.disabled = true;
+  btn.innerHTML = '⏳ ' + (t('catEnriching') || 'Enriching...');
+
+  try {
+    const product = collectCatalogueFormData();
+    const domain = val('catF_domain') || 'ONDC:RET10';
+    const resp = await fetch('/api/enrich-product', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ product, domain, language: getLangBCP() }),
+    });
+    const data = await resp.json();
+
+    if (data.status === 'success' && data.enriched_fields) {
+      const fields = data.enriched_fields;
+      const fieldMap = {
+        short_description: 'catF_short_description', long_description: 'catF_long_description',
+        generic_name: 'catF_generic_name', category: 'catF_category', subcategory: 'catF_subcategory',
+        name: 'catF_name', brand: 'catF_brand', colour: 'catF_colour',
+      };
+      let count = 0;
+      for (const [key, elId] of Object.entries(fieldMap)) {
+        if (fields[key]) {
+          const el = document.getElementById(elId);
+          if (el && !el.value.trim()) {
+            el.value = fields[key];
+            el.classList.add('ai-filled');
+            count++;
+          }
+        }
+      }
+      showCatStatus('success', `✨ ${t('catEnriched') || `AI enriched ${count} fields!`}`);
+      updateLQI();
+    } else {
+      showCatStatus('error', data.message || 'Enrichment failed.');
+    }
+  } catch (e) {
+    console.error('Enrich error:', e);
+    showCatStatus('error', 'AI enrichment failed. Please try again.');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '✨ ' + (t('catEnrich') || 'AI Enrich Listing');
+  }
+}
+
 function collectCatalogueFormData() {
   const val = (id) => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
   const numVal = (id) => { const v = parseFloat(val(id)); return isNaN(v) ? null : v; };
@@ -6963,9 +7840,8 @@ function renderRolePage() {
 function selectRole(role) {
   currentRole = role;
   if (role === 'msme') {
-    prefetchWelcomeTTS(currentLang);
-    goToPage('page2');
-    initVerificationPage();
+    goToPage('pageModePicker');
+    renderModePicker();
   } else if (role === 'snp') {
     goToPage('pageSnpLogin');
     renderSnpLoginPage();
@@ -7909,6 +8785,1105 @@ function disableInputs(disabled) {
   document.getElementById('mainInput').disabled = disabled;
   document.getElementById('micBtn').disabled = disabled;
   document.getElementById('submitBtn').disabled = disabled;
+}
+
+// ═══════════════════════════════════════════════════════════
+// MODE PICKER (Voice vs Form)
+// ═══════════════════════════════════════════════════════════
+function renderModePicker() {
+  document.getElementById('modeTitle').textContent = t('modeTitle') || 'How would you like to proceed?';
+  document.getElementById('modeSubtitle').textContent = t('modeSubtitle') || 'Choose the way that\'s easiest for you';
+  document.getElementById('modeVoiceTitle').textContent = t('modeVoiceTitle') || 'Voice Mode';
+  document.getElementById('modeVoiceDesc').textContent = t('modeVoiceDesc') || 'Just talk — I\'ll guide you through everything step by step using voice';
+  document.getElementById('modeFormTitle').textContent = t('modeFormTitle') || 'Form Mode';
+  document.getElementById('modeFormDesc').textContent = t('modeFormDesc') || 'Fill forms manually with AI assistance and voice input on each field';
+  // Speak the mode picker prompt
+  if (TTS_SUPPORTED.includes(currentLang)) {
+    const prompt = t('modeVoicePrompt') || 'How would you like to proceed? You can talk to me using voice mode, or fill the forms yourself.';
+    speakTTS(prompt);
+  }
+}
+
+function startFormMode() {
+  prefetchWelcomeTTS(currentLang);
+  goToPage('page2');
+  initVerificationPage();
+}
+
+function startVoiceMode() {
+  voiceJourney.start();
+}
+
+function switchToFormMode() {
+  // Transfer any data collected in voice mode to the form
+  voiceJourney.transferToForm();
+  startFormMode();
+}
+
+// ═══════════════════════════════════════════════════════════
+// VOICE JOURNEY CONTROLLER — Full conversational onboarding
+// ═══════════════════════════════════════════════════════════
+
+const VJ_PHASES = [
+  { id: 'registration', label: 'Registration', labelKey: 'vjPhaseReg' },
+  { id: 'documents', label: 'Documents', labelKey: 'vjPhaseDocs' },
+  { id: 'catalogue', label: 'Catalogue', labelKey: 'vjPhaseCat' },
+  { id: 'snp_match', label: 'SNP Match', labelKey: 'vjPhaseSnp' },
+];
+
+// Voice prompts per phase/state — keys resolve via t() or fallback to English
+const VJ_PROMPTS = {
+  // Registration
+  welcome: { en: 'Welcome! I\'ll help you register your business on ONDC. Let\'s start — what is the name of your business?', hi: 'नमस्ते! मैं आपके व्यापार को ONDC पर रजिस्टर करने में मदद करूँगा। चलिए शुरू करते हैं — आपके व्यापार का नाम क्या है?' },
+  ask_business_type: { en: 'What type of products or services does your business offer?', hi: 'आपका व्यापार किस तरह के उत्पाद या सेवाएं देता है?' },
+  ask_location: { en: 'Where is your business located? Please tell me your city or village name.', hi: 'आपका व्यापार कहाँ है? अपने शहर या गाँव का नाम बताइए।' },
+  ask_udyam: { en: 'Do you have a Udyam registration number? If yes, please tell me the number. If not, say "no".', hi: 'क्या आपके पास उद्यम रजिस्ट्रेशन नंबर है? हाँ तो नंबर बताइए, नहीं तो "नहीं" बोलिए।' },
+  ask_mobile: { en: 'What is your mobile number? We\'ll send an OTP to verify it.', hi: 'आपका मोबाइल नंबर क्या है? हम OTP भेजकर वेरिफाई करेंगे।' },
+  otp_sent: { en: 'I\'ve sent an OTP to your mobile. Please tell me the 6-digit code.', hi: 'आपके मोबाइल पर OTP भेज दिया है। कृपया 6 अंकों का कोड बताइए।' },
+  otp_verified: { en: 'Great! Your identity is verified. Now let\'s look at your documents.', hi: 'बहुत अच्छा! आपकी पहचान वेरिफाई हो गई। अब कागज़ात देखते हैं।' },
+  // Documents
+  ask_gst: { en: 'Do you have a GST number? If yes, please tell me. If not, say "no" — it\'s optional.', hi: 'क्या आपके पास GST नंबर है? हाँ तो बताइए, नहीं तो "नहीं" बोलिए — यह ज़रूरी नहीं है।' },
+  ask_fssai: { en: 'Do you sell food products? If yes, do you have an FSSAI license number?', hi: 'क्या आप खाद्य पदार्थ बेचते हैं? हाँ तो FSSAI लाइसेंस नंबर बताइए।' },
+  doc_photo_prompt: { en: 'You can also take a photo of any of your certificates — I\'ll read the details automatically.', hi: 'आप अपने किसी भी सर्टिफिकेट की फोटो भी ले सकते हैं — मैं विवरण अपने आप पढ़ लूँगा।' },
+  docs_complete: { en: 'Documents done! Now let\'s add your products to the catalogue.', hi: 'कागज़ात पूरे! अब आपके उत्पाद कैटलॉग में जोड़ते हैं।' },
+  // Catalogue
+  ask_product: { en: 'What product would you like to add? Tell me about it — or take a photo and I\'ll identify it.', hi: 'आप कौन सा उत्पाद जोड़ना चाहेंगे? बताइए — या फोटो लीजिए, मैं पहचान लूँगा।' },
+  ask_price: { en: 'What price do you sell this for?', hi: 'इसकी कीमत कितनी है?' },
+  product_photo: { en: 'Can you take a photo of the product? This will help create a better listing.', hi: 'क्या आप उत्पाद की फोटो ले सकते हैं? इससे बेहतर लिस्टिंग बनेगी।' },
+  confirm_product: { en: 'Here\'s what I\'ve captured for this product. Is everything correct?', hi: 'यह रहा इस उत्पाद का विवरण। क्या सब सही है?' },
+  add_more: { en: 'Product saved! Would you like to add another product, or shall we move on to finding the best platform for you?', hi: 'उत्पाद सेव हो गया! एक और उत्पाद जोड़ना है, या आपके लिए सबसे अच्छा प्लेटफॉर्म ढूंढें?' },
+  // SNP Match
+  snp_finding: { en: 'Let me find the best ONDC platforms for your business...', hi: 'आपके व्यापार के लिए सबसे अच्छे ONDC प्लेटफॉर्म ढूँढ रहा हूँ...' },
+  snp_results: { en: 'I found {count} great platforms for you. Let me tell you about each one.', hi: 'आपके लिए {count} अच्छे प्लेटफॉर्म मिले। मैं हर एक के बारे में बताता हूँ।' },
+  snp_describe: { en: '{name} — {desc}. Their match score is {score}%.', hi: '{name} — {desc}. आपसे मैच स्कोर {score}% है।' },
+  snp_select: { en: 'Which platform would you like to choose? Say the name or number.', hi: 'कौन सा प्लेटफॉर्म चुनना चाहेंगे? नाम या नंबर बोलिए।' },
+  // Complete
+  journey_complete: { en: 'Congratulations! Your registration is complete and your products are ready for ONDC. You can switch to form view anytime to review or edit details.', hi: 'बधाई हो! आपका रजिस्ट्रेशन पूरा हो गया और आपके उत्पाद ONDC के लिए तैयार हैं। आप कभी भी फॉर्म व्यू में जाकर विवरण देख या बदल सकते हैं।' },
+};
+
+class VoiceJourneyController {
+  constructor() {
+    this.phase = 0;       // index into VJ_PHASES
+    this.state = 'idle';  // current state within phase
+    this.data = {         // collected data
+      business_name: '', business_type: '', location: '', udyam: '', mobile: '',
+      gst: '', fssai: '', products: [], snp_selection: null,
+    };
+    this.isRecording = false;
+    this.mediaRecorder = null;
+    this.audioChunks = [];
+    this.currentAudio = null;
+    this.stateQueue = [];  // states to process
+    this.products = [];    // array of product objects
+    this.currentProduct = {};
+    this.awaitingPhoto = false;
+    this.sessionId = '';
+    this.demoOtp = '';
+  }
+
+  start() {
+    this.phase = 0;
+    this.state = 'welcome';
+    goToPage('pageVoiceJourney');
+    this.renderStepIndicator();
+    this.clearTranscript();
+    this.processState();
+  }
+
+  // ── State Machine ───────────────────────────────────────
+  async processState() {
+    const s = this.state;
+    this.updatePhaseLabel();
+    this.renderStepIndicator();
+
+    switch (s) {
+      // ── Registration Phase ──
+      case 'welcome':
+        await this.aiSay(this.getPrompt('welcome'));
+        this.state = 'wait_business_name';
+        this.showMic();
+        break;
+
+      case 'wait_business_name':
+        // Wait for voice input — handled by onVoiceResult
+        break;
+
+      case 'ask_business_type':
+        await this.aiSay(this.getPrompt('ask_business_type'));
+        this.state = 'wait_business_type';
+        this.showMic();
+        break;
+
+      case 'wait_business_type':
+        break;
+
+      case 'ask_location':
+        await this.aiSay(this.getPrompt('ask_location'));
+        this.state = 'wait_location';
+        this.showMic();
+        break;
+
+      case 'wait_location':
+        break;
+
+      case 'ask_udyam':
+        await this.aiSay(this.getPrompt('ask_udyam'));
+        this.state = 'wait_udyam';
+        this.showMic();
+        break;
+
+      case 'wait_udyam':
+        break;
+
+      case 'verify_udyam':
+        await this.doUdyamVerification();
+        break;
+
+      case 'ask_mobile':
+        await this.aiSay(this.getPrompt('ask_mobile'));
+        this.state = 'wait_mobile';
+        this.showMic();
+        break;
+
+      case 'wait_mobile':
+        break;
+
+      case 'send_otp':
+        await this.doSendOTP();
+        break;
+
+      case 'wait_otp':
+        break;
+
+      case 'verify_otp':
+        await this.doVerifyOTP();
+        break;
+
+      // ── Documents Phase ──
+      case 'start_documents':
+        this.phase = 1;
+        await this.aiSay(this.getPrompt('otp_verified'));
+        this.state = 'ask_gst';
+        this.processState();
+        break;
+
+      case 'ask_gst':
+        await this.aiSay(this.getPrompt('ask_gst'));
+        this.state = 'wait_gst';
+        this.showMic();
+        break;
+
+      case 'wait_gst':
+        break;
+
+      case 'ask_fssai':
+        await this.aiSay(this.getPrompt('ask_fssai'));
+        this.state = 'wait_fssai';
+        this.showMic();
+        break;
+
+      case 'wait_fssai':
+        break;
+
+      case 'doc_photo':
+        await this.aiSay(this.getPrompt('doc_photo_prompt'));
+        this.showPhotoButtons();
+        this.showActions([
+          { label: t('vjSkip') || 'Skip', action: () => this.onSkipPhoto() },
+        ]);
+        this.state = 'wait_doc_photo';
+        break;
+
+      case 'wait_doc_photo':
+        break;
+
+      case 'docs_complete':
+        await this.aiSay(this.getPrompt('docs_complete'));
+        this.state = 'ask_product';
+        this.phase = 2;
+        this.processState();
+        break;
+
+      // ── Catalogue Phase ──
+      case 'ask_product':
+        this.currentProduct = {};
+        await this.aiSay(this.getPrompt('ask_product'));
+        this.showPhotoButtons();
+        this.state = 'wait_product';
+        this.showMic();
+        break;
+
+      case 'wait_product':
+        break;
+
+      case 'ask_price':
+        await this.aiSay(this.getPrompt('ask_price'));
+        this.state = 'wait_price';
+        this.showMic();
+        break;
+
+      case 'wait_price':
+        break;
+
+      case 'product_photo':
+        await this.aiSay(this.getPrompt('product_photo'));
+        this.showPhotoButtons();
+        this.state = 'wait_product_photo';
+        this.showActions([
+          { label: t('vjSkip') || 'Skip photo', action: () => { this.state = 'confirm_product'; this.processState(); } },
+        ]);
+        break;
+
+      case 'wait_product_photo':
+        break;
+
+      case 'confirm_product':
+        await this.showProductConfirmation();
+        break;
+
+      case 'wait_product_confirm':
+        break;
+
+      case 'add_more':
+        await this.aiSay(this.getPrompt('add_more'));
+        this.showActions([
+          { label: t('vjAddMore') || 'Add another', action: () => { this.state = 'ask_product'; this.processState(); }, primary: false },
+          { label: t('vjFindSNP') || 'Find platforms', action: () => { this.state = 'snp_finding'; this.phase = 3; this.processState(); }, primary: true },
+        ]);
+        this.state = 'wait_add_more';
+        break;
+
+      case 'wait_add_more':
+        break;
+
+      // ── SNP Match Phase ──
+      case 'snp_finding':
+        await this.aiSay(this.getPrompt('snp_finding'));
+        await this.doSNPMatch();
+        break;
+
+      case 'snp_results':
+        break; // handled by doSNPMatch
+
+      case 'journey_complete':
+        this.phase = 3;
+        await this.aiSay(this.getPrompt('journey_complete'));
+        this.showActions([
+          { label: t('vjViewDetails') || 'View in form', action: () => switchToFormMode(), primary: true },
+        ]);
+        break;
+
+      default:
+        console.warn('[VJ] Unknown state:', s);
+    }
+  }
+
+  // ── Voice Input Handler ─────────────────────────────────
+  async onVoiceResult(transcript) {
+    this.addMessage('user', transcript);
+
+    switch (this.state) {
+      case 'wait_business_name':
+        this.data.business_name = transcript;
+        this.addFieldBadge('Business Name', transcript);
+        this.state = 'ask_business_type';
+        await this.processState();
+        break;
+
+      case 'wait_business_type':
+        this.data.business_type = transcript;
+        this.addFieldBadge('Business Type', transcript);
+        this.state = 'ask_location';
+        await this.processState();
+        break;
+
+      case 'wait_location':
+        this.data.location = transcript;
+        this.addFieldBadge('Location', transcript);
+        this.state = 'ask_udyam';
+        await this.processState();
+        break;
+
+      case 'wait_udyam': {
+        const lower = transcript.toLowerCase().replace(/\s/g, '');
+        const noWords = ['no', 'nahi', 'nhin', 'nahin', 'नहीं', 'না', 'இல্ல', 'no'];
+        if (noWords.some(w => lower.includes(w))) {
+          this.data.udyam = '';
+          this.addFieldBadge('Udyam', 'Not available');
+          this.state = 'ask_mobile';
+          await this.processState();
+        } else {
+          // Try to extract Udyam number
+          const udyamMatch = transcript.replace(/\s/g, '').match(/UDYAM[-]?[A-Z]{2}[-]?\d{2}[-]?\d{7}/i);
+          if (udyamMatch) {
+            this.data.udyam = udyamMatch[0].toUpperCase();
+          } else {
+            // Try AI extraction
+            try {
+              const resp = await fetch('/api/extract', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ transcript }),
+              });
+              const data = await resp.json();
+              if (data.status === 'success' && data.type === 'udyam') {
+                this.data.udyam = data.value;
+              } else {
+                this.data.udyam = transcript.replace(/\s/g, '').toUpperCase();
+              }
+            } catch {
+              this.data.udyam = transcript.replace(/\s/g, '').toUpperCase();
+            }
+          }
+          this.addFieldBadge('Udyam', this.data.udyam);
+          this.state = 'verify_udyam';
+          await this.processState();
+        }
+        break;
+      }
+
+      case 'wait_mobile': {
+        const digits = transcript.replace(/\D/g, '');
+        const mobile = digits.length >= 10 ? digits.slice(-10) : digits;
+        this.data.mobile = mobile;
+        this.addFieldBadge('Mobile', mobile);
+        if (mobile.length === 10) {
+          this.state = 'send_otp';
+          await this.processState();
+        } else {
+          await this.aiSay(t('vjInvalidMobile') || 'That doesn\'t seem like a valid mobile number. Please tell me your 10-digit mobile number.');
+          this.showMic();
+        }
+        break;
+      }
+
+      case 'wait_otp': {
+        const otpDigits = transcript.replace(/\D/g, '');
+        if (otpDigits.length >= 6) {
+          this.data.otp = otpDigits.slice(0, 6);
+          this.state = 'verify_otp';
+          await this.processState();
+        } else {
+          await this.aiSay(t('vjInvalidOTP') || 'I need a 6-digit code. Please tell me the OTP again.');
+          this.showMic();
+        }
+        break;
+      }
+
+      case 'wait_gst': {
+        const lower = transcript.toLowerCase().replace(/\s/g, '');
+        const noWords = ['no', 'nahi', 'nhin', 'nahin', 'नहीं'];
+        if (noWords.some(w => lower.includes(w))) {
+          this.data.gst = '';
+          this.addFieldBadge('GST', 'Not available');
+        } else {
+          this.data.gst = transcript.replace(/\s/g, '').toUpperCase();
+          this.addFieldBadge('GST', this.data.gst);
+        }
+        this.state = 'ask_fssai';
+        await this.processState();
+        break;
+      }
+
+      case 'wait_fssai': {
+        const lower = transcript.toLowerCase().replace(/\s/g, '');
+        const noWords = ['no', 'nahi', 'nhin', 'nahin', 'नहीं'];
+        if (noWords.some(w => lower.includes(w))) {
+          this.data.fssai = '';
+          this.addFieldBadge('FSSAI', 'Not required');
+        } else {
+          this.data.fssai = transcript.replace(/\D/g, '');
+          this.addFieldBadge('FSSAI', this.data.fssai);
+        }
+        this.state = 'doc_photo';
+        await this.processState();
+        break;
+      }
+
+      case 'wait_product': {
+        // AI extraction of product details from voice description
+        this.showTyping();
+        try {
+          const domain = this.guessONDCDomain();
+          const resp = await fetch('/api/extract-product', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ transcript, domain }),
+          });
+          const data = await resp.json();
+          this.hideTyping();
+
+          if (data.status === 'success' && data.fields) {
+            this.currentProduct = { ...this.currentProduct, ...data.fields };
+            // Show extracted fields
+            const extracted = data.extracted_fields || [];
+            for (const key of extracted) {
+              if (data.fields[key]) {
+                this.addFieldBadge(key, String(data.fields[key]));
+              }
+            }
+            // Check if price is missing
+            if (!this.currentProduct.selling_price && !this.currentProduct.mrp) {
+              this.state = 'ask_price';
+            } else {
+              // Ask for photo if not already provided
+              if (!this.currentProduct._hasPhoto) {
+                this.state = 'product_photo';
+              } else {
+                this.state = 'confirm_product';
+              }
+            }
+          } else {
+            this.currentProduct.name = transcript;
+            this.addFieldBadge('Product', transcript);
+            this.state = 'ask_price';
+          }
+        } catch (e) {
+          this.hideTyping();
+          this.currentProduct.name = transcript;
+          this.addFieldBadge('Product', transcript);
+          this.state = 'ask_price';
+        }
+        await this.processState();
+        break;
+      }
+
+      case 'wait_price': {
+        // Extract price from voice
+        const priceMatch = transcript.match(/(\d[\d,]*\.?\d*)/);
+        if (priceMatch) {
+          const price = priceMatch[1].replace(/,/g, '');
+          this.currentProduct.selling_price = price;
+          this.currentProduct.mrp = price;
+          this.addFieldBadge('Price', '₹' + price);
+        } else {
+          this.currentProduct.selling_price = transcript;
+          this.addFieldBadge('Price', transcript);
+        }
+        if (!this.currentProduct._hasPhoto) {
+          this.state = 'product_photo';
+        } else {
+          this.state = 'confirm_product';
+        }
+        await this.processState();
+        break;
+      }
+
+      case 'wait_product_confirm': {
+        const lower = transcript.toLowerCase();
+        const yesWords = ['yes', 'haan', 'ha', 'haa', 'sahi', 'theek', 'ok', 'okay', 'correct', 'right', 'हाँ', 'हां', 'सही', 'ठीक'];
+        if (yesWords.some(w => lower.includes(w))) {
+          this.products.push({ ...this.currentProduct });
+          this.data.products = this.products;
+          this.addMessage('system', `✅ Product #${this.products.length} saved`);
+          this.state = 'add_more';
+          await this.processState();
+        } else {
+          await this.aiSay(t('vjWhatToCorrect') || 'What would you like to correct? Tell me the field and the new value.');
+          this.state = 'wait_correction';
+          this.showMic();
+        }
+        break;
+      }
+
+      case 'wait_correction': {
+        // Try to extract field correction via AI
+        this.showTyping();
+        try {
+          const resp = await fetch('/api/extract-product', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ transcript, domain: this.guessONDCDomain() }),
+          });
+          const data = await resp.json();
+          this.hideTyping();
+          if (data.status === 'success' && data.fields) {
+            for (const [key, val] of Object.entries(data.fields)) {
+              if (val) {
+                this.currentProduct[key] = val;
+                this.addFieldBadge(key + ' (updated)', String(val));
+              }
+            }
+          }
+        } catch {
+          this.hideTyping();
+        }
+        this.state = 'confirm_product';
+        await this.processState();
+        break;
+      }
+
+      case 'wait_add_more': {
+        const lower = transcript.toLowerCase();
+        const addWords = ['add', 'more', 'another', 'aur', 'एक और', 'हाँ'];
+        if (addWords.some(w => lower.includes(w))) {
+          this.state = 'ask_product';
+          await this.processState();
+        } else {
+          this.state = 'snp_finding';
+          this.phase = 3;
+          await this.processState();
+        }
+        break;
+      }
+
+      default:
+        console.warn('[VJ] Voice result in unexpected state:', this.state);
+    }
+  }
+
+  // ── API Interactions ────────────────────────────────────
+  async doUdyamVerification() {
+    this.showTyping();
+    await this.aiSay(t('vjVerifying') || 'Verifying your Udyam number...');
+    try {
+      const resp = await fetch('/api/verify-udyam', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ udyam_number: this.data.udyam, language: getLangBCP() }),
+      });
+      const data = await resp.json();
+      this.hideTyping();
+
+      if (data.status === 'success') {
+        this.sessionId = data.session_id;
+        this.demoOtp = data.demo_otp;
+        this.data.maskedMobile = data.masked_mobile;
+        // Store enterprise data
+        enterpriseData = data.enterprise_data || null;
+        sessionId = data.session_id;
+        demoOtp = data.demo_otp;
+        maskedMobile = data.masked_mobile;
+
+        if (data.enterprise_data) {
+          const ent = data.enterprise_data;
+          if (ent.name) { this.data.business_name = ent.name; this.addFieldBadge('Business Name (verified)', ent.name); }
+          if (ent.enterprise_type) { this.addFieldBadge('Enterprise Type', ent.enterprise_type); }
+          const addr = ent.address || {};
+          if (addr.city || addr.state) {
+            this.data.location = [addr.city, addr.state].filter(Boolean).join(', ');
+            this.addFieldBadge('Location (verified)', this.data.location);
+          }
+        }
+        await this.aiSay((t('vjOtpSent') || 'Verified! OTP sent to {mobile}. Please tell me the code.').replace('{mobile}', data.masked_mobile));
+        this.addMessage('system', `Demo OTP: ${data.demo_otp}`);
+        this.state = 'wait_otp';
+        this.showMic();
+      } else {
+        await this.aiSay(t('vjVerifyFailed') || 'Could not verify that number. Let me ask for your mobile number instead.');
+        this.state = 'ask_mobile';
+        await this.processState();
+      }
+    } catch (e) {
+      this.hideTyping();
+      await this.aiSay(t('vjNetworkError') || 'Network error. Let\'s try your mobile number instead.');
+      this.state = 'ask_mobile';
+      await this.processState();
+    }
+  }
+
+  async doSendOTP() {
+    this.showTyping();
+    try {
+      const resp = await fetch('/api/verify-mobile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mobile: this.data.mobile, language: getLangBCP() }),
+      });
+      const data = await resp.json();
+      this.hideTyping();
+
+      if (data.status === 'success') {
+        this.sessionId = data.session_id;
+        this.demoOtp = data.demo_otp;
+        sessionId = data.session_id;
+        demoOtp = data.demo_otp;
+        await this.aiSay(this.getPrompt('otp_sent'));
+        this.addMessage('system', `Demo OTP: ${data.demo_otp}`);
+        this.state = 'wait_otp';
+        this.showMic();
+      } else {
+        await this.aiSay(data.message || 'Could not send OTP. Please try again.');
+        this.state = 'ask_mobile';
+        await this.processState();
+      }
+    } catch {
+      this.hideTyping();
+      await this.aiSay('Network error sending OTP.');
+      this.state = 'ask_mobile';
+      await this.processState();
+    }
+  }
+
+  async doVerifyOTP() {
+    this.showTyping();
+    try {
+      const resp = await fetch('/api/verify-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ session_id: this.sessionId, otp: this.data.otp }),
+      });
+      const data = await resp.json();
+      this.hideTyping();
+
+      if (data.status === 'success') {
+        if (data.enterprise) enterpriseData = data.enterprise;
+        this.state = 'start_documents';
+        await this.processState();
+      } else {
+        await this.aiSay(t('vjOtpWrong') || 'That OTP didn\'t match. Please try again.');
+        this.state = 'wait_otp';
+        this.showMic();
+      }
+    } catch {
+      this.hideTyping();
+      await this.aiSay('Verification failed. Please try again.');
+      this.state = 'wait_otp';
+      this.showMic();
+    }
+  }
+
+  async doSNPMatch() {
+    this.showTyping();
+    try {
+      const product = this.products[0] || {};
+      const mseData = {
+        ondc_domain: this.guessONDCDomain(),
+        state: this.data.location,
+        language: currentLang,
+        enterprise_type: 'Micro',
+        gst_number: this.data.gst || null,
+        email: null,
+        udyam: this.data.udyam || null,
+        input_channel: 'voice',
+        turnover: 0,
+      };
+      const resp = await fetch('/api/match', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(mseData),
+      });
+      const data = await resp.json();
+      this.hideTyping();
+
+      if (data.status === 'success' && data.matches && data.matches.length > 0) {
+        const matches = data.matches;
+        const count = matches.length;
+        await this.aiSay(this.getPrompt('snp_results').replace('{count}', count));
+
+        // Show each SNP
+        for (let i = 0; i < matches.length; i++) {
+          const m = matches[i];
+          const desc = m.type === 'buyer' ? 'buyer app' : 'seller app';
+          const msg = `${i + 1}. ${m.name} — ${desc}, ${m.score}% match`;
+          this.addMessage('ai', msg);
+        }
+
+        // Show select buttons
+        this.showActions(matches.map((m, i) => ({
+          label: `${i + 1}. ${m.name}`,
+          action: () => {
+            this.data.snp_selection = m;
+            this.addMessage('user', `Selected: ${m.name}`);
+            this.state = 'journey_complete';
+            this.processState();
+          },
+        })));
+        await this.aiSay(this.getPrompt('snp_select'));
+        this.state = 'snp_results';
+        this.showMic();
+      } else {
+        await this.aiSay(t('vjNoSNP') || 'No matching platforms found. You can switch to form mode to search manually.');
+        this.state = 'journey_complete';
+        await this.processState();
+      }
+    } catch (e) {
+      this.hideTyping();
+      await this.aiSay('Error finding platforms. You can try again from form mode.');
+      this.state = 'journey_complete';
+      await this.processState();
+    }
+  }
+
+  async handlePhoto(file) {
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const dataUrl = e.target.result;
+      const base64 = dataUrl.split(',')[1];
+      const mime = dataUrl.split(';')[0].split(':')[1];
+
+      // Show photo thumbnail in transcript
+      this.addMessage('user', `📷 Photo uploaded`);
+      this.showTyping();
+
+      if (this.state === 'wait_doc_photo') {
+        // Document OCR
+        try {
+          const formData = new FormData();
+          formData.append('image', file);
+          const resp = await fetch('/api/ocr-document', {
+            method: 'POST',
+            body: formData,
+          });
+          const data = await resp.json();
+          this.hideTyping();
+          if (data.status === 'success' && data.extracted_text) {
+            this.addMessage('ai', `📄 Extracted text from your document. I found some details.`);
+            if (data.extracted_fields) {
+              for (const [key, val] of Object.entries(data.extracted_fields)) {
+                this.addFieldBadge(key, String(val));
+              }
+            }
+          }
+        } catch {
+          this.hideTyping();
+        }
+        this.state = 'docs_complete';
+        await this.processState();
+
+      } else if (this.state === 'wait_product_photo' || this.state === 'wait_product') {
+        // Product image analysis via tiered VLM
+        try {
+          const formData = new FormData();
+          formData.append('image', file);
+          const resp = await fetch('/api/analyze-product-image', {
+            method: 'POST',
+            body: formData,
+          });
+          const data = await resp.json();
+          this.hideTyping();
+
+          if (data.status === 'success') {
+            this.currentProduct._hasPhoto = true;
+            this.currentProduct._imageDataUrl = dataUrl;
+
+            if (data.extracted_fields) {
+              for (const [key, val] of Object.entries(data.extracted_fields)) {
+                if (val) {
+                  this.currentProduct[key] = val;
+                  this.addFieldBadge(key + ' (📷)', String(val));
+                }
+              }
+            }
+            if (data.detected_category) {
+              this.currentProduct._category = data.detected_category;
+              this.addFieldBadge('Category', data.detected_category);
+            }
+            if (data.description && !this.currentProduct.short_description) {
+              this.currentProduct.short_description = data.description;
+            }
+
+            await this.aiSay(t('vjPhotoAnalyzed') || 'I\'ve analyzed the photo and extracted some details.');
+          }
+        } catch {
+          this.hideTyping();
+          await this.aiSay(t('vjPhotoError') || 'Couldn\'t analyze the photo, but let\'s continue.');
+        }
+
+        // Decide next state
+        if (!this.currentProduct.selling_price && !this.currentProduct.mrp) {
+          this.state = 'ask_price';
+        } else {
+          this.state = 'confirm_product';
+        }
+        await this.processState();
+      }
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // ── Product Confirmation ────────────────────────────────
+  async showProductConfirmation() {
+    const p = this.currentProduct;
+    const fields = [];
+    if (p.name) fields.push(['Product', p.name]);
+    if (p.short_description) fields.push(['Description', p.short_description.substring(0, 80) + (p.short_description.length > 80 ? '...' : '')]);
+    if (p.selling_price) fields.push(['Price', '₹' + p.selling_price]);
+    if (p.category) fields.push(['Category', p.category]);
+    if (p.material) fields.push(['Material', p.material]);
+    if (p.colour) fields.push(['Colour', p.colour]);
+    if (p.net_quantity) fields.push(['Quantity', p.net_quantity]);
+    if (p.unit_of_measure) fields.push(['Unit', p.unit_of_measure]);
+    if (p.brand) fields.push(['Brand', p.brand]);
+    if (p.veg_nonveg) fields.push(['Veg/Non-Veg', p.veg_nonveg]);
+
+    const confirmHtml = `
+      <div class="vj-confirm-card">
+        <h4>📋 ${t('vjProductSummary') || 'Product Summary'}</h4>
+        ${fields.map(([l, v]) => `<div class="confirm-field"><span class="cf-label">${escHtml(l)}</span><span class="cf-value">${escHtml(v)}</span></div>`).join('')}
+      </div>
+    `;
+    this.addRawMessage('ai', confirmHtml);
+    await this.aiSay(this.getPrompt('confirm_product'));
+    this.showActions([
+      { label: '✅ ' + (t('vjCorrect') || 'Correct'), action: () => {
+        this.products.push({ ...this.currentProduct });
+        this.data.products = this.products;
+        this.addMessage('system', `✅ Product #${this.products.length} saved`);
+        this.state = 'add_more';
+        this.processState();
+      }, primary: true },
+      { label: '✏️ ' + (t('vjEdit') || 'Edit'), action: () => {
+        this.state = 'wait_correction';
+        this.aiSay(t('vjWhatToCorrect') || 'What would you like to correct?');
+        this.showMic();
+      }},
+    ]);
+    this.state = 'wait_product_confirm';
+    this.showMic();
+  }
+
+  // ── Transfer data to form mode ──────────────────────────
+  transferToForm() {
+    // Pre-fill verification page with collected data
+    const mainInput = document.getElementById('mainInput');
+    if (this.data.udyam && mainInput) {
+      mainInput.value = this.data.udyam;
+    }
+
+    // Store products for catalogue page
+    if (this.products.length > 0 && typeof window._vjProducts === 'undefined') {
+      window._vjProducts = this.products;
+    }
+
+    // Store enterprise data if we verified
+    if (this.data.business_name) {
+      window._vjBusinessData = { ...this.data };
+    }
+  }
+
+  // ── UI Helpers ──────────────────────────────────────────
+  getPrompt(key) {
+    const p = VJ_PROMPTS[key];
+    if (!p) return key;
+    return p[currentLang] || p.en || key;
+  }
+
+  async aiSay(text) {
+    this.addMessage('ai', text);
+    // TTS
+    if (TTS_SUPPORTED.includes(currentLang)) {
+      try {
+        const resp = await fetch('/api/tts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: ttsClean(text), language: getLangBCP(), speaker: 'anushka' }),
+        });
+        const data = await resp.json();
+        if (data.status === 'success' && data.audio_base64 && data.audio_base64.length > 100) {
+          await this.playAudio(data.audio_base64);
+        }
+      } catch (e) {
+        console.warn('[VJ] TTS error:', e);
+      }
+    }
+  }
+
+  playAudio(b64) {
+    return new Promise((resolve) => {
+      if (this.currentAudio) { this.currentAudio.pause(); this.currentAudio = null; }
+      const audio = new Audio('data:audio/wav;base64,' + b64);
+      this.currentAudio = audio;
+      audio.play().then(() => {
+        audio.onended = () => { this.currentAudio = null; resolve(); };
+      }).catch(() => resolve());
+      // Timeout fallback
+      setTimeout(resolve, 15000);
+    });
+  }
+
+  addMessage(type, text) {
+    const container = document.getElementById('vjTranscript');
+    const div = document.createElement('div');
+    div.className = `vj-msg ${type}`;
+    div.textContent = text;
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+  }
+
+  addRawMessage(type, html) {
+    const container = document.getElementById('vjTranscript');
+    const div = document.createElement('div');
+    div.className = `vj-msg ${type}`;
+    div.innerHTML = html;
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+  }
+
+  addFieldBadge(label, value) {
+    const container = document.getElementById('vjTranscript');
+    const last = container.querySelector('.vj-msg:last-child');
+    if (last) {
+      const badge = document.createElement('span');
+      badge.className = 'field-badge';
+      badge.textContent = `${label}: ${value}`;
+      // Add to a new line in last msg or create new system msg
+      const sys = document.createElement('div');
+      sys.className = 'vj-msg system';
+      sys.appendChild(badge);
+      container.appendChild(sys);
+      container.scrollTop = container.scrollHeight;
+    }
+  }
+
+  clearTranscript() {
+    document.getElementById('vjTranscript').innerHTML = '';
+  }
+
+  showMic() {
+    const btn = document.getElementById('vjMicBtn');
+    btn.style.display = 'flex';
+    document.getElementById('vjMicHint').textContent = t('vjTapToSpeak') || 'Tap to speak';
+  }
+
+  showTyping() {
+    const container = document.getElementById('vjTranscript');
+    let typing = container.querySelector('.vj-typing');
+    if (!typing) {
+      typing = document.createElement('div');
+      typing.className = 'vj-typing';
+      typing.innerHTML = '<span></span><span></span><span></span>';
+      container.appendChild(typing);
+      container.scrollTop = container.scrollHeight;
+    }
+  }
+
+  hideTyping() {
+    const typing = document.querySelector('#vjTranscript .vj-typing');
+    if (typing) typing.remove();
+  }
+
+  showActions(actions) {
+    const row = document.getElementById('vjActionRow');
+    row.innerHTML = actions.map(a =>
+      `<button class="vj-action-btn${a.primary ? ' primary' : ''}" onclick="vjAction_${a.label.replace(/[^a-zA-Z0-9]/g, '_')}()">${escHtml(a.label)}</button>`
+    ).join('');
+    // Register handlers on window
+    actions.forEach(a => {
+      window[`vjAction_${a.label.replace(/[^a-zA-Z0-9]/g, '_')}`] = () => {
+        row.innerHTML = '';
+        a.action();
+      };
+    });
+  }
+
+  showPhotoButtons() {
+    const row = document.getElementById('vjActionRow');
+    row.innerHTML = `
+      <button class="vj-photo-btn" onclick="document.getElementById('vjCameraInput').click()">📷 ${t('vjCamera') || 'Camera'}</button>
+      <button class="vj-photo-btn" onclick="document.getElementById('vjGalleryInput').click()">🖼️ ${t('vjGallery') || 'Gallery'}</button>
+    `;
+  }
+
+  renderStepIndicator() {
+    const container = document.getElementById('vjStepIndicator');
+    container.innerHTML = VJ_PHASES.map((p, i) => {
+      let cls = 'vj-step';
+      if (i < this.phase) cls += ' done';
+      else if (i === this.phase) cls += ' active';
+      return `<div class="${cls}" title="${p.label}"></div>`;
+    }).join('');
+  }
+
+  updatePhaseLabel() {
+    const phase = VJ_PHASES[this.phase];
+    const label = t(phase?.labelKey) || phase?.label || '';
+    document.getElementById('vjPhaseLabel').textContent = label;
+  }
+
+  guessONDCDomain() {
+    const type = (this.data.business_type || '').toLowerCase();
+    if (/food|grocery|kirana|packaged|fmcg|spice|pickle|snack|sweet/i.test(type)) return 'ONDC:RET10';
+    if (/cloth|textile|saree|fabric|fashion|garment|handloom/i.test(type)) return 'ONDC:RET12';
+    if (/handicraft|craft|art|pottery|wood|metal|toy/i.test(type)) return 'ONDC:RET14';
+    if (/farm|agri|vegetable|fruit|organic|dairy/i.test(type)) return 'ONDC:RET10';
+    if (/electron|phone|computer|gadget/i.test(type)) return 'ONDC:RET14';
+    return 'ONDC:RET10';
+  }
+}
+
+// ── Global Voice Journey instance ──
+const voiceJourney = new VoiceJourneyController();
+
+// ── Voice Journey Recording ──
+async function vjToggleRecording() {
+  if (voiceJourney.isRecording) {
+    vjStopRecording();
+    return;
+  }
+
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    voiceJourney.audioChunks = [];
+    voiceJourney.mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+
+    voiceJourney.mediaRecorder.ondataavailable = e => {
+      if (e.data.size > 0) voiceJourney.audioChunks.push(e.data);
+    };
+
+    voiceJourney.mediaRecorder.onstop = async () => {
+      stream.getTracks().forEach(t => t.stop());
+      const blob = new Blob(voiceJourney.audioChunks, { type: 'audio/webm' });
+      await vjProcessAudio(blob);
+    };
+
+    voiceJourney.mediaRecorder.start();
+    voiceJourney.isRecording = true;
+    document.getElementById('vjMicBtn').classList.add('recording');
+    document.getElementById('vjMicHint').textContent = t('vjListening') || 'Listening... tap to stop';
+
+    // Auto-stop after 15 seconds
+    setTimeout(() => { if (voiceJourney.isRecording) vjStopRecording(); }, 15000);
+
+  } catch (e) {
+    voiceJourney.addMessage('system', t('micError') || 'Microphone access denied.');
+  }
+}
+
+function vjStopRecording() {
+  if (voiceJourney.mediaRecorder && voiceJourney.isRecording) {
+    voiceJourney.isRecording = false;
+    voiceJourney.mediaRecorder.stop();
+    document.getElementById('vjMicBtn').classList.remove('recording');
+    document.getElementById('vjMicHint').textContent = t('processing') || 'Processing...';
+  }
+}
+
+async function vjProcessAudio(blob) {
+  voiceJourney.showTyping();
+  const formData = new FormData();
+  formData.append('audio', blob, 'recording.webm');
+  formData.append('language', getLangBCP());
+
+  try {
+    const resp = await fetch('/api/stt', { method: 'POST', body: formData });
+    const data = await resp.json();
+    voiceJourney.hideTyping();
+
+    if (data.status === 'success' && data.transcript) {
+      document.getElementById('vjMicHint').textContent = t('vjTapToSpeak') || 'Tap to speak';
+      await voiceJourney.onVoiceResult(data.transcript);
+    } else {
+      document.getElementById('vjMicHint').textContent = t('vjTapToSpeak') || 'Tap to speak';
+      voiceJourney.addMessage('system', t('vjDidntCatch') || 'Sorry, I didn\'t catch that. Please try again.');
+    }
+  } catch (e) {
+    voiceJourney.hideTyping();
+    document.getElementById('vjMicHint').textContent = t('vjTapToSpeak') || 'Tap to speak';
+    voiceJourney.addMessage('system', 'Speech recognition failed. Please try again.');
+  }
+}
+
+function vjHandlePhoto(event) {
+  const file = event.target.files?.[0];
+  if (file) voiceJourney.handlePhoto(file);
+  event.target.value = '';
+}
+
+function onSkipPhoto() {
+  // Skip the document photo step
+  voiceJourney.state = 'docs_complete';
+  voiceJourney.processState();
 }
 
 // ═══════════════════════════════════════════════════════════

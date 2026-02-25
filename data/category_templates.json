@@ -1,0 +1,1494 @@
+{
+  "version": "1.0",
+  "last_updated": "2026-02-23",
+  "categories": {
+    "textiles_handloom": {
+      "display_name": {
+        "en": "Textiles & Handloom",
+        "hi": "वस्त्र एवं हथकरघा",
+        "ta": "ஜவுளி & கைத்தறி",
+        "te": "వస్త్రాలు & చేనేత",
+        "bn": "বস্ত্র ও তাঁত",
+        "mr": "वस्त्र आणि हातमाग",
+        "gu": "કાપડ અને હાથવણાટ",
+        "kn": "ಜವಳಿ ಮತ್ತು ಕೈಮಗ್ಗ",
+        "ml": "തുണിത്തരങ്ങൾ & കൈത്തറി",
+        "pa": "ਕੱਪੜੇ ਅਤੇ ਹੱਥਕਰਘਾ",
+        "od": "ବସ୍ତ୍ର ଏବଂ ହାତକର୍ଘା"
+      },
+      "required_fields": [
+        "product_name",
+        "weave_type",
+        "material",
+        "region_origin",
+        "color_palette",
+        "dimensions",
+        "price"
+      ],
+      "category_fields": [
+        {
+          "id": "weave_type",
+          "label": {
+            "en": "Weave Type",
+            "hi": "बुनाई का प्रकार",
+            "ta": "நெசவு வகை",
+            "te": "నేత రకం",
+            "bn": "বুনন প্রকার",
+            "mr": "विणकाम प्रकार",
+            "gu": "વણાટ પ્રકાર",
+            "kn": "ನೇಯ್ಗೆ ವಿಧ",
+            "ml": "നെയ്ത്ത് തരം",
+            "pa": "ਬੁਣਾਈ ਦੀ ਕਿਸਮ",
+            "od": "ବୁଣା ପ୍ରକାର"
+          },
+          "type": "select",
+          "options": [
+            "Jamdani",
+            "Ikat / Patola",
+            "Banarasi brocade",
+            "Kanjivaram silk weave",
+            "Chanderi",
+            "Maheshwari",
+            "Pochampally",
+            "Sambalpuri",
+            "Tant",
+            "Paithani",
+            "Baluchari",
+            "Kasavu",
+            "Bomkai",
+            "Tussar",
+            "Khadi",
+            "Other"
+          ],
+          "voice_prompt": {
+            "en": "What type of weave is this product? For example, Jamdani, Ikat, Banarasi, Kanjivaram, or Chanderi?",
+            "hi": "इस उत्पाद की बुनाई किस प्रकार की है? जैसे जामदानी, इकत, बनारसी, कांजीवरम, या चंदेरी?"
+          }
+        },
+        {
+          "id": "material",
+          "label": {
+            "en": "Material / Fabric",
+            "hi": "सामग्री / कपड़ा",
+            "ta": "பொருள் / துணி",
+            "te": "పదార్థం / బట్ట",
+            "bn": "উপাদান / কাপড়",
+            "mr": "साहित्य / कापड",
+            "gu": "સામગ્રી / કાપડ",
+            "kn": "ವಸ್ತು / ಬಟ್ಟೆ",
+            "ml": "വസ്തു / തുണി",
+            "pa": "ਸਮੱਗਰੀ / ਕੱਪੜਾ",
+            "od": "ସାମଗ୍ରୀ / କପଡ଼ା"
+          },
+          "type": "select",
+          "options": [
+            "Pure silk",
+            "Cotton",
+            "Silk-cotton blend",
+            "Linen",
+            "Wool",
+            "Tussar silk",
+            "Muga silk",
+            "Eri silk",
+            "Jute",
+            "Pashmina",
+            "Khadi cotton",
+            "Other"
+          ],
+          "voice_prompt": {
+            "en": "What material or fabric is this product made of? For example, pure silk, cotton, silk-cotton blend, or wool?",
+            "hi": "यह उत्पाद किस सामग्री या कपड़े से बना है? जैसे शुद्ध रेशम, सूती, रेशम-सूती मिश्रण, या ऊन?"
+          }
+        },
+        {
+          "id": "region_origin",
+          "label": {
+            "en": "Region of Origin",
+            "hi": "उत्पत्ति का क्षेत्र",
+            "ta": "பிறப்பிடம்",
+            "te": "ప్రాంతం",
+            "bn": "উৎপত্তি অঞ্চল",
+            "mr": "उगमस्थान",
+            "gu": "મૂળ પ્રદેશ",
+            "kn": "ಮೂಲ ಪ್ರದೇಶ",
+            "ml": "ഉത്ഭവ പ്രദേശം",
+            "pa": "ਮੂਲ ਖੇਤਰ",
+            "od": "ଉତ୍ପତ୍ତି ଅଞ୍ଚଳ"
+          },
+          "type": "text",
+          "voice_prompt": {
+            "en": "Which region or place does this textile come from? For example, Varanasi, Kanchipuram, Pochampally, Sambalpuri.",
+            "hi": "यह वस्त्र किस क्षेत्र या स्थान से आता है? जैसे वाराणसी, कांचीपुरम, पोचमपल्ली, संबलपुरी।"
+          }
+        },
+        {
+          "id": "gi_tag",
+          "label": {
+            "en": "GI Tag (Geographical Indication)",
+            "hi": "जीआई टैग (भौगोलिक संकेत)",
+            "ta": "GI குறியீடு",
+            "te": "GI ట్యాగ్",
+            "bn": "GI ট্যাগ",
+            "mr": "GI टॅग",
+            "gu": "GI ટેગ",
+            "kn": "GI ಟ್ಯಾಗ್",
+            "ml": "GI ടാഗ്",
+            "pa": "GI ਟੈਗ",
+            "od": "GI ଟ୍ୟାଗ୍"
+          },
+          "type": "select",
+          "options": [
+            "Yes — GI certified",
+            "Applied / Pending",
+            "No",
+            "Not sure"
+          ],
+          "voice_prompt": {
+            "en": "Does this product have a GI tag or geographical indication certification?",
+            "hi": "क्या इस उत्पाद के पास जीआई टैग या भौगोलिक संकेत प्रमाणन है?"
+          }
+        },
+        {
+          "id": "motif_design",
+          "label": {
+            "en": "Motif / Design",
+            "hi": "रूपांकन / डिज़ाइन",
+            "ta": "வடிவமைப்பு",
+            "te": "డిజైన్",
+            "bn": "মোটিফ / ডিজাইন",
+            "mr": "नक्षीकाम / डिझाइन",
+            "gu": "ડિઝાઇન",
+            "kn": "ವಿನ್ಯಾಸ",
+            "ml": "ഡിസൈൻ",
+            "pa": "ਡਿਜ਼ਾਈਨ",
+            "od": "ଡିଜାଇନ୍"
+          },
+          "type": "text",
+          "voice_prompt": {
+            "en": "Describe the motif or design pattern. For example, paisley, floral, temple border, peacock, geometric, or traditional butis.",
+            "hi": "रूपांकन या डिज़ाइन पैटर्न बताएं। जैसे पैस्ले, फूल, मंदिर बॉर्डर, मोर, ज्यामितीय, या पारंपरिक बूटी।"
+          }
+        },
+        {
+          "id": "zari_type",
+          "label": {
+            "en": "Zari Type",
+            "hi": "ज़री का प्रकार",
+            "ta": "ஜரி வகை",
+            "te": "జరీ రకం",
+            "bn": "জরি প্রকার",
+            "mr": "जरी प्रकार",
+            "gu": "જરી પ્રકાર",
+            "kn": "ಜರಿ ವಿಧ",
+            "ml": "സരി തരം",
+            "pa": "ਜ਼ਰੀ ਦੀ ਕਿਸਮ",
+            "od": "ଜରି ପ୍ରକାର"
+          },
+          "type": "select",
+          "options": [
+            "Real gold zari (kasab)",
+            "Tested silver zari",
+            "Copper zari",
+            "Art silk zari (imitation)",
+            "No zari",
+            "Not applicable"
+          ],
+          "voice_prompt": {
+            "en": "What type of zari work does this textile have? Real gold, silver, copper, art silk, or none?",
+            "hi": "इस वस्त्र में किस प्रकार की ज़री है? असली सोना, चांदी, तांबा, आर्ट सिल्क, या कोई नहीं?"
+          }
+        },
+        {
+          "id": "occasion",
+          "label": {
+            "en": "Occasion / Usage",
+            "hi": "अवसर / उपयोग",
+            "ta": "சந்தர்ப்பம்",
+            "te": "సందర్భం",
+            "bn": "উপলক্ষ",
+            "mr": "प्रसंग",
+            "gu": "પ્રસંગ",
+            "kn": "ಸಂದರ್ಭ",
+            "ml": "അവസരം",
+            "pa": "ਮੌਕਾ",
+            "od": "ଅବସର"
+          },
+          "type": "select",
+          "options": [
+            "Wedding / Bridal",
+            "Festival / Celebration",
+            "Daily wear",
+            "Formal / Office",
+            "Casual",
+            "Puja / Religious",
+            "Gift",
+            "Multi-occasion"
+          ],
+          "voice_prompt": {
+            "en": "What occasion is this textile best suited for? Wedding, festival, daily wear, formal, or casual?",
+            "hi": "यह वस्त्र किस अवसर के लिए सबसे उपयुक्त है? शादी, त्योहार, रोज़ पहनने, औपचारिक, या आकस्मिक?"
+          }
+        },
+        {
+          "id": "color_palette",
+          "label": {
+            "en": "Color Palette",
+            "hi": "रंग",
+            "ta": "நிறம்",
+            "te": "రంగు",
+            "bn": "রঙ",
+            "mr": "रंगसंगती",
+            "gu": "રંગ",
+            "kn": "ಬಣ್ಣ",
+            "ml": "നിറം",
+            "pa": "ਰੰਗ",
+            "od": "ରଙ୍ଗ"
+          },
+          "type": "text",
+          "voice_prompt": {
+            "en": "What are the main colors of this textile? Describe the color combination.",
+            "hi": "इस वस्त्र के मुख्य रंग क्या हैं? रंग संयोजन बताएं।"
+          }
+        },
+        {
+          "id": "dimensions",
+          "label": {
+            "en": "Dimensions (Length x Width)",
+            "hi": "आयाम (लम्बाई x चौड़ाई)",
+            "ta": "அளவுகள்",
+            "te": "కొలతలు",
+            "bn": "মাপ",
+            "mr": "परिमाण",
+            "gu": "પરિમાણ",
+            "kn": "ಅಳತೆ",
+            "ml": "അളവുകൾ",
+            "pa": "ਮਾਪ",
+            "od": "ମାପ"
+          },
+          "type": "text",
+          "voice_prompt": {
+            "en": "What are the dimensions? Please share the length and width in meters. For sarees, standard is about 5.5 meters length and 1.15 meters width.",
+            "hi": "आयाम क्या हैं? कृपया लंबाई और चौड़ाई मीटर में बताएं। साड़ियों के लिए मानक लगभग 5.5 मीटर लंबाई और 1.15 मीटर चौड़ाई है।"
+          }
+        },
+        {
+          "id": "wash_care",
+          "label": {
+            "en": "Wash / Care Instructions",
+            "hi": "धुलाई / देखभाल निर्देश",
+            "ta": "பராமரிப்பு அறிவுறுத்தல்",
+            "te": "సంరక్షణ సూచనలు",
+            "bn": "পরিচর্যা নির্দেশ",
+            "mr": "काळजी सूचना",
+            "gu": "સંભાળ સૂચનાઓ",
+            "kn": "ಆರೈಕೆ ಸೂಚನೆ",
+            "ml": "പരിചരണ നിർദ്ദേശം",
+            "pa": "ਦੇਖਭਾਲ ਨਿਰਦੇਸ਼",
+            "od": "ଯତ୍ନ ନିର୍ଦ୍ଦେଶ"
+          },
+          "type": "select",
+          "options": [
+            "Dry clean only",
+            "Hand wash — cold water",
+            "Hand wash — mild detergent",
+            "Machine washable — gentle cycle",
+            "Spot clean only"
+          ],
+          "voice_prompt": {
+            "en": "What are the wash or care instructions? Dry clean only, hand wash, or machine washable?",
+            "hi": "धुलाई या देखभाल के निर्देश क्या हैं? केवल ड्राई क्लीन, हाथ से धोएं, या मशीन में धो सकते हैं?"
+          }
+        }
+      ],
+      "photo_extraction_prompt": "Analyze this textile/handloom product image carefully. Extract the following details:\n1. **Fabric type**: Identify if it is silk, cotton, linen, wool, or a blend based on texture and sheen.\n2. **Weave pattern**: Identify the weave — is it Jamdani, Ikat, Banarasi brocade, Kanjivaram, Chanderi, Pochampally, Sambalpuri, or another traditional weave?\n3. **Zari work**: Is there gold, silver, or copper zari visible? Describe the zari pattern (border, pallu, all-over).\n4. **Motif/Design**: Describe the motifs — paisley, floral, peacock, temple border, geometric, butis, checks, stripes, or figurative.\n5. **Color palette**: List all visible colors, noting the dominant and accent colors.\n6. **Border and pallu**: Describe the border width, design, and pallu (end piece) pattern if visible.\n7. **Estimated dimensions**: If the full textile is visible, estimate length and width.\n8. **Condition**: Note if the textile appears new, vintage, or handcrafted with irregularities typical of handloom.\n9. **Region hint**: Based on weave and motif, suggest likely region of origin.\n10. **Occasion suitability**: Suggest whether this is suited for wedding, festival, daily wear, or formal occasions.",
+      "ai_description_context": "Generate a rich, culturally authentic product description for an Indian handloom textile. Emphasize the craftsmanship heritage, weave tradition, region of origin, and the artisan community behind it. Mention the GI tag status if applicable. Describe the colors, motifs, and zari work poetically yet accurately. Include care instructions and occasion suitability. The description should appeal to buyers who value authenticity, heritage, and supporting traditional weaver communities. Keep it under 200 words."
+    },
+
+    "food_packaged": {
+      "display_name": {
+        "en": "Packaged Food & Beverages",
+        "hi": "पैकेज्ड खाद्य एवं पेय पदार्थ",
+        "ta": "பேக்கேஜ் உணவு & பானங்கள்",
+        "te": "ప్యాకేజ్డ్ ఆహారం & పానీయాలు",
+        "bn": "প্যাকেজড খাদ্য ও পানীয়",
+        "mr": "पॅकेज्ड अन्न आणि पेये",
+        "gu": "પેકેજ્ડ ખોરાક અને પીણાં",
+        "kn": "ಪ್ಯಾಕೇಜ್ಡ್ ಆಹಾರ ಮತ್ತು ಪಾನೀಯ",
+        "ml": "പാക്കേജ്ഡ് ഭക്ഷണം & പാനീയങ്ങൾ",
+        "pa": "ਪੈਕੇਜਡ ਭੋਜਨ ਅਤੇ ਪੀਣ ਵਾਲੇ ਪਦਾਰਥ",
+        "od": "ପ୍ୟାକେଜଡ୍ ଖାଦ୍ୟ ଏବଂ ପାନୀୟ"
+      },
+      "compliance_assistant": true,
+      "required_fields": [
+        "product_name",
+        "fssai_license",
+        "ingredients_list",
+        "net_quantity",
+        "mrp",
+        "veg_nonveg",
+        "shelf_life_days",
+        "date_of_manufacture"
+      ],
+      "category_fields": [
+        {
+          "id": "fssai_license",
+          "label": {
+            "en": "FSSAI License Number",
+            "hi": "FSSAI लाइसेंस नंबर",
+            "ta": "FSSAI உரிம எண்",
+            "te": "FSSAI లైసెన్స్ నంబర్",
+            "bn": "FSSAI লাইসেন্স নম্বর",
+            "mr": "FSSAI परवाना क्रमांक",
+            "gu": "FSSAI લાયસન્સ નંબર",
+            "kn": "FSSAI ಪರವಾನಗಿ ಸಂಖ್ಯೆ",
+            "ml": "FSSAI ലൈസൻസ് നമ്പർ",
+            "pa": "FSSAI ਲਾਇਸੈਂਸ ਨੰਬਰ",
+            "od": "FSSAI ଲାଇସେନ୍ସ ନମ୍ବର"
+          },
+          "type": "text",
+          "voice_prompt": {
+            "en": "Please provide your 14-digit FSSAI license number. It is printed on your food packaging label.",
+            "hi": "कृपया अपना 14 अंकों का FSSAI लाइसेंस नंबर बताएं। यह आपके खाद्य पैकेजिंग लेबल पर छपा होता है।"
+          }
+        },
+        {
+          "id": "ingredients_list",
+          "label": {
+            "en": "Ingredients List",
+            "hi": "सामग्री सूची",
+            "ta": "பொருட்கள் பட்டியல்",
+            "te": "పదార్థాల జాబితా",
+            "bn": "উপকরণ তালিকা",
+            "mr": "घटक यादी",
+            "gu": "ઘટકોની યાદી",
+            "kn": "ಪದಾರ್ಥಗಳ ಪಟ್ಟಿ",
+            "ml": "ചേരുവകളുടെ പട്ടിക",
+            "pa": "ਸਮੱਗਰੀ ਸੂਚੀ",
+            "od": "ଉପାଦାନ ତାଲିକା"
+          },
+          "type": "text",
+          "voice_prompt": {
+            "en": "Please list all the ingredients in this product, in decreasing order of quantity. Read them from the packaging label.",
+            "hi": "कृपया इस उत्पाद में सभी सामग्री की सूची दें, मात्रा के घटते क्रम में। इन्हें पैकेजिंग लेबल से पढ़ें।"
+          }
+        },
+        {
+          "id": "allergen_info",
+          "label": {
+            "en": "Allergen Information",
+            "hi": "एलर्जी संबंधी जानकारी",
+            "ta": "ஒவ்வாமை தகவல்",
+            "te": "అలెర్జీ సమాచారం",
+            "bn": "অ্যালার্জি তথ্য",
+            "mr": "ऍलर्जी माहिती",
+            "gu": "એલર્જી માહિતી",
+            "kn": "ಅಲರ್ಜಿ ಮಾಹಿತಿ",
+            "ml": "അലർജി വിവരങ്ങൾ",
+            "pa": "ਐਲਰਜੀ ਜਾਣਕਾਰੀ",
+            "od": "ଆଲର୍ଜି ସୂଚନା"
+          },
+          "type": "text",
+          "voice_prompt": {
+            "en": "Does this product contain any common allergens? For example: nuts, gluten, dairy, soy, eggs, or shellfish.",
+            "hi": "क्या इस उत्पाद में कोई सामान्य एलर्जेन है? जैसे: मेवे, ग्लूटेन, डेयरी, सोया, अंडे, या शेलफिश।"
+          }
+        },
+        {
+          "id": "nutritional_info",
+          "label": {
+            "en": "Nutritional Information (per 100g)",
+            "hi": "पोषण संबंधी जानकारी (प्रति 100 ग्राम)",
+            "ta": "ஊட்டச்சத்து தகவல்",
+            "te": "పోషక విలువలు",
+            "bn": "পুষ্টি তথ্য",
+            "mr": "पोषण माहिती",
+            "gu": "પોષણ માહિતી",
+            "kn": "ಪೌಷ್ಟಿಕ ಮಾಹಿತಿ",
+            "ml": "പോഷക വിവരങ്ങൾ",
+            "pa": "ਪੋਸ਼ਣ ਜਾਣਕਾਰੀ",
+            "od": "ପୋଷଣ ସୂଚନା"
+          },
+          "type": "text",
+          "voice_prompt": {
+            "en": "Please share the nutritional information per 100 grams: energy in kilocalories, protein, carbohydrates, fat, and sugar content.",
+            "hi": "कृपया प्रति 100 ग्राम पोषण संबंधी जानकारी दें: ऊर्जा किलोकैलोरी में, प्रोटीन, कार्बोहाइड्रेट, वसा, और चीनी की मात्रा।"
+          }
+        },
+        {
+          "id": "shelf_life_days",
+          "label": {
+            "en": "Shelf Life (days)",
+            "hi": "शेल्फ लाइफ (दिन)",
+            "ta": "அடுக்கு ஆயுள் (நாட்கள்)",
+            "te": "షెల్ఫ్ లైఫ్ (రోజులు)",
+            "bn": "শেলফ লাইফ (দিন)",
+            "mr": "शेल्फ लाइफ (दिवस)",
+            "gu": "શેલ્ફ લાઇફ (દિવસો)",
+            "kn": "ಶೆಲ್ಫ್ ಲೈಫ್ (ದಿನಗಳು)",
+            "ml": "ഷെൽഫ് ലൈഫ് (ദിവസങ്ങൾ)",
+            "pa": "ਸ਼ੈਲਫ਼ ਲਾਈਫ਼ (ਦਿਨ)",
+            "od": "ସେଲ୍ଫ ଲାଇଫ (ଦିନ)"
+          },
+          "type": "number",
+          "voice_prompt": {
+            "en": "How many days is the shelf life of this product from the date of manufacture?",
+            "hi": "निर्माण तिथि से इस उत्पाद की शेल्फ लाइफ कितने दिन है?"
+          }
+        },
+        {
+          "id": "storage_instructions",
+          "label": {
+            "en": "Storage Instructions",
+            "hi": "भंडारण निर्देश",
+            "ta": "சேமிப்பு அறிவுறுத்தல்",
+            "te": "నిల్వ సూచనలు",
+            "bn": "সংরক্ষণ নির্দেশ",
+            "mr": "साठवणूक सूचना",
+            "gu": "સંગ્રહ સૂચનાઓ",
+            "kn": "ಸಂಗ್ರಹ ಸೂಚನೆ",
+            "ml": "സൂക്ഷിപ്പ് നിർദ്ദേശം",
+            "pa": "ਸਟੋਰੇਜ ਨਿਰਦੇਸ਼",
+            "od": "ସଂରକ୍ଷଣ ନିର୍ଦ୍ଦେଶ"
+          },
+          "type": "select",
+          "options": [
+            "Store in a cool, dry place",
+            "Refrigerate after opening",
+            "Keep refrigerated (2-8°C)",
+            "Store below 25°C",
+            "Keep frozen (-18°C or below)",
+            "Store away from direct sunlight",
+            "Keep in airtight container after opening"
+          ],
+          "voice_prompt": {
+            "en": "How should this product be stored? Cool dry place, refrigerated, frozen, or any special conditions?",
+            "hi": "इस उत्पाद को कैसे संग्रहित किया जाना चाहिए? ठंडी सूखी जगह, फ्रिज में, फ्रीज़र में, या कोई विशेष स्थिति?"
+          }
+        },
+        {
+          "id": "veg_nonveg",
+          "label": {
+            "en": "Veg / Non-Veg",
+            "hi": "शाकाहारी / मांसाहारी",
+            "ta": "சைவம் / அசைவம்",
+            "te": "శాకాహారం / మాంసాహారం",
+            "bn": "নিরামিষ / আমিষ",
+            "mr": "शाकाहारी / मांसाहारी",
+            "gu": "શાકાહારી / માંસાહારી",
+            "kn": "ಸಸ್ಯಾಹಾರ / ಮಾಂಸಾಹಾರ",
+            "ml": "സസ്യഭക്ഷണം / മാംസഭക്ഷണം",
+            "pa": "ਸ਼ਾਕਾਹਾਰੀ / ਮਾਂਸਾਹਾਰੀ",
+            "od": "ନିରାମିଷ / ଆମିଷ"
+          },
+          "type": "select",
+          "options": [
+            "Vegetarian (green mark)",
+            "Non-Vegetarian (brown mark)",
+            "Egg only (egg mark)"
+          ],
+          "voice_prompt": {
+            "en": "Is this product vegetarian, non-vegetarian, or contains only egg?",
+            "hi": "क्या यह उत्पाद शाकाहारी है, मांसाहारी है, या केवल अंडा युक्त है?"
+          }
+        },
+        {
+          "id": "date_of_manufacture",
+          "label": {
+            "en": "Date of Manufacture",
+            "hi": "निर्माण तिथि",
+            "ta": "உற்பத்தி தேதி",
+            "te": "తయారీ తేదీ",
+            "bn": "উৎপাদন তারিখ",
+            "mr": "उत्पादन तारीख",
+            "gu": "ઉત્પાદન તારીખ",
+            "kn": "ಉತ್ಪಾದನೆ ದಿನಾಂಕ",
+            "ml": "നിർമ്മാണ തീയതി",
+            "pa": "ਨਿਰਮਾਣ ਮਿਤੀ",
+            "od": "ଉତ୍ପାଦନ ତାରିଖ"
+          },
+          "type": "text",
+          "voice_prompt": {
+            "en": "What is the date of manufacture printed on the packaging? Please state the date in day, month, year format.",
+            "hi": "पैकेजिंग पर छपी निर्माण तिथि क्या है? कृपया तारीख दिन, महीना, वर्ष के प्रारूप में बताएं।"
+          }
+        },
+        {
+          "id": "batch_lot_number",
+          "label": {
+            "en": "Batch / Lot Number",
+            "hi": "बैच / लॉट नंबर",
+            "ta": "தொகுதி எண்",
+            "te": "బ్యాచ్ నంబర్",
+            "bn": "ব্যাচ নম্বর",
+            "mr": "बॅच क्रमांक",
+            "gu": "બેચ નંબર",
+            "kn": "ಬ್ಯಾಚ್ ಸಂಖ್ಯೆ",
+            "ml": "ബാച്ച് നമ്പർ",
+            "pa": "ਬੈਚ ਨੰਬਰ",
+            "od": "ବ୍ୟାଚ୍ ନମ୍ବର"
+          },
+          "type": "text",
+          "voice_prompt": {
+            "en": "What is the batch or lot number on the packaging?",
+            "hi": "पैकेजिंग पर बैच या लॉट नंबर क्या है?"
+          }
+        },
+        {
+          "id": "net_quantity",
+          "label": {
+            "en": "Net Quantity",
+            "hi": "शुद्ध मात्रा",
+            "ta": "நிகர அளவு",
+            "te": "నికర పరిమాణం",
+            "bn": "নিট পরিমাণ",
+            "mr": "निव्वळ प्रमाण",
+            "gu": "ચોખ્ખી માત્રા",
+            "kn": "ನಿವ್ವಳ ಪ್ರಮಾಣ",
+            "ml": "നെറ്റ് അളവ്",
+            "pa": "ਸ਼ੁੱਧ ਮਾਤਰਾ",
+            "od": "ନିଟ୍ ପରିମାଣ"
+          },
+          "type": "text",
+          "voice_prompt": {
+            "en": "What is the net quantity of this product? For example, 500 grams, 1 litre, 250 ml, or 12 pieces.",
+            "hi": "इस उत्पाद की शुद्ध मात्रा क्या है? जैसे 500 ग्राम, 1 लीटर, 250 मिली, या 12 टुकड़े।"
+          }
+        },
+        {
+          "id": "mrp",
+          "label": {
+            "en": "MRP (Maximum Retail Price)",
+            "hi": "MRP (अधिकतम खुदरा मूल्य)",
+            "ta": "MRP (அதிகபட்ச சில்லறை விலை)",
+            "te": "MRP (గరిష్ట రిటైల్ ధర)",
+            "bn": "MRP (সর্বোচ্চ খুচরা মূল্য)",
+            "mr": "MRP (जास्तीत जास्त किरकोळ किंमत)",
+            "gu": "MRP (મહત્તમ છૂટક કિંમત)",
+            "kn": "MRP (ಗರಿಷ್ಠ ಚಿಲ್ಲರೆ ಬೆಲೆ)",
+            "ml": "MRP (പരമാവധി ചില്ലറ വില)",
+            "pa": "MRP (ਵੱਧ ਤੋਂ ਵੱਧ ਪ੍ਰਚੂਨ ਮੁੱਲ)",
+            "od": "MRP (ସର୍ବାଧିକ ଖୁଚୁରା ମୂଲ୍ୟ)"
+          },
+          "type": "number",
+          "voice_prompt": {
+            "en": "What is the MRP or maximum retail price printed on the packaging, in rupees?",
+            "hi": "पैकेजिंग पर छपा MRP या अधिकतम खुदरा मूल्य रुपये में क्या है?"
+          }
+        },
+        {
+          "id": "food_type",
+          "label": {
+            "en": "Food Type / Category",
+            "hi": "खाद्य प्रकार / श्रेणी",
+            "ta": "உணவு வகை",
+            "te": "ఆహార రకం",
+            "bn": "খাদ্য প্রকার",
+            "mr": "अन्न प्रकार",
+            "gu": "ખોરાક પ્રકાર",
+            "kn": "ಆಹಾರ ವಿಧ",
+            "ml": "ഭക്ഷണ തരം",
+            "pa": "ਭੋਜਨ ਕਿਸਮ",
+            "od": "ଖାଦ୍ୟ ପ୍ରକାର"
+          },
+          "type": "select",
+          "options": [
+            "Spices & Masalas",
+            "Pickles & Chutneys",
+            "Snacks & Namkeen",
+            "Sweets & Mithai",
+            "Grains & Flour",
+            "Oil & Ghee",
+            "Beverages",
+            "Dry fruits & Nuts",
+            "Ready to eat / Cook",
+            "Honey & Jaggery",
+            "Papad & Fryums",
+            "Other"
+          ],
+          "voice_prompt": {
+            "en": "What type of food product is this? For example, spices, pickles, snacks, sweets, grains, oil, beverages, or dry fruits?",
+            "hi": "यह किस प्रकार का खाद्य उत्पाद है? जैसे मसाले, अचार, नमकीन, मिठाई, अनाज, तेल, पेय, या मेवे?"
+          }
+        }
+      ],
+      "photo_extraction_prompt": "Analyze this packaged food product image carefully. Extract the following information from the packaging label:\n1. **Product name**: Read the product name and brand from the label.\n2. **FSSAI license number**: Look for the 14-digit FSSAI number (usually near the FSSAI logo).\n3. **Veg/Non-Veg mark**: Look for the green dot (veg), brown dot (non-veg), or egg mark.\n4. **Ingredients list**: Read the ingredients if visible on the label.\n5. **Nutritional information table**: Read energy, protein, carbohydrate, fat, sugar values per 100g/serving.\n6. **Net quantity**: Read the weight or volume (e.g., 500g, 1L).\n7. **MRP**: Read the maximum retail price.\n8. **Date of manufacture / Expiry date**: Read both dates if visible.\n9. **Batch/Lot number**: Read the batch or lot number.\n10. **Storage instructions**: Read storage conditions.\n11. **Allergen information**: Look for allergen declarations.\n12. **Manufacturer details**: Read manufacturer name and address if visible.\nReturn all extracted text fields clearly labeled. Flag any mandatory FSSAI label fields that appear to be missing.",
+      "ai_description_context": "Generate an appealing product description for a packaged food item sold on ONDC. Highlight the taste profile, traditional recipe aspects, quality of ingredients, and regional food heritage if applicable. Mention key selling points like natural ingredients, no preservatives, homemade style, or authentic regional taste. Include the net quantity, shelf life, and storage instructions. Ensure the description is FSSAI-compliant by not making unsubstantiated health claims. Keep it under 150 words."
+    },
+
+    "handicrafts": {
+      "display_name": {
+        "en": "Handicrafts & Artisan Products",
+        "hi": "हस्तशिल्प एवं कारीगर उत्पाद",
+        "ta": "கைவினைப் பொருட்கள்",
+        "te": "హస్తకళలు & కళాకారుల ఉత్పత్తులు",
+        "bn": "হস্তশিল্প ও কারিগরি পণ্য",
+        "mr": "हस्तकला आणि कारागीर उत्पादने",
+        "gu": "હસ્તકલા અને કારીગર ઉત્પાદનો",
+        "kn": "ಕರಕುಶಲ ಮತ್ತು ಕುಶಲಕರ್ಮಿ ಉತ್ಪನ್ನಗಳು",
+        "ml": "കരകൗശല & കലാകാരൻ ഉൽപ്പന്നങ്ങൾ",
+        "pa": "ਦਸਤਕਾਰੀ ਅਤੇ ਕਾਰੀਗਰ ਉਤਪਾਦ",
+        "od": "ହସ୍ତଶିଳ୍ପ ଏବଂ କାରିଗର ଉତ୍ପାଦ"
+      },
+      "required_fields": [
+        "product_name",
+        "craft_type",
+        "material",
+        "dimensions",
+        "weight",
+        "price"
+      ],
+      "category_fields": [
+        {
+          "id": "craft_type",
+          "label": {
+            "en": "Craft Type",
+            "hi": "शिल्प प्रकार",
+            "ta": "கைவினை வகை",
+            "te": "హస్తకళ రకం",
+            "bn": "শিল্প প্রকার",
+            "mr": "शिल्प प्रकार",
+            "gu": "હસ્તકલા પ્રકાર",
+            "kn": "ಕರಕುಶಲ ವಿಧ",
+            "ml": "കരകൗശല തരം",
+            "pa": "ਸ਼ਿਲਪ ਕਿਸਮ",
+            "od": "ଶିଳ୍ପ ପ୍ରକାର"
+          },
+          "type": "select",
+          "options": [
+            "Pottery / Terracotta",
+            "Woodwork / Wood carving",
+            "Metalwork / Bell metal / Brass",
+            "Painting (Madhubani, Warli, Pattachitra, Kalamkari, Tanjore, Miniature)",
+            "Stone carving",
+            "Bamboo & Cane craft",
+            "Lacquerware",
+            "Papier-mâché",
+            "Embroidery / Needlework",
+            "Beadwork / Jewellery making",
+            "Leather craft",
+            "Glass work / Bangles",
+            "Dhokra / Lost-wax casting",
+            "Basketry & Weaving",
+            "Other"
+          ],
+          "voice_prompt": {
+            "en": "What type of handicraft is this? For example, pottery, woodwork, metalwork, painting, stone carving, or bamboo craft?",
+            "hi": "यह किस प्रकार का हस्तशिल्प है? जैसे मिट्टी के बर्तन, लकड़ी का काम, धातु का काम, चित्रकला, पत्थर की नक्काशी, या बांस का शिल्प?"
+          }
+        },
+        {
+          "id": "material",
+          "label": {
+            "en": "Material Used",
+            "hi": "प्रयुक्त सामग्री",
+            "ta": "பயன்படுத்தப்பட்ட பொருள்",
+            "te": "ఉపయోగించిన పదార్థం",
+            "bn": "ব্যবহৃত উপাদান",
+            "mr": "वापरलेले साहित्य",
+            "gu": "વપરાયેલ સામગ્રી",
+            "kn": "ಬಳಸಿದ ವಸ್ತು",
+            "ml": "ഉപയോഗിച്ച വസ്തു",
+            "pa": "ਵਰਤੀ ਗਈ ਸਮੱਗਰੀ",
+            "od": "ବ୍ୟବହୃତ ସାମଗ୍ରୀ"
+          },
+          "type": "select",
+          "options": [
+            "Terracotta / Clay",
+            "Teak wood",
+            "Rosewood / Sheesham",
+            "Sandalwood",
+            "Brass",
+            "Copper",
+            "Bronze / Bell metal",
+            "Silver",
+            "Marble",
+            "Soapstone",
+            "Bamboo",
+            "Cane / Rattan",
+            "Jute",
+            "Paper / Papier-mâché",
+            "Glass",
+            "Leather",
+            "Mixed media",
+            "Other"
+          ],
+          "voice_prompt": {
+            "en": "What material is this handicraft made from? For example, clay, wood, brass, copper, marble, bamboo, or jute?",
+            "hi": "यह हस्तशिल्प किस सामग्री से बना है? जैसे मिट्टी, लकड़ी, पीतल, तांबा, संगमरमर, बांस, या जूट?"
+          }
+        },
+        {
+          "id": "artisan_story",
+          "label": {
+            "en": "Artisan Story",
+            "hi": "कारीगर की कहानी",
+            "ta": "கலைஞரின் கதை",
+            "te": "కళాకారుడి కథ",
+            "bn": "কারিগরের গল্প",
+            "mr": "कारागिराची कथा",
+            "gu": "કારીગરની વાર્તા",
+            "kn": "ಕುಶಲಕರ್ಮಿ ಕಥೆ",
+            "ml": "കലാകാരന്റെ കഥ",
+            "pa": "ਕਾਰੀਗਰ ਦੀ ਕਹਾਣੀ",
+            "od": "କାରିଗରଙ୍କ କାହାଣୀ"
+          },
+          "type": "voice_capture",
+          "voice_prompt": {
+            "en": "Please tell us about yourself — the artisan behind this product. Share your name, how long you have been practising this craft, where you learned it from, and what makes your work special. Speak freely in your own language.",
+            "hi": "कृपया अपने बारे में बताएं — इस उत्पाद के पीछे के कारीगर। अपना नाम, आप कब से यह शिल्प कर रहे हैं, आपने इसे कहां से सीखा, और आपके काम को क्या खास बनाता है, यह बताएं। अपनी भाषा में बेझिझक बोलें।"
+          }
+        },
+        {
+          "id": "is_unique_piece",
+          "label": {
+            "en": "One-of-a-Kind / Unique Piece?",
+            "hi": "अनूठा / एकमात्र टुकड़ा?",
+            "ta": "தனித்துவமான பொருளா?",
+            "te": "ప్రత్యేక ముక్కా?",
+            "bn": "অনন্য টুকরা?",
+            "mr": "एकमेव तुकडा?",
+            "gu": "અનન્ય ટુકડો?",
+            "kn": "ಅನನ್ಯ ತುಣುಕು?",
+            "ml": "അതുല്യ ഉൽപ്പന്നം?",
+            "pa": "ਵਿਲੱਖਣ ਟੁਕੜਾ?",
+            "od": "ଅନନ୍ୟ ଖଣ୍ଡ?"
+          },
+          "type": "boolean",
+          "voice_prompt": {
+            "en": "Is this a one-of-a-kind unique piece, or can it be reproduced in multiple quantities?",
+            "hi": "क्या यह एक अनूठा टुकड़ा है, या इसे कई मात्रा में बनाया जा सकता है?"
+          }
+        },
+        {
+          "id": "making_time",
+          "label": {
+            "en": "Making Time",
+            "hi": "बनाने का समय",
+            "ta": "தயாரிப்பு நேரம்",
+            "te": "తయారీ సమయం",
+            "bn": "তৈরির সময়",
+            "mr": "बनवण्याचा वेळ",
+            "gu": "બનાવવાનો સમય",
+            "kn": "ತಯಾರಿಕೆ ಸಮಯ",
+            "ml": "നിർമ്മാണ സമയം",
+            "pa": "ਬਣਾਉਣ ਦਾ ਸਮਾਂ",
+            "od": "ତିଆରି ସମୟ"
+          },
+          "type": "text",
+          "voice_prompt": {
+            "en": "How long does it take to make one piece of this product? For example, 2 days, 1 week, or 3 months.",
+            "hi": "इस उत्पाद का एक टुकड़ा बनाने में कितना समय लगता है? जैसे 2 दिन, 1 सप्ताह, या 3 महीने।"
+          }
+        },
+        {
+          "id": "cultural_significance",
+          "label": {
+            "en": "Cultural Significance",
+            "hi": "सांस्कृतिक महत्व",
+            "ta": "கலாச்சார முக்கியத்துவம்",
+            "te": "సాంస్కృతిక ప్రాముఖ్యత",
+            "bn": "সাংস্কৃতিক গুরুত্ব",
+            "mr": "सांस्कृतिक महत्त्व",
+            "gu": "સાંસ્કૃતિક મહત્વ",
+            "kn": "ಸಾಂಸ್ಕೃತಿಕ ಮಹತ್ವ",
+            "ml": "സാംസ്കാരിക പ്രാധാന്യം",
+            "pa": "ਸੱਭਿਆਚਾਰਕ ਮਹੱਤਵ",
+            "od": "ସାଂସ୍କୃତିକ ମହତ୍ତ୍ୱ"
+          },
+          "type": "text",
+          "voice_prompt": {
+            "en": "What is the cultural significance of this craft or product? Is it associated with any tradition, festival, or ritual?",
+            "hi": "इस शिल्प या उत्पाद का सांस्कृतिक महत्व क्या है? क्या यह किसी परंपरा, त्योहार, या अनुष्ठान से जुड़ा है?"
+          }
+        },
+        {
+          "id": "dimensions",
+          "label": {
+            "en": "Dimensions (L x W x H)",
+            "hi": "आयाम (ल x चौ x ऊ)",
+            "ta": "அளவுகள்",
+            "te": "కొలతలు",
+            "bn": "মাপ",
+            "mr": "परिमाण",
+            "gu": "પરિમાણ",
+            "kn": "ಅಳತೆ",
+            "ml": "അളവുകൾ",
+            "pa": "ਮਾਪ",
+            "od": "ମାପ"
+          },
+          "type": "text",
+          "voice_prompt": {
+            "en": "What are the dimensions of this product? Please share length, width, and height in centimeters or inches.",
+            "hi": "इस उत्पाद के आयाम क्या हैं? कृपया लंबाई, चौड़ाई और ऊंचाई सेंटीमीटर या इंच में बताएं।"
+          }
+        },
+        {
+          "id": "weight",
+          "label": {
+            "en": "Weight",
+            "hi": "वज़न",
+            "ta": "எடை",
+            "te": "బరువు",
+            "bn": "ওজন",
+            "mr": "वजन",
+            "gu": "વજન",
+            "kn": "ತೂಕ",
+            "ml": "ഭാരം",
+            "pa": "ਵਜ਼ਨ",
+            "od": "ଓଜନ"
+          },
+          "type": "text",
+          "voice_prompt": {
+            "en": "What is the approximate weight of this product? Please share in grams or kilograms.",
+            "hi": "इस उत्पाद का अनुमानित वज़न क्या है? कृपया ग्राम या किलोग्राम में बताएं।"
+          }
+        },
+        {
+          "id": "finish_type",
+          "label": {
+            "en": "Finish / Coating",
+            "hi": "फिनिश / कोटिंग",
+            "ta": "பூச்சு",
+            "te": "ఫినిష్",
+            "bn": "ফিনিশ",
+            "mr": "फिनिश",
+            "gu": "ફિનિશ",
+            "kn": "ಫಿನಿಶ್",
+            "ml": "ഫിനിഷ്",
+            "pa": "ਫਿਨਿਸ਼",
+            "od": "ଫିନିସ୍"
+          },
+          "type": "select",
+          "options": [
+            "Natural / Raw",
+            "Lacquered",
+            "Polished",
+            "Painted",
+            "Varnished",
+            "Glazed",
+            "Oxidized / Antique finish",
+            "Gold / Silver plated",
+            "None"
+          ],
+          "voice_prompt": {
+            "en": "What kind of finish or coating does this product have? Natural, lacquered, polished, painted, or glazed?",
+            "hi": "इस उत्पाद पर किस प्रकार की फिनिश या कोटिंग है? प्राकृतिक, लैकर, पॉलिश, पेंट, या ग्लेज़?"
+          }
+        },
+        {
+          "id": "fragile",
+          "label": {
+            "en": "Is Fragile?",
+            "hi": "क्या नाज़ुक है?",
+            "ta": "உடையக்கூடியதா?",
+            "te": "పెళుసుగా ఉందా?",
+            "bn": "ভঙ্গুর?",
+            "mr": "नाजूक आहे?",
+            "gu": "નાજુક છે?",
+            "kn": "ಸೂಕ್ಷ್ಮವಾದುದೇ?",
+            "ml": "പൊട്ടുന്നതാണോ?",
+            "pa": "ਨਾਜ਼ੁਕ ਹੈ?",
+            "od": "ନାଜୁକ କି?"
+          },
+          "type": "boolean",
+          "voice_prompt": {
+            "en": "Is this product fragile? Does it need special packaging or careful handling during shipping?",
+            "hi": "क्या यह उत्पाद नाज़ुक है? क्या इसे शिपिंग के दौरान विशेष पैकेजिंग या सावधानी से संभालने की ज़रूरत है?"
+          }
+        }
+      ],
+      "photo_extraction_prompt": "Analyze this handicraft/artisan product image carefully. Extract the following details:\n1. **Craft type**: Identify the type — pottery, woodwork, metalwork, painting style (Madhubani, Warli, Pattachitra, Kalamkari, Tanjore), stone carving, bamboo craft, lacquerware, papier-mâché, or other.\n2. **Material**: Identify the primary material — clay/terracotta, wood (type if possible), brass, copper, bronze, marble, bamboo, jute, paper, glass, or mixed.\n3. **Technique markers**: Look for signs of hand-making — tool marks, brush strokes, irregularities, patina, hand-carved details. Note if it appears machine-made vs handmade.\n4. **Color & finish**: Describe the color palette and finish type — natural, lacquered, polished, painted, glazed, oxidized.\n5. **Design elements**: Describe motifs, patterns, figurative elements, geometric patterns, floral designs, or narrative scenes.\n6. **Size estimation**: Based on visual context clues, estimate dimensions.\n7. **Cultural style**: Identify the regional art tradition or cultural style if recognizable.\n8. **Condition**: Note if the item appears new, vintage, or shows intentional ageing/patina.\n9. **Fragility**: Assess if the item appears fragile and would need special shipping care.\n10. **Functional vs decorative**: Determine if the product is functional (bowl, lamp, furniture) or purely decorative (wall art, figurine).",
+      "ai_description_context": "Generate an evocative product description for a handcrafted artisan product. Tell the story of the craft tradition — its origins, the community of artisans, and the cultural significance. Describe the material, making process, and the time investment. Highlight that this is handmade and each piece is unique. If an artisan story was provided, weave it into the description naturally. Mention dimensions, weight, and care instructions. Appeal to buyers who value authenticity, cultural preservation, and supporting artisan livelihoods. Keep it under 180 words."
+    },
+
+    "agriculture": {
+      "display_name": {
+        "en": "Agriculture & Farm Produce",
+        "hi": "कृषि एवं कृषि उपज",
+        "ta": "விவசாயம் & விளைபொருட்கள்",
+        "te": "వ్యవసాయం & వ్యవసాయ ఉత్పత్తులు",
+        "bn": "কৃষি ও কৃষি উৎপাদন",
+        "mr": "शेती आणि शेत उत्पादने",
+        "gu": "ખેતી અને ખેત ઉત્પાદન",
+        "kn": "ಕೃಷಿ ಮತ್ತು ಕೃಷಿ ಉತ್ಪನ್ನಗಳು",
+        "ml": "കൃഷി & കാർഷിക ഉൽപ്പന്നങ്ങൾ",
+        "pa": "ਖੇਤੀਬਾੜੀ ਅਤੇ ਖੇਤ ਉਤਪਾਦ",
+        "od": "କୃଷି ଏବଂ କୃଷି ଉତ୍ପାଦ"
+      },
+      "required_fields": [
+        "product_name",
+        "produce_type",
+        "pricing_unit",
+        "quality_grade",
+        "price"
+      ],
+      "category_fields": [
+        {
+          "id": "produce_type",
+          "label": {
+            "en": "Produce Type",
+            "hi": "उपज का प्रकार",
+            "ta": "விளைபொருள் வகை",
+            "te": "ఉత్పత్తి రకం",
+            "bn": "উৎপাদন প্রকার",
+            "mr": "उत्पादन प्रकार",
+            "gu": "ઉત્પાદન પ્રકાર",
+            "kn": "ಉತ್ಪನ್ನ ವಿಧ",
+            "ml": "ഉൽപ്പന്ന തരം",
+            "pa": "ਉਤਪਾਦ ਕਿਸਮ",
+            "od": "ଉତ୍ପାଦ ପ୍ରକାର"
+          },
+          "type": "select",
+          "options": [
+            "Fruits",
+            "Vegetables",
+            "Grains & Cereals",
+            "Pulses & Lentils",
+            "Spices",
+            "Oilseeds",
+            "Nuts & Dry fruits",
+            "Herbs & Medicinal plants",
+            "Flowers",
+            "Dairy products",
+            "Honey",
+            "Sugarcane & Jaggery",
+            "Tea & Coffee",
+            "Other"
+          ],
+          "voice_prompt": {
+            "en": "What type of farm produce is this? For example, fruits, vegetables, grains, pulses, spices, oilseeds, or dairy?",
+            "hi": "यह किस प्रकार की कृषि उपज है? जैसे फल, सब्ज़ियां, अनाज, दालें, मसाले, तिलहन, या डेयरी?"
+          }
+        },
+        {
+          "id": "pricing_unit",
+          "label": {
+            "en": "Pricing Unit",
+            "hi": "मूल्य इकाई",
+            "ta": "விலை அலகு",
+            "te": "ధర యూనిట్",
+            "bn": "মূল্য একক",
+            "mr": "किंमत एकक",
+            "gu": "કિંમત એકમ",
+            "kn": "ಬೆಲೆ ಘಟಕ",
+            "ml": "വില യൂണിറ്റ്",
+            "pa": "ਮੁੱਲ ਇਕਾਈ",
+            "od": "ମୂଲ୍ୟ ଏକକ"
+          },
+          "type": "select",
+          "options": [
+            "Per kg",
+            "Per quintal (100 kg)",
+            "Per tonne",
+            "Per dozen",
+            "Per piece / unit",
+            "Per litre",
+            "Per bundle",
+            "Per crate",
+            "Per bag (specify weight)"
+          ],
+          "voice_prompt": {
+            "en": "What is the pricing unit for this produce? Per kg, per quintal, per dozen, per piece, or per litre?",
+            "hi": "इस उपज की मूल्य इकाई क्या है? प्रति किलो, प्रति क्विंटल, प्रति दर्जन, प्रति टुकड़ा, या प्रति लीटर?"
+          }
+        },
+        {
+          "id": "seasonal_availability",
+          "label": {
+            "en": "Seasonal Availability",
+            "hi": "मौसमी उपलब्धता",
+            "ta": "பருவ கிடைக்கும் நிலை",
+            "te": "సీజనల్ లభ్యత",
+            "bn": "মৌসুমী প্রাপ্যতা",
+            "mr": "हंगामी उपलब्धता",
+            "gu": "મોસમી ઉપલબ્ધતા",
+            "kn": "ಋತುಮಾನ ಲಭ್ಯತೆ",
+            "ml": "സീസണൽ ലഭ്യത",
+            "pa": "ਮੌਸਮੀ ਉਪਲਬਧਤਾ",
+            "od": "ମୌସୁମୀ ଉପಲବ୍ଧତା"
+          },
+          "type": "select",
+          "options": [
+            "Year-round",
+            "Kharif season (Jun-Oct)",
+            "Rabi season (Nov-Mar)",
+            "Zaid / Summer (Mar-Jun)",
+            "Monsoon only",
+            "Winter only (Nov-Feb)",
+            "Summer only (Mar-Jun)",
+            "Specific months (mention in description)"
+          ],
+          "voice_prompt": {
+            "en": "When is this produce available? Year-round, during Kharif season, Rabi season, or only in specific months?",
+            "hi": "यह उपज कब उपलब्ध होती है? साल भर, खरीफ मौसम में, रबी मौसम में, या केवल विशेष महीनों में?"
+          }
+        },
+        {
+          "id": "quality_grade",
+          "label": {
+            "en": "Quality Grade",
+            "hi": "गुणवत्ता ग्रेड",
+            "ta": "தர தரம்",
+            "te": "నాణ్యత గ్రేడ్",
+            "bn": "মান গ্রেড",
+            "mr": "गुणवत्ता श्रेणी",
+            "gu": "ગુણવત્તા ગ્રેડ",
+            "kn": "ಗುಣಮಟ್ಟ ಶ್ರೇಣಿ",
+            "ml": "ഗുണനിലവാര ഗ്രേഡ്",
+            "pa": "ਗੁਣਵੱਤਾ ਗ੍ਰੇਡ",
+            "od": "ଗୁଣମାନ ଗ୍ରେଡ୍"
+          },
+          "type": "select",
+          "options": [
+            "Premium / Grade A",
+            "Standard / Grade B",
+            "Economy / Grade C",
+            "Ungraded",
+            "AGMARK certified",
+            "Export quality"
+          ],
+          "voice_prompt": {
+            "en": "What is the quality grade of this produce? Premium grade A, standard grade B, economy grade C, or ungraded?",
+            "hi": "इस उपज का गुणवत्ता ग्रेड क्या है? प्रीमियम ग्रेड A, स्टैंडर्ड ग्रेड B, इकोनॉमी ग्रेड C, या बिना ग्रेड?"
+          }
+        },
+        {
+          "id": "shelf_life_days",
+          "label": {
+            "en": "Shelf Life (days)",
+            "hi": "शेल्फ लाइफ (दिन)",
+            "ta": "அடுக்கு ஆயுள் (நாட்கள்)",
+            "te": "షెల్ఫ్ లైఫ్ (రోజులు)",
+            "bn": "শেলফ লাইফ (দিন)",
+            "mr": "शेल्फ लाइफ (दिवस)",
+            "gu": "શેલ્ફ લાઇફ (દિવસો)",
+            "kn": "ಶೆಲ್ಫ್ ಲೈಫ್ (ದಿನಗಳು)",
+            "ml": "ഷെൽഫ് ലൈഫ് (ദിവസങ്ങൾ)",
+            "pa": "ਸ਼ੈਲਫ਼ ਲਾਈਫ਼ (ਦਿਨ)",
+            "od": "ସେଲ୍ଫ ଲାଇଫ (ଦିନ)"
+          },
+          "type": "number",
+          "voice_prompt": {
+            "en": "How many days does this produce stay fresh after harvest? What is its approximate shelf life?",
+            "hi": "कटाई के बाद यह उपज कितने दिन ताज़ा रहती है? इसकी अनुमानित शेल्फ लाइफ क्या है?"
+          }
+        },
+        {
+          "id": "cold_chain_required",
+          "label": {
+            "en": "Cold Chain Required?",
+            "hi": "कोल्ड चेन आवश्यक?",
+            "ta": "குளிர் சங்கிலி தேவையா?",
+            "te": "కోల్డ్ చెయిన్ అవసరమా?",
+            "bn": "কোল্ড চেইন দরকার?",
+            "mr": "कोल्ड चेन आवश्यक?",
+            "gu": "કોલ્ડ ચેઇન જરૂરી?",
+            "kn": "ಕೋಲ್ಡ್ ಚೈನ್ ಅಗತ್ಯವೇ?",
+            "ml": "കോൾഡ് ചെയിൻ ആവശ്യമാണോ?",
+            "pa": "ਕੋਲਡ ਚੇਨ ਲੋੜੀਂਦੀ?",
+            "od": "କୋଲ୍ଡ ଚେନ୍ ଆବଶ୍ୟକ?"
+          },
+          "type": "boolean",
+          "voice_prompt": {
+            "en": "Does this produce need cold chain or refrigerated transport to stay fresh?",
+            "hi": "क्या इस उपज को ताज़ा रहने के लिए कोल्ड चेन या प्रशीतित परिवहन की आवश्यकता है?"
+          }
+        },
+        {
+          "id": "organic_certified",
+          "label": {
+            "en": "Organic Certified?",
+            "hi": "जैविक प्रमाणित?",
+            "ta": "கரிம சான்றிதழ் பெற்றதா?",
+            "te": "ఆర్గానిక్ సర్టిఫైడ్?",
+            "bn": "জৈব প্রত্যয়িত?",
+            "mr": "सेंद्रिय प्रमाणित?",
+            "gu": "ઓર્ગેનિક પ્રમાણિત?",
+            "kn": "ಸಾವಯವ ಪ್ರಮಾಣಿತ?",
+            "ml": "ഓർഗാനിക് സർട്ടിഫൈഡ്?",
+            "pa": "ਜੈਵਿਕ ਪ੍ਰਮਾਣਿਤ?",
+            "od": "ଜୈବିକ ପ୍ରମାଣିତ?"
+          },
+          "type": "select",
+          "options": [
+            "Yes — India Organic (NPOP) certified",
+            "Yes — PGS (Participatory Guarantee System)",
+            "Yes — Other certification",
+            "In conversion / Transitional",
+            "Natural farming (no certification)",
+            "No — Conventional farming"
+          ],
+          "voice_prompt": {
+            "en": "Is this produce organically certified? Do you have India Organic, PGS, or any other organic certification?",
+            "hi": "क्या यह उपज जैविक प्रमाणित है? क्या आपके पास इंडिया ऑर्गेनिक, PGS, या कोई अन्य जैविक प्रमाणन है?"
+          }
+        },
+        {
+          "id": "harvest_date",
+          "label": {
+            "en": "Harvest / Pick Date",
+            "hi": "कटाई की तारीख",
+            "ta": "அறுவடை தேதி",
+            "te": "పంట కోత తేదీ",
+            "bn": "ফসল কাটার তারিখ",
+            "mr": "काढणी तारीख",
+            "gu": "લણણી તારીખ",
+            "kn": "ಕೊಯ್ಲು ದಿನಾಂಕ",
+            "ml": "വിളവെടുപ്പ് തീയതി",
+            "pa": "ਵਾਢੀ ਦੀ ਮਿਤੀ",
+            "od": "ଅମଳ ତାରିଖ"
+          },
+          "type": "text",
+          "voice_prompt": {
+            "en": "When was this produce harvested or picked? Please share the approximate date.",
+            "hi": "यह उपज कब काटी या तोड़ी गई थी? कृपया अनुमानित तारीख बताएं।"
+          }
+        },
+        {
+          "id": "farm_location",
+          "label": {
+            "en": "Farm Location",
+            "hi": "खेत का स्थान",
+            "ta": "பண்ணை இடம்",
+            "te": "వ్యవసాయ క్షేత్రం",
+            "bn": "খামার অবস্থান",
+            "mr": "शेताचे स्थान",
+            "gu": "ખેતરનું સ્થાન",
+            "kn": "ಕೃಷಿ ಸ್ಥಳ",
+            "ml": "കൃഷിയിടം",
+            "pa": "ਖੇਤ ਦੀ ਥਾਂ",
+            "od": "ଚାଷ ଜମି ସ୍ଥାନ"
+          },
+          "type": "text",
+          "voice_prompt": {
+            "en": "Where is the farm located? Please share the village or district and state.",
+            "hi": "खेत कहां स्थित है? कृपया गांव या जिला और राज्य बताएं।"
+          }
+        },
+        {
+          "id": "minimum_order_qty",
+          "label": {
+            "en": "Minimum Order Quantity",
+            "hi": "न्यूनतम ऑर्डर मात्रा",
+            "ta": "குறைந்தபட்ச ஆர்டர் அளவு",
+            "te": "కనీస ఆర్డర్ పరిమాణం",
+            "bn": "সর্বনিম্ন অর্ডার পরিমাণ",
+            "mr": "किमान ऑर्डर प्रमाण",
+            "gu": "ન્યૂનતમ ઓર્ડર જથ્થો",
+            "kn": "ಕನಿಷ್ಠ ಆರ್ಡರ್ ಪ್ರಮಾಣ",
+            "ml": "കുറഞ്ഞ ഓർഡർ അളവ്",
+            "pa": "ਘੱਟੋ-ਘੱਟ ਆਰਡਰ ਮਾਤਰਾ",
+            "od": "ସର୍ବନିମ୍ନ ଅର୍ଡର ପରିମାଣ"
+          },
+          "type": "text",
+          "voice_prompt": {
+            "en": "What is the minimum order quantity? For example, 1 kg, 5 kg, 1 quintal, or 1 crate.",
+            "hi": "न्यूनतम ऑर्डर मात्रा क्या है? जैसे 1 किलो, 5 किलो, 1 क्विंटल, या 1 क्रेट।"
+          }
+        }
+      ],
+      "photo_extraction_prompt": "Analyze this agricultural/farm produce image carefully. Extract the following details:\n1. **Produce identification**: Identify the specific fruit, vegetable, grain, spice, or other farm product. Provide the common name and any regional varieties if identifiable.\n2. **Freshness assessment**: Rate the freshness and ripeness on a scale — unripe, just ripe, ripe and fresh, overripe, or showing signs of spoilage.\n3. **Quality grade estimation**: Based on visual appearance, estimate quality — premium/Grade A (uniform size, color, no blemishes), standard/Grade B (minor variations), or economy/Grade C (irregular, some blemishes).\n4. **Color and appearance**: Describe the color, texture, and visual characteristics.\n5. **Size estimation**: Estimate the size of individual items if visible.\n6. **Packaging**: Note how the produce is presented — loose, in a crate, bundled, in bags, or in branded packaging.\n7. **Quantity estimation**: If visible, estimate the quantity shown.\n8. **Organic indicators**: Look for organic certification labels, stickers, or visual cues of organic farming.\n9. **Defects or damage**: Note any visible damage, pest marks, bruising, or discoloration.\n10. **Variety identification**: If possible, identify the specific variety (e.g., Alphonso mango, Nagpur orange, Darjeeling tea).",
+      "ai_description_context": "Generate an authentic product description for farm-fresh produce sold on ONDC. Highlight freshness, farm origin, and the farmer behind the produce. Mention the variety, quality grade, and seasonal context. If organic, emphasize the farming practices. Include practical details like shelf life, storage tips, minimum order quantity, and pricing unit. Appeal to buyers looking for fresh, direct-from-farm produce. Mention cold chain requirements if applicable. Keep it under 150 words."
+    },
+
+    "general": {
+      "display_name": {
+        "en": "General Product",
+        "hi": "सामान्य उत्पाद",
+        "ta": "பொது தயாரிப்பு",
+        "te": "సాధారణ ఉత్పత్తి",
+        "bn": "সাধারণ পণ্য",
+        "mr": "सामान्य उत्पादन",
+        "gu": "સામાન્ય ઉત્પાદન",
+        "kn": "ಸಾಮಾನ್ಯ ಉತ್ಪನ್ನ",
+        "ml": "പൊതു ഉൽപ്പന്നം",
+        "pa": "ਆਮ ਉਤਪਾਦ",
+        "od": "ସାଧାରଣ ଉତ୍ପାଦ"
+      },
+      "required_fields": [
+        "product_name",
+        "product_category",
+        "description",
+        "price"
+      ],
+      "category_fields": [
+        {
+          "id": "product_category",
+          "label": {
+            "en": "Product Category",
+            "hi": "उत्पाद श्रेणी",
+            "ta": "தயாரிப்பு வகை",
+            "te": "ఉత్పత్తి వర్గం",
+            "bn": "পণ্যের শ্রেণী",
+            "mr": "उत्पादन वर्ग",
+            "gu": "ઉત્પાદન શ્રેણી",
+            "kn": "ಉತ್ಪನ್ನ ವರ್ಗ",
+            "ml": "ഉൽപ്പന്ന വിഭാഗം",
+            "pa": "ਉਤਪਾਦ ਸ਼੍ਰੇਣੀ",
+            "od": "ଉତ୍ପାଦ ଶ୍ରେଣୀ"
+          },
+          "type": "text",
+          "voice_prompt": {
+            "en": "What category does this product belong to? For example, home decor, personal care, stationery, toys, or tools.",
+            "hi": "यह उत्पाद किस श्रेणी में आता है? जैसे गृह सज्जा, व्यक्तिगत देखभाल, स्टेशनरी, खिलौने, या उपकरण।"
+          }
+        },
+        {
+          "id": "description",
+          "label": {
+            "en": "Product Description",
+            "hi": "उत्पाद विवरण",
+            "ta": "தயாரிப்பு விவரம்",
+            "te": "ఉత్పత్తి వివరణ",
+            "bn": "পণ্যের বিবরণ",
+            "mr": "उत्पादन वर्णन",
+            "gu": "ઉત્પાદન વર્ણન",
+            "kn": "ಉತ್ಪನ್ನ ವಿವರಣೆ",
+            "ml": "ഉൽപ്പന്ന വിവരണം",
+            "pa": "ਉਤਪਾਦ ਵੇਰਵਾ",
+            "od": "ଉତ୍ପାଦ ବିବରଣୀ"
+          },
+          "type": "text",
+          "voice_prompt": {
+            "en": "Please describe this product in a few sentences. What is it, what is it used for, and what makes it special?",
+            "hi": "कृपया इस उत्पाद का कुछ वाक्यों में वर्णन करें। यह क्या है, इसका उपयोग किसलिए होता है, और इसमें क्या खास है?"
+          }
+        },
+        {
+          "id": "material",
+          "label": {
+            "en": "Material",
+            "hi": "सामग्री",
+            "ta": "பொருள்",
+            "te": "పదార్థం",
+            "bn": "উপাদান",
+            "mr": "साहित्य",
+            "gu": "સામગ્રી",
+            "kn": "ವಸ್ತು",
+            "ml": "വസ്തു",
+            "pa": "ਸਮੱਗਰੀ",
+            "od": "ସାମଗ୍ରୀ"
+          },
+          "type": "text",
+          "voice_prompt": {
+            "en": "What material is this product made of?",
+            "hi": "यह उत्पाद किस सामग्री से बना है?"
+          }
+        },
+        {
+          "id": "dimensions",
+          "label": {
+            "en": "Dimensions",
+            "hi": "आयाम",
+            "ta": "அளவுகள்",
+            "te": "కొలతలు",
+            "bn": "মাপ",
+            "mr": "परिमाण",
+            "gu": "પરિમાણ",
+            "kn": "ಅಳತೆ",
+            "ml": "അളവുകൾ",
+            "pa": "ਮਾਪ",
+            "od": "ମାପ"
+          },
+          "type": "text",
+          "voice_prompt": {
+            "en": "What are the dimensions of this product?",
+            "hi": "इस उत्पाद के आयाम क्या हैं?"
+          }
+        },
+        {
+          "id": "weight",
+          "label": {
+            "en": "Weight",
+            "hi": "वज़न",
+            "ta": "எடை",
+            "te": "బరువు",
+            "bn": "ওজন",
+            "mr": "वजन",
+            "gu": "વજન",
+            "kn": "ತೂಕ",
+            "ml": "ഭാരം",
+            "pa": "ਵਜ਼ਨ",
+            "od": "ଓଜନ"
+          },
+          "type": "text",
+          "voice_prompt": {
+            "en": "What is the weight of this product?",
+            "hi": "इस उत्पाद का वज़न क्या है?"
+          }
+        },
+        {
+          "id": "brand",
+          "label": {
+            "en": "Brand / Maker",
+            "hi": "ब्रांड / निर्माता",
+            "ta": "பிராண்ட் / தயாரிப்பாளர்",
+            "te": "బ్రాండ్ / తయారీదారు",
+            "bn": "ব্র্যান্ড / প্রস্তুতকারক",
+            "mr": "ब्रँड / निर्माता",
+            "gu": "બ્રાન્ડ / ઉત્પાદક",
+            "kn": "ಬ್ರಾಂಡ್ / ತಯಾರಕ",
+            "ml": "ബ്രാൻഡ് / നിർമ്മാതാവ്",
+            "pa": "ਬ੍ਰਾਂਡ / ਨਿਰਮਾਤਾ",
+            "od": "ବ୍ରାଣ୍ଡ / ନିର୍ମାତା"
+          },
+          "type": "text",
+          "voice_prompt": {
+            "en": "What is the brand name or who is the maker of this product?",
+            "hi": "इस उत्पाद का ब्रांड नाम क्या है या इसे किसने बनाया है?"
+          }
+        },
+        {
+          "id": "condition",
+          "label": {
+            "en": "Condition",
+            "hi": "स्थिति",
+            "ta": "நிலை",
+            "te": "పరిస్థితి",
+            "bn": "অবস্থা",
+            "mr": "स्थिती",
+            "gu": "સ્થિતિ",
+            "kn": "ಸ್ಥಿತಿ",
+            "ml": "അവസ്ഥ",
+            "pa": "ਸਥਿਤੀ",
+            "od": "ସ୍ଥିତି"
+          },
+          "type": "select",
+          "options": [
+            "New",
+            "Like new",
+            "Handmade — new",
+            "Refurbished"
+          ],
+          "voice_prompt": {
+            "en": "What is the condition of this product? New, like new, handmade, or refurbished?",
+            "hi": "इस उत्पाद की स्थिति क्या है? नया, नए जैसा, हस्तनिर्मित, या नवीनीकृत?"
+          }
+        },
+        {
+          "id": "return_policy",
+          "label": {
+            "en": "Return Policy",
+            "hi": "वापसी नीति",
+            "ta": "திரும்ப அனுப்பும் கொள்கை",
+            "te": "రిటర్న్ పాలసీ",
+            "bn": "ফেরত নীতি",
+            "mr": "परतावा धोरण",
+            "gu": "રિટર્ન પૉલિસી",
+            "kn": "ರಿಟರ್ನ್ ಪಾಲಿಸಿ",
+            "ml": "റിട്ടേൺ പോളിസി",
+            "pa": "ਵਾਪਸੀ ਨੀਤੀ",
+            "od": "ରିଟର୍ଣ୍ଣ ପଲିସି"
+          },
+          "type": "select",
+          "options": [
+            "7-day return",
+            "15-day return",
+            "30-day return",
+            "No returns (final sale)",
+            "Exchange only"
+          ],
+          "voice_prompt": {
+            "en": "What is the return policy for this product? 7 days, 15 days, 30 days, no returns, or exchange only?",
+            "hi": "इस उत्पाद की वापसी नीति क्या है? 7 दिन, 15 दिन, 30 दिन, कोई वापसी नहीं, या केवल विनिमय?"
+          }
+        }
+      ],
+      "photo_extraction_prompt": "Analyze this product image carefully. Extract all visible information:\n1. **Product identification**: What is this product? Identify the type, name, and any visible branding.\n2. **Material**: What material does the product appear to be made of?\n3. **Color and appearance**: Describe the colors, patterns, and visual characteristics.\n4. **Size estimation**: Estimate the product dimensions based on context clues.\n5. **Condition**: Does it appear new, used, or handmade?\n6. **Labels and text**: Read any visible text, labels, tags, barcodes, or price stickers.\n7. **Packaging**: Note if the product is packaged and describe the packaging.\n8. **Key features**: List any distinctive features visible in the image.\n9. **Suggested category**: Based on the image, suggest the most appropriate ONDC category for this product.\n10. **Quality assessment**: Rate the overall visual quality and presentation.",
+      "ai_description_context": "Generate a clear, compelling product description suitable for an ONDC marketplace listing. Describe the product's features, material, dimensions, and use cases. Highlight what makes it a good purchase. Include practical details like weight, dimensions, and condition. Keep the tone professional yet approachable. If the product has any unique or handmade qualities, mention them. Keep it under 120 words."
+    }
+  },
+
+  "category_detection_prompt": "Analyze the product image and any text provided. Determine which category this product belongs to:\n\n1. **textiles_handloom** — Sarees, fabrics, garments, dupattas, stoles, shawls, dress materials, or any woven/textile product\n2. **food_packaged** — Any packaged food or beverage item with labels, including spices, snacks, sweets, pickles, oils, flours, or beverages\n3. **handicrafts** — Pottery, woodwork, metalwork, paintings, sculptures, decorative items, or any handcrafted artisan product\n4. **agriculture** — Fresh fruits, vegetables, grains, pulses, spices (raw/unpackaged), farm produce, dairy, honey, or flowers\n5. **general** — Anything that does not fit the above categories\n\nReturn ONLY the category key (e.g., 'textiles_handloom') and a confidence score from 0 to 1. If confidence is below 0.6, return 'general' as fallback.",
+
+  "common_fields": [
+    {
+      "id": "product_name",
+      "label": {
+        "en": "Product Name",
+        "hi": "उत्पाद का नाम",
+        "ta": "தயாரிப்பு பெயர்",
+        "te": "ఉత్పత్తి పేరు",
+        "bn": "পণ্যের নাম",
+        "mr": "उत्पादनाचे नाव",
+        "gu": "ઉત્પાદનનું નામ",
+        "kn": "ಉತ್ಪನ್ನದ ಹೆಸರು",
+        "ml": "ഉൽപ്പന്നത്തിന്റെ പേര്",
+        "pa": "ਉਤਪਾਦ ਦਾ ਨਾਮ",
+        "od": "ଉତ୍ପାଦର ନାମ"
+      },
+      "type": "text",
+      "required": true,
+      "voice_prompt": {
+        "en": "What is the name of this product?",
+        "hi": "इस उत्पाद का नाम क्या है?"
+      }
+    },
+    {
+      "id": "price",
+      "label": {
+        "en": "Selling Price (INR)",
+        "hi": "बिक्री मूल्य (रुपये)",
+        "ta": "விற்பனை விலை (ரூ)",
+        "te": "అమ్మకపు ధర (రూ)",
+        "bn": "বিক্রয় মূল্য (টাকা)",
+        "mr": "विक्री किंमत (रुपये)",
+        "gu": "વેચાણ કિંમત (રૂ)",
+        "kn": "ಮಾರಾಟ ಬೆಲೆ (ರೂ)",
+        "ml": "വിൽപ്പന വില (രൂ)",
+        "pa": "ਵਿਕਰੀ ਮੁੱਲ (ਰੁਪਏ)",
+        "od": "ବିକ୍ରି ମୂଲ୍ୟ (ଟଙ୍କା)"
+      },
+      "type": "number",
+      "required": true,
+      "voice_prompt": {
+        "en": "What is the selling price of this product in rupees?",
+        "hi": "इस उत्पाद का बिक्री मूल्य रुपये में क्या है?"
+      }
+    },
+    {
+      "id": "quantity_available",
+      "label": {
+        "en": "Quantity Available",
+        "hi": "उपलब्ध मात्रा",
+        "ta": "கிடைக்கும் அளவு",
+        "te": "అందుబాటులో ఉన్న పరిమాణం",
+        "bn": "উপলব্ধ পরিমাণ",
+        "mr": "उपलब्ध प्रमाण",
+        "gu": "ઉપલબ્ધ જથ્થો",
+        "kn": "ಲಭ್ಯ ಪ್ರಮಾಣ",
+        "ml": "ലഭ്യമായ അളവ്",
+        "pa": "ਉਪਲਬਧ ਮਾਤਰਾ",
+        "od": "ଉପಲବ୍ଧ ପରିମାଣ"
+      },
+      "type": "number",
+      "required": true,
+      "voice_prompt": {
+        "en": "How many units of this product do you have available for sale?",
+        "hi": "बिक्री के लिए इस उत्पाद की कितनी इकाइयां उपलब्ध हैं?"
+      }
+    },
+    {
+      "id": "product_images",
+      "label": {
+        "en": "Product Photos",
+        "hi": "उत्पाद की तस्वीरें",
+        "ta": "தயாரிப்பு புகைப்படங்கள்",
+        "te": "ఉత్పత్తి ఫోటోలు",
+        "bn": "পণ্যের ছবি",
+        "mr": "उत्पादनाचे फोटो",
+        "gu": "ઉત્પાદનના ફોટા",
+        "kn": "ಉತ್ಪನ್ನ ಫೋಟೋಗಳು",
+        "ml": "ഉൽപ്പന്ന ഫോട്ടോകൾ",
+        "pa": "ਉਤਪਾਦ ਦੀਆਂ ਤਸਵੀਰਾਂ",
+        "od": "ଉତ୍ପାଦ ଫଟୋ"
+      },
+      "type": "image_upload",
+      "required": true,
+      "voice_prompt": {
+        "en": "Please take clear photos of your product from multiple angles. Include close-ups of details and any labels.",
+        "hi": "कृपया अपने उत्पाद की कई कोणों से स्पष्ट तस्वीरें लें। विवरण और किसी भी लेबल की क्लोज़-अप तस्वीरें शामिल करें।"
+      }
+    }
+  ]
+}

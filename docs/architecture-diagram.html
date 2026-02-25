@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TEAM-AEP Solution Architecture</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #f8fafc; padding: 40px; }
+
+  .page { max-width: 1200px; margin: 0 auto; }
+
+  h1 { text-align: center; font-size: 28px; color: #1e293b; margin-bottom: 8px; }
+  .subtitle { text-align: center; font-size: 14px; color: #64748b; margin-bottom: 40px; }
+
+  .arch-section { margin-bottom: 50px; }
+  .arch-title { font-size: 20px; font-weight: 700; color: #1e293b; margin-bottom: 20px; border-left: 4px solid #f97316; padding-left: 12px; }
+
+  .diagram { background: white; border-radius: 16px; padding: 30px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+
+  .layer { display: flex; align-items: stretch; gap: 16px; margin-bottom: 20px; }
+  .layer-label { writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: white; padding: 12px 8px; border-radius: 8px; display: flex; align-items: center; justify-content: center; min-width: 36px; }
+  .layer-content { flex: 1; display: flex; gap: 12px; flex-wrap: wrap; }
+
+  .box { border-radius: 10px; padding: 14px 18px; flex: 1; min-width: 140px; }
+  .box-title { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+  .box-desc { font-size: 11px; opacity: 0.8; line-height: 1.4; }
+
+  .l-users { background: #3b82f6; }
+  .l-frontend { background: #8b5cf6; }
+  .l-backend { background: #f97316; }
+  .l-ai { background: #10b981; }
+  .l-data { background: #6366f1; }
+  .l-external { background: #ef4444; }
+  .l-quality { background: #0ea5e9; }
+  .l-voice { background: #a855f7; }
+
+  .b-users { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; }
+  .b-frontend { background: #f5f3ff; border: 1px solid #c4b5fd; color: #5b21b6; }
+  .b-backend { background: #fff7ed; border: 1px solid #fed7aa; color: #c2410c; }
+  .b-ai { background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; }
+  .b-data { background: #eef2ff; border: 1px solid #c7d2fe; color: #3730a3; }
+  .b-external { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; }
+  .b-quality { background: #f0f9ff; border: 1px solid #bae6fd; color: #0369a1; }
+  .b-voice { background: #faf5ff; border: 1px solid #d8b4fe; color: #7e22ce; }
+
+  .arrow-row { text-align: center; margin: 8px 0; padding-left: 52px; }
+  .arrow-row span { color: #94a3b8; font-size: 20px; }
+
+  .flow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: center; margin: 16px 0; }
+  .flow-step { background: white; border: 2px solid #e2e8f0; border-radius: 10px; padding: 10px 16px; text-align: center; min-width: 120px; }
+  .flow-step.active { border-color: #f97316; background: #fff7ed; }
+  .flow-step.voice { border-color: #a855f7; background: #faf5ff; }
+  .flow-step .step-num { font-size: 10px; color: #f97316; font-weight: 700; }
+  .flow-step .step-title { font-size: 12px; font-weight: 600; color: #1e293b; }
+  .flow-step .step-detail { font-size: 10px; color: #64748b; }
+  .flow-arrow { color: #f97316; font-size: 20px; font-weight: 700; }
+
+  .tech-table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+  .tech-table th { background: #1e293b; color: white; padding: 10px 16px; text-align: left; font-size: 12px; }
+  .tech-table td { padding: 10px 16px; font-size: 12px; border-bottom: 1px solid #e2e8f0; }
+  .tech-table tr:nth-child(even) { background: #f8fafc; }
+  .tech-tag { display: inline-block; background: #f1f5f9; border-radius: 4px; padding: 2px 8px; font-size: 11px; margin: 2px; color: #475569; }
+  .tech-tag.new { background: #dcfce7; color: #166534; font-weight: 600; }
+
+  .pipeline-label { font-size: 13px; font-weight: 600; color: #1e293b; margin: 20px 0 12px; }
+  .pipeline-label:first-child { margin-top: 0; }
+
+  .fusion-box { background: #fefce8; border: 2px dashed #eab308; border-radius: 12px; padding: 16px 20px; margin: 20px 0; text-align: center; }
+  .fusion-box .box-title { color: #854d0e; font-size: 14px; }
+  .fusion-box .box-desc { color: #713f12; font-size: 12px; }
+
+  .state-machine { display: flex; gap: 4px; flex-wrap: wrap; justify-content: center; align-items: center; margin: 12px 0; }
+  .sm-state { background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 8px; padding: 6px 12px; text-align: center; font-size: 11px; font-weight: 600; color: #475569; }
+  .sm-state.active { border-color: #a855f7; background: #faf5ff; color: #7e22ce; }
+  .sm-arrow { color: #a855f7; font-size: 16px; font-weight: 700; }
+
+  .mode-split { display: flex; gap: 20px; margin: 20px 0; }
+  .mode-box { flex: 1; border: 2px solid #e2e8f0; border-radius: 12px; padding: 16px; }
+  .mode-box.voice { border-color: #a855f7; background: #faf5ff; }
+  .mode-box.form { border-color: #3b82f6; background: #eff6ff; }
+  .mode-box h4 { font-size: 14px; margin-bottom: 8px; }
+  .mode-box p { font-size: 11px; color: #64748b; line-height: 1.5; }
+  .mode-box ul { font-size: 11px; color: #475569; margin: 8px 0 0 16px; line-height: 1.7; }
+
+  .tier-row { display: flex; gap: 12px; margin: 12px 0; flex-wrap: wrap; }
+  .tier-box { flex: 1; min-width: 180px; border-radius: 10px; padding: 12px 16px; text-align: center; }
+  .tier-box .tier-title { font-size: 12px; font-weight: 700; margin-bottom: 4px; }
+  .tier-box .tier-desc { font-size: 10px; line-height: 1.4; }
+  .tier-primary { background: #dcfce7; border: 1px solid #86efac; color: #166534; }
+  .tier-secondary { background: #dbeafe; border: 1px solid #93c5fd; color: #1e40af; }
+  .tier-premium { background: #fef3c7; border: 1px solid #fcd34d; color: #92400e; }
+  .tier-ocr { background: #ede9fe; border: 1px solid #c4b5fd; color: #5b21b6; }
+
+  .page-break { page-break-before: always; margin-top: 40px; }
+
+  .note { font-size: 11px; color: #64748b; font-style: italic; margin-top: 12px; text-align: center; }
+
+  @media print {
+    body { padding: 20px; }
+    .diagram { box-shadow: none; border: 1px solid #e2e8f0; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+<h1>TEAM-AEP: Solution Architecture</h1>
+<p class="subtitle">Voice-First MSME Onboarding &bull; Category-Aware AI Cataloguing &bull; SNP Matching &bull; NSIC Claim Verification for ONDC</p>
+
+<!-- ═══ SYSTEM ARCHITECTURE ═══ -->
+<div class="arch-section">
+<div class="arch-title">System Architecture</div>
+<div class="diagram">
+
+  <!-- User Layer -->
+  <div class="layer">
+    <div class="layer-label l-users">Users</div>
+    <div class="layer-content">
+      <div class="box b-users">
+        <div class="box-title">MSE Owner</div>
+        <div class="box-desc">Voice-first onboarding in 12 languages &bull; Conversational or form-based catalogue creation via voice, photo, barcode, label scan</div>
+      </div>
+      <div class="box b-users">
+        <div class="box-title">SNP Partner</div>
+        <div class="box-desc">Manage assigned MSEs &bull; Review AI-enriched catalogues &bull; Submit incentive claims</div>
+      </div>
+      <div class="box b-users">
+        <div class="box-title">NSIC Official</div>
+        <div class="box-desc">AI-assisted claim verification &bull; Monitor onboarding &bull; Analytics dashboard</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-row"><span>&#9660; &#9660; &#9660;</span></div>
+
+  <!-- Frontend Layer -->
+  <div class="layer">
+    <div class="layer-label l-frontend">Frontend</div>
+    <div class="layer-content">
+      <div class="box b-frontend">
+        <div class="box-title">Mobile-First SPA</div>
+        <div class="box-desc">HTML5/CSS3/JS &bull; 4 breakpoints (360px-768px) &bull; Progressive step wizard &bull; 44px+ touch targets</div>
+      </div>
+      <div class="box b-voice">
+        <div class="box-title">Voice Journey Controller</div>
+        <div class="box-desc">Full state machine &bull; Registration &rarr; Docs &rarr; Catalogue &rarr; SNP &bull; Conversational UI</div>
+      </div>
+      <div class="box b-frontend">
+        <div class="box-title">Category-Aware Forms</div>
+        <div class="box-desc">Adaptive fields per category &bull; Progressive disclosure &bull; 3-tier layout</div>
+      </div>
+      <div class="box b-frontend">
+        <div class="box-title">Multi-Modal Input</div>
+        <div class="box-desc">Camera &bull; Gallery &bull; Barcode &bull; Label OCR &bull; Voice &bull; Source indicators</div>
+      </div>
+      <div class="box b-frontend">
+        <div class="box-title">I18N + Language Carousel</div>
+        <div class="box-desc">12 languages &bull; Mobile auto-cycling carousel with TTS greetings &bull; Native script chips</div>
+      </div>
+      <div class="box b-frontend">
+        <div class="box-title">LQI &amp; Enrichment</div>
+        <div class="box-desc">Listing Quality Index (0-100) &bull; 8-factor scoring &bull; AI auto-enrich &bull; FSSAI compliance helper</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-row"><span>&#9660; REST API &#9660;</span></div>
+
+  <!-- Backend Layer -->
+  <div class="layer">
+    <div class="layer-label l-backend">Backend</div>
+    <div class="layer-content">
+      <div class="box b-backend">
+        <div class="box-title">FastAPI Server</div>
+        <div class="box-desc">Python 3.11 &bull; Async &bull; Cookie auth &bull; Uvicorn ASGI</div>
+      </div>
+      <div class="box b-backend">
+        <div class="box-title">Photo Intelligence</div>
+        <div class="box-desc">Tiered VLM routing &bull; Category-specific prompts &bull; Field extraction</div>
+      </div>
+      <div class="box b-backend">
+        <div class="box-title">Image Enhancement</div>
+        <div class="box-desc">rembg + BiRefNet &bull; Auto-crop &bull; White background &bull; One-button UX</div>
+      </div>
+      <div class="box b-backend">
+        <div class="box-title">Catalogue Enricher</div>
+        <div class="box-desc">AI descriptions &bull; Missing field inference &bull; Category-aware context</div>
+      </div>
+      <div class="box b-backend">
+        <div class="box-title">Categorisation Engine</div>
+        <div class="box-desc">3-signal fusion: NIC + Text + Vision &bull; Agreement boosting &bull; ONDC taxonomy</div>
+      </div>
+      <div class="box b-backend">
+        <div class="box-title">SNP Matcher</div>
+        <div class="box-desc">6-factor weighted scoring &bull; Factor transparency &bull; Flags &amp; warnings</div>
+      </div>
+      <div class="box b-backend">
+        <div class="box-title">Document Verifier</div>
+        <div class="box-desc">OCR extraction &bull; Cross-validation &bull; Smart defaults pipeline</div>
+      </div>
+      <div class="box b-backend">
+        <div class="box-title">Entity Extractor</div>
+        <div class="box-desc">Multi-modal fusion &bull; Voice + Photo + Label + Barcode merge</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-row"><span>&#9660; &#9660; &#9660;</span></div>
+
+  <!-- AI Services Layer -->
+  <div class="layer">
+    <div class="layer-label l-ai">AI Layer</div>
+    <div class="layer-content">
+      <div class="box b-ai">
+        <div class="box-title">Sarvam TTS</div>
+        <div class="box-desc">Bulbul v2 &bull; 11 Indian languages &bull; Voice journey narration</div>
+      </div>
+      <div class="box b-ai">
+        <div class="box-title">Sarvam STT</div>
+        <div class="box-desc">Saaras v3 &bull; 12 languages &bull; Conversational input</div>
+      </div>
+      <div class="box b-ai">
+        <div class="box-title">Sarvam Translate</div>
+        <div class="box-desc">Mayura v1 &bull; 12 languages</div>
+      </div>
+      <div class="box b-ai">
+        <div class="box-title">Sarvam OCR</div>
+        <div class="box-desc">Document Intelligence &bull; 23 Indian langs &bull; Label extraction</div>
+      </div>
+      <div class="box b-ai" style="border-color: #86efac; border-width: 2px;">
+        <div class="box-title">Gemini 2.0 Flash</div>
+        <div class="box-desc">Primary VLM &bull; ~$0.001/img &bull; Product analysis &bull; Fast inference</div>
+      </div>
+      <div class="box b-ai">
+        <div class="box-title">Claude Haiku / Sonnet</div>
+        <div class="box-desc">Entity extraction &bull; Categorisation &bull; Enrichment &bull; Claims &bull; Premium VLM fallback</div>
+      </div>
+      <div class="box b-ai">
+        <div class="box-title">rembg + BiRefNet</div>
+        <div class="box-desc">Background removal &bull; Auto-crop &bull; White BG &bull; MIT licensed</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-row"><span>&#9660; &#9660; &#9660;</span></div>
+
+  <!-- Data Layer -->
+  <div class="layer">
+    <div class="layer-label l-data">Data</div>
+    <div class="layer-content">
+      <div class="box b-data">
+        <div class="box-title">SQLite Database</div>
+        <div class="box-desc">Sessions &bull; MSE profiles &bull; Assignments &bull; Claims</div>
+      </div>
+      <div class="box b-data">
+        <div class="box-title">ONDC Taxonomy</div>
+        <div class="box-desc">NIC mappings &bull; Categories &bull; Required attributes</div>
+      </div>
+      <div class="box b-data">
+        <div class="box-title">Category Templates</div>
+        <div class="box-desc">5 categories &bull; Adaptive fields &bull; Voice prompts &bull; VLM extraction prompts</div>
+      </div>
+      <div class="box b-data">
+        <div class="box-title">SNP Profiles</div>
+        <div class="box-desc">Domains &bull; Geography &bull; Capacity &bull; Transaction history</div>
+      </div>
+      <div class="box b-data">
+        <div class="box-title">I18N Translations</div>
+        <div class="box-desc">12 languages &bull; Sarvam-generated &bull; Category voice prompts</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow-row"><span>&#9660; &#9660; &#9660;</span></div>
+
+  <!-- External Layer -->
+  <div class="layer">
+    <div class="layer-label l-external">External</div>
+    <div class="layer-content">
+      <div class="box b-external">
+        <div class="box-title">Gridlines API</div>
+        <div class="box-desc">Udyam / MSME registry verification</div>
+      </div>
+      <div class="box b-external">
+        <div class="box-title">Open Food Facts</div>
+        <div class="box-desc">Barcode-to-product lookup (3M+ products)</div>
+      </div>
+      <div class="box b-external">
+        <div class="box-title">ONDC Network</div>
+        <div class="box-desc">Seller registration &bull; Catalogue publishing</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ═══ DUAL-MODE MSE ONBOARDING ═══ -->
+<div class="arch-section page-break">
+<div class="arch-title">Dual-Mode MSE Onboarding Flow</div>
+<div class="diagram">
+
+  <!-- Entry steps -->
+  <div class="flow">
+    <div class="flow-step active">
+      <div class="step-num">STEP 1</div>
+      <div class="step-title">Language Selection</div>
+      <div class="step-detail">12 languages &bull; Mobile carousel with TTS</div>
+    </div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-step active">
+      <div class="step-num">STEP 2</div>
+      <div class="step-title">Mode Selection</div>
+      <div class="step-detail">Voice Mode or Form Mode</div>
+    </div>
+  </div>
+
+  <!-- Mode split -->
+  <div class="mode-split">
+    <div class="mode-box voice">
+      <h4>&#127908; Voice Mode (Recommended)</h4>
+      <p>Full conversational journey via state machine. AI asks questions, MSE speaks answers. Entire onboarding via voice.</p>
+      <ul>
+        <li>Registration via voice conversation</li>
+        <li>Document upload guided by TTS prompts</li>
+        <li>Category-aware voice catalogue builder</li>
+        <li>SNP recommendations read aloud</li>
+        <li>"Show form" escape hatch at any point</li>
+      </ul>
+    </div>
+    <div class="mode-box form">
+      <h4>&#128221; Form Mode</h4>
+      <p>Traditional step-by-step wizard with voice, photo, and text input on each field.</p>
+      <ul>
+        <li>Udyam verification (Number / Mobile / PAN / OCR)</li>
+        <li>OTP verification via Sarvam</li>
+        <li>Document scan (GST / FSSAI / Shop License)</li>
+        <li>Business details (auto-filled from verification)</li>
+        <li>AI SNP matching with factor transparency</li>
+        <li>AI Catalogue builder with LQI scoring</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Shared completion -->
+  <div class="flow">
+    <div class="flow-step active" style="min-width:300px">
+      <div class="step-num">BOTH MODES</div>
+      <div class="step-title">Summary &amp; Submit</div>
+      <div class="step-detail">ONDC taxonomy validation &bull; Catalogue publish &bull; SNP assignment confirmation</div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ═══ VOICE JOURNEY STATE MACHINE ═══ -->
+<div class="arch-section">
+<div class="arch-title">Voice Journey State Machine</div>
+<div class="diagram">
+
+  <p class="pipeline-label">Phase 1: Registration</p>
+  <div class="state-machine">
+    <div class="sm-state active">GREET</div>
+    <div class="sm-arrow">&#8594;</div>
+    <div class="sm-state">ASK_NAME</div>
+    <div class="sm-arrow">&#8594;</div>
+    <div class="sm-state">ASK_TYPE</div>
+    <div class="sm-arrow">&#8594;</div>
+    <div class="sm-state">ASK_LOCATION</div>
+    <div class="sm-arrow">&#8594;</div>
+    <div class="sm-state">ASK_UDYAM</div>
+    <div class="sm-arrow">&#8594;</div>
+    <div class="sm-state">VERIFY_UDYAM</div>
+    <div class="sm-arrow">&#8594;</div>
+    <div class="sm-state">OTP</div>
+  </div>
+
+  <p class="pipeline-label">Phase 2: Document Verification</p>
+  <div class="state-machine">
+    <div class="sm-state active">DOC_START</div>
+    <div class="sm-arrow">&#8594;</div>
+    <div class="sm-state">ASK_GST</div>
+    <div class="sm-arrow">&#8594;</div>
+    <div class="sm-state">CAPTURE_PHOTO</div>
+    <div class="sm-arrow">&#8594;</div>
+    <div class="sm-state">OCR_EXTRACT</div>
+    <div class="sm-arrow">&#8594;</div>
+    <div class="sm-state">CONFIRM_DATA</div>
+    <div class="sm-arrow">&#8594;</div>
+    <div class="sm-state">ASK_FSSAI</div>
+    <div class="sm-arrow">&#8594;</div>
+    <div class="sm-state">DONE</div>
+  </div>
+
+  <p class="pipeline-label">Phase 3: Catalogue Creation</p>
+  <div class="state-machine">
+    <div class="sm-state active">ASK_PRODUCT</div>
+    <div class="sm-arrow">&#8594;</div>
+    <div class="sm-state">DETECT_CATEGORY</div>
+    <div class="sm-arrow">&#8594;</div>
+    <div class="sm-state">LOAD_TEMPLATE</div>
+    <div class="sm-arrow">&#8594;</div>
+    <div class="sm-state">FIELD_1..N</div>
+    <div class="sm-arrow">&#8594;</div>
+    <div class="sm-state">ASK_PHOTO</div>
+    <div class="sm-arrow">&#8594;</div>
+    <div class="sm-state">VISION_EXTRACT</div>
+    <div class="sm-arrow">&#8594;</div>
+    <div class="sm-state">CONFIRM</div>
+    <div class="sm-arrow">&#8594;</div>
+    <div class="sm-state">ADD_MORE?</div>
+  </div>
+
+  <p class="pipeline-label">Phase 4: SNP Selection</p>
+  <div class="state-machine">
+    <div class="sm-state active">FIND_MATCHES</div>
+    <div class="sm-arrow">&#8594;</div>
+    <div class="sm-state">READ_SNP_1</div>
+    <div class="sm-arrow">&#8594;</div>
+    <div class="sm-state">READ_SNP_2</div>
+    <div class="sm-arrow">&#8594;</div>
+    <div class="sm-state">READ_SNP_3</div>
+    <div class="sm-arrow">&#8594;</div>
+    <div class="sm-state">USER_SELECT</div>
+    <div class="sm-arrow">&#8594;</div>
+    <div class="sm-state active">COMPLETE</div>
+  </div>
+
+  <p class="note">At any state, the MSE can say "form dikhao" (show form) to switch to visual mode with all collected data pre-filled.</p>
+
+</div>
+</div>
+
+<!-- ═══ AI PIPELINES ═══ -->
+<div class="arch-section page-break">
+<div class="arch-title">AI Processing Pipelines</div>
+<div class="diagram">
+
+  <p class="pipeline-label">1. Voice-First Conversational Pipeline</p>
+  <div class="flow">
+    <div class="flow-step voice">
+      <div class="step-title">Voice Input</div>
+      <div class="step-detail">12 languages</div>
+    </div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-step" style="border-color:#10b981">
+      <div class="step-title">Sarvam STT</div>
+      <div class="step-detail">Speech to text</div>
+    </div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-step" style="border-color:#10b981">
+      <div class="step-title">Sarvam Translate</div>
+      <div class="step-detail">To English</div>
+    </div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-step" style="border-color:#10b981">
+      <div class="step-title">Claude LLM</div>
+      <div class="step-detail">Entity extraction</div>
+    </div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-step" style="border-color:#a855f7">
+      <div class="step-title">State Machine</div>
+      <div class="step-detail">Next question / action</div>
+    </div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-step" style="border-color:#10b981">
+      <div class="step-title">Sarvam TTS</div>
+      <div class="step-detail">Speak response</div>
+    </div>
+  </div>
+
+  <p class="pipeline-label">2. Product Photo Intelligence Pipeline (Tiered VLM)</p>
+  <div class="flow">
+    <div class="flow-step" style="border-color:#8b5cf6">
+      <div class="step-title">Product Photo</div>
+      <div class="step-detail">Camera / Gallery</div>
+    </div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-step" style="border-color:#f97316">
+      <div class="step-title">Category Detect</div>
+      <div class="step-detail">Route to VLM tier</div>
+    </div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-step" style="border-color:#10b981">
+      <div class="step-title">Category Prompt</div>
+      <div class="step-detail">Textile / Food / Craft / Agri</div>
+    </div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-step" style="border-color:#f97316">
+      <div class="step-title">Form Pre-fill</div>
+      <div class="step-detail">Source-tagged fields</div>
+    </div>
+  </div>
+
+  <!-- Tiered VLM detail -->
+  <div class="tier-row">
+    <div class="tier-box tier-ocr">
+      <div class="tier-title">Tier 0: Sarvam OCR</div>
+      <div class="tier-desc">Indian-language labels &bull; Food packaging &bull; 84.3% Indian OCR benchmark &bull; Free</div>
+    </div>
+    <div class="tier-box tier-primary">
+      <div class="tier-title">Tier 1: Gemini 2.0 Flash</div>
+      <div class="tier-desc">Primary VLM &bull; ~$0.001/image &bull; Bulk product analysis &bull; 3x faster</div>
+    </div>
+    <div class="tier-box tier-premium">
+      <div class="tier-title">Tier 2: Claude Sonnet</div>
+      <div class="tier-desc">Premium fallback &bull; Complex textiles, artisan work &bull; Nuanced reasoning</div>
+    </div>
+  </div>
+
+  <p class="pipeline-label">3. Document OCR &amp; Verification Pipeline</p>
+  <div class="flow">
+    <div class="flow-step" style="border-color:#8b5cf6">
+      <div class="step-title">Document Upload</div>
+      <div class="step-detail">Camera / File</div>
+    </div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-step" style="border-color:#f97316">
+      <div class="step-title">Image to PDF</div>
+      <div class="step-detail">Pillow conversion</div>
+    </div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-step" style="border-color:#10b981">
+      <div class="step-title">Sarvam OCR</div>
+      <div class="step-detail">Document Intelligence</div>
+    </div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-step" style="border-color:#10b981">
+      <div class="step-title">Claude LLM</div>
+      <div class="step-detail">Structured extraction</div>
+    </div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-step" style="border-color:#ef4444">
+      <div class="step-title">Cross-Validate</div>
+      <div class="step-detail">vs. Gridlines registry</div>
+    </div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-step" style="border-color:#f97316">
+      <div class="step-title">Smart Defaults</div>
+      <div class="step-detail">Auto-fill catalogue fields</div>
+    </div>
+  </div>
+
+  <p class="pipeline-label">4. Product Categorisation Pipeline (3-Signal Fusion)</p>
+  <div class="flow">
+    <div class="flow-step" style="border-color:#6366f1">
+      <div class="step-title">NIC Code</div>
+      <div class="step-detail">From Udyam certificate</div>
+    </div>
+    <div class="flow-arrow">+</div>
+    <div class="flow-step" style="border-color:#8b5cf6">
+      <div class="step-title">Product Desc</div>
+      <div class="step-detail">From voice / text</div>
+    </div>
+    <div class="flow-arrow">+</div>
+    <div class="flow-step" style="border-color:#10b981">
+      <div class="step-title">Vision Analysis</div>
+      <div class="step-detail">From product photo</div>
+    </div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-step" style="border-color:#10b981">
+      <div class="step-title">LLM Classifier</div>
+      <div class="step-detail">3-signal fusion</div>
+    </div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-step" style="border-color:#eab308">
+      <div class="step-title">Agreement Boost</div>
+      <div class="step-detail">NIC &harr; LLM &harr; Image</div>
+    </div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-step" style="border-color:#f97316">
+      <div class="step-title">ONDC Taxonomy</div>
+      <div class="step-detail">Domain + Category + Template</div>
+    </div>
+  </div>
+
+  <p class="pipeline-label">5. Image Enhancement Pipeline</p>
+  <div class="flow">
+    <div class="flow-step" style="border-color:#8b5cf6">
+      <div class="step-title">Raw Photo</div>
+      <div class="step-detail">Cluttered background</div>
+    </div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-step" style="border-color:#10b981">
+      <div class="step-title">rembg + BiRefNet</div>
+      <div class="step-detail">Background removal</div>
+    </div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-step" style="border-color:#f97316">
+      <div class="step-title">Auto-Crop</div>
+      <div class="step-detail">Center product</div>
+    </div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-step" style="border-color:#f97316">
+      <div class="step-title">White BG</div>
+      <div class="step-detail">Marketplace-ready</div>
+    </div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-step active">
+      <div class="step-title">Enhanced Image</div>
+      <div class="step-detail">One-button UX</div>
+    </div>
+  </div>
+
+  <p class="pipeline-label">6. AI Catalogue Enrichment Pipeline</p>
+  <div class="flow">
+    <div class="flow-step" style="border-color:#8b5cf6">
+      <div class="step-title">Partial Listing</div>
+      <div class="step-detail">Name + price + photo</div>
+    </div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-step" style="border-color:#10b981">
+      <div class="step-title">Claude LLM</div>
+      <div class="step-detail">Category-aware context</div>
+    </div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-step" style="border-color:#f97316">
+      <div class="step-title">Generate Desc</div>
+      <div class="step-detail">SEO-optimised text</div>
+    </div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-step" style="border-color:#f97316">
+      <div class="step-title">Infer Fields</div>
+      <div class="step-detail">Weight, material, etc.</div>
+    </div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-step active">
+      <div class="step-title">LQI Score Up</div>
+      <div class="step-detail">45 &#8594; 85+ points</div>
+    </div>
+  </div>
+
+  <!-- Multi-Modal Fusion -->
+  <div class="fusion-box">
+    <div class="box-title">Multi-Modal Fusion Engine with Source Tracking</div>
+    <div class="box-desc">All six pipelines merge into a unified product record. Each field tagged with origin: &#127908; Voice &bull; &#128247; Photo &bull; &#128196; OCR &bull; &#10024; AI &bull; &#128202; Lookup &bull; &#9999;&#65039; Manual<br>Priority: Barcode &gt; Label OCR &gt; Photo Vision &gt; Voice &gt; AI Inferred &gt; Manual</div>
+  </div>
+
+</div>
+</div>
+
+<!-- ═══ CATEGORY-AWARE CATALOGUE INTELLIGENCE ═══ -->
+<div class="arch-section">
+<div class="arch-title">Category-Aware Catalogue Intelligence</div>
+<div class="diagram">
+
+  <div class="flow">
+    <div class="flow-step active" style="min-width:140px">
+      <div class="step-title">Category Detection</div>
+      <div class="step-detail">Photo + NIC + Voice</div>
+    </div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-step" style="border-color:#10b981; min-width:140px">
+      <div class="step-title">Template Selection</div>
+      <div class="step-detail">5 product categories</div>
+    </div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-step" style="border-color:#8b5cf6; min-width:140px">
+      <div class="step-title">Adaptive Form</div>
+      <div class="step-detail">Category-specific fields</div>
+    </div>
+    <div class="flow-arrow">&#8594;</div>
+    <div class="flow-step" style="border-color:#f97316; min-width:140px">
+      <div class="step-title">FSSAI / Compliance</div>
+      <div class="step-detail">Auto for food category</div>
+    </div>
+  </div>
+
+  <!-- Category tiles -->
+  <div class="tier-row" style="margin-top:20px">
+    <div class="tier-box tier-secondary">
+      <div class="tier-title">Textiles &amp; Handloom</div>
+      <div class="tier-desc">Weave type &bull; Material &bull; Region &bull; GI tag &bull; Motif &bull; Zari &bull; Occasion<br><em>10 category-specific fields</em></div>
+    </div>
+    <div class="tier-box tier-primary">
+      <div class="tier-title">Food &amp; Beverages</div>
+      <div class="tier-desc">FSSAI &bull; Ingredients &bull; Allergens &bull; Nutritional &bull; Shelf life &bull; Veg/Non-veg<br><em>12 fields + compliance helper</em></div>
+    </div>
+    <div class="tier-box tier-premium">
+      <div class="tier-title">Handicrafts &amp; Artisan</div>
+      <div class="tier-desc">Craft type &bull; Artisan story capture &bull; Making time &bull; Unique piece<br><em>10 fields + voice narrative</em></div>
+    </div>
+  </div>
+  <div class="tier-row">
+    <div class="tier-box tier-ocr">
+      <div class="tier-title">Agriculture &amp; Fresh</div>
+      <div class="tier-desc">Produce type &bull; Pricing unit &bull; Grade &bull; Seasonal &bull; Cold chain<br><em>10 category-specific fields</em></div>
+    </div>
+    <div class="tier-box" style="background:#f1f5f9; border:1px solid #cbd5e1; color:#475569;">
+      <div class="tier-title">General Products</div>
+      <div class="tier-desc">Brand &bull; Model &bull; SKU &bull; Dimensions &bull; Warranty<br><em>8 general fields</em></div>
+    </div>
+  </div>
+
+  <p class="note">Each category has: multilingual voice prompts, category-specific VLM extraction prompt, AI description context, and progressive disclosure tiers.</p>
+
+</div>
+</div>
+
+<!-- ═══ SNP MATCHING ═══ -->
+<div class="arch-section page-break">
+<div class="arch-title">SNP Matching Algorithm</div>
+<div class="diagram">
+  <div class="flow">
+    <div class="flow-step" style="border-color:#3b82f6; min-width:100px">
+      <div class="step-title">Domain</div>
+      <div class="step-detail">Weight: 30%</div>
+    </div>
+    <div class="flow-step" style="border-color:#3b82f6; min-width:100px">
+      <div class="step-title">Geography</div>
+      <div class="step-detail">Weight: 20%</div>
+    </div>
+    <div class="flow-step" style="border-color:#3b82f6; min-width:100px">
+      <div class="step-title">Readiness</div>
+      <div class="step-detail">Weight: 15%</div>
+    </div>
+    <div class="flow-step" style="border-color:#3b82f6; min-width:100px">
+      <div class="step-title">Success Rate</div>
+      <div class="step-detail">Weight: 15%</div>
+    </div>
+    <div class="flow-step" style="border-color:#3b82f6; min-width:100px">
+      <div class="step-title">Capacity</div>
+      <div class="step-detail">Weight: 10%</div>
+    </div>
+    <div class="flow-step" style="border-color:#3b82f6; min-width:100px">
+      <div class="step-title">Language</div>
+      <div class="step-detail">Weight: 10%</div>
+    </div>
+  </div>
+  <div class="arrow-row"><span>&#9660; Weighted Score &#9660;</span></div>
+  <div class="flow">
+    <div class="flow-step active" style="min-width:300px">
+      <div class="step-title">Ranked SNP Recommendations</div>
+      <div class="step-detail">Top 3 matches with per-factor score bars, reasons, flags &amp; warnings</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══ LISTING QUALITY INDEX ═══ -->
+<div class="arch-section">
+<div class="arch-title">Listing Quality Index (LQI)</div>
+<div class="diagram">
+  <div class="flow">
+    <div class="flow-step" style="border-color:#3b82f6; min-width:100px">
+      <div class="step-title">Name</div>
+      <div class="step-detail">15 pts</div>
+    </div>
+    <div class="flow-step" style="border-color:#3b82f6; min-width:100px">
+      <div class="step-title">Description</div>
+      <div class="step-detail">15 pts (20+ chars)</div>
+    </div>
+    <div class="flow-step" style="border-color:#3b82f6; min-width:100px">
+      <div class="step-title">Price</div>
+      <div class="step-detail">15 pts (MRP + SP)</div>
+    </div>
+    <div class="flow-step" style="border-color:#3b82f6; min-width:100px">
+      <div class="step-title">Photos</div>
+      <div class="step-detail">20 pts (+5 bonus &ge;3)</div>
+    </div>
+    <div class="flow-step" style="border-color:#3b82f6; min-width:100px">
+      <div class="step-title">Category</div>
+      <div class="step-detail">15 pts</div>
+    </div>
+    <div class="flow-step" style="border-color:#3b82f6; min-width:100px">
+      <div class="step-title">Attributes</div>
+      <div class="step-detail">10 pts (&ge;3 fields)</div>
+    </div>
+    <div class="flow-step" style="border-color:#3b82f6; min-width:100px">
+      <div class="step-title">Weight</div>
+      <div class="step-detail">5 pts</div>
+    </div>
+    <div class="flow-step" style="border-color:#3b82f6; min-width:100px">
+      <div class="step-title">Country</div>
+      <div class="step-detail">5 pts</div>
+    </div>
+  </div>
+  <div class="arrow-row"><span>&#9660; Real-time Score &#9660;</span></div>
+  <div class="flow">
+    <div class="flow-step active" style="min-width:250px">
+      <div class="step-title">LQI: 0&ndash;100 Score</div>
+      <div class="step-detail">Color-coded (red &lt; 40 / orange 40-70 / green &gt; 70) &bull; Clickable improvement tips &bull; AI Enrich button</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══ TECH STACK ═══ -->
+<div class="arch-section">
+<div class="arch-title">Technology Stack</div>
+<div class="diagram">
+  <table class="tech-table">
+    <thead>
+      <tr><th>Layer</th><th>Technology</th><th>Purpose</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Frontend</strong></td>
+        <td><span class="tech-tag">HTML5</span><span class="tech-tag">CSS3</span><span class="tech-tag">JavaScript</span><span class="tech-tag">html5-qrcode</span></td>
+        <td>Mobile-first SPA, barcode scanning, voice journey state machine, LQI calculator, language carousel</td>
+      </tr>
+      <tr>
+        <td><strong>Backend</strong></td>
+        <td><span class="tech-tag">Python 3.11</span><span class="tech-tag">FastAPI</span><span class="tech-tag">Uvicorn</span></td>
+        <td>Async REST API, multi-modal fusion, photo intelligence, catalogue enrichment, image enhancement</td>
+      </tr>
+      <tr>
+        <td><strong>Database</strong></td>
+        <td><span class="tech-tag">SQLite</span></td>
+        <td>Sessions, MSE profiles, SNP assignments, claims, document verifications</td>
+      </tr>
+      <tr>
+        <td><strong>Speech AI</strong></td>
+        <td><span class="tech-tag">Sarvam Bulbul v2</span><span class="tech-tag">Sarvam Saaras v3</span></td>
+        <td>TTS (11 languages), STT (12 languages), conversational voice journey narration</td>
+      </tr>
+      <tr>
+        <td><strong>Translation</strong></td>
+        <td><span class="tech-tag">Sarvam Mayura v1</span></td>
+        <td>Real-time translation across 12 Indian languages, category voice prompts</td>
+      </tr>
+      <tr>
+        <td><strong>OCR</strong></td>
+        <td><span class="tech-tag">Sarvam Document Intelligence</span><span class="tech-tag">Pillow</span></td>
+        <td>Document digitization (23 languages), Indian-language label extraction, image-to-PDF</td>
+      </tr>
+      <tr>
+        <td><strong>LLM</strong></td>
+        <td><span class="tech-tag">Claude Haiku</span><span class="tech-tag">Claude Sonnet</span></td>
+        <td>Entity extraction, categorisation, enrichment, claim analysis, premium VLM fallback</td>
+      </tr>
+      <tr>
+        <td><strong>Vision AI</strong></td>
+        <td><span class="tech-tag new">Gemini 2.0 Flash</span><span class="tech-tag">Claude Vision</span><span class="tech-tag">Sarvam Vision</span></td>
+        <td>Tiered product photo analysis: Sarvam (Indian OCR) &rarr; Gemini (primary) &rarr; Claude (premium fallback)</td>
+      </tr>
+      <tr>
+        <td><strong>Image Processing</strong></td>
+        <td><span class="tech-tag">rembg</span><span class="tech-tag new">BiRefNet</span><span class="tech-tag">Pillow</span></td>
+        <td>One-button background removal, auto-crop, white BG, marketplace-ready formatting</td>
+      </tr>
+      <tr>
+        <td><strong>Barcode</strong></td>
+        <td><span class="tech-tag">Open Food Facts API</span></td>
+        <td>Barcode-to-product lookup (3M+ products)</td>
+      </tr>
+      <tr>
+        <td><strong>Verification</strong></td>
+        <td><span class="tech-tag">Gridlines API</span></td>
+        <td>Official Udyam/MSME registry verification, cross-validation</td>
+      </tr>
+      <tr>
+        <td><strong>Data</strong></td>
+        <td><span class="tech-tag new">Category Templates</span><span class="tech-tag">NIC-ONDC Mapping</span><span class="tech-tag">SNP Profiles</span><span class="tech-tag">I18N (12 langs)</span></td>
+        <td>5 category templates with adaptive fields, voice prompts, VLM prompts; curated NIC-to-ONDC mapping</td>
+      </tr>
+      <tr>
+        <td><strong>Deployment</strong></td>
+        <td><span class="tech-tag">Docker</span><span class="tech-tag">Railway</span><span class="tech-tag">Caddy</span></td>
+        <td>Containerized deployment, auto-scaling, HTTPS, teamaep.io</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</div>
+
+<!-- ═══ API PROVIDERS ═══ -->
+<div class="arch-section">
+<div class="arch-title">AI API Provider Map</div>
+<div class="diagram">
+  <div class="tier-row">
+    <div class="tier-box tier-ocr">
+      <div class="tier-title">Sarvam AI</div>
+      <div class="tier-desc">TTS (Bulbul v2) &bull; STT (Saaras v3) &bull; Translate (Mayura v1) &bull; OCR (Document Intelligence)<br><strong>Purpose:</strong> India-first language AI infrastructure</div>
+    </div>
+    <div class="tier-box tier-premium">
+      <div class="tier-title">Anthropic</div>
+      <div class="tier-desc">Claude Haiku (extraction, enrichment, categorisation) &bull; Claude Sonnet (premium VLM, claims)<br><strong>Purpose:</strong> Reasoning, entity extraction, nuanced analysis</div>
+    </div>
+  </div>
+  <div class="tier-row">
+    <div class="tier-box tier-primary">
+      <div class="tier-title">Google Cloud</div>
+      <div class="tier-desc">Gemini 2.0 Flash (primary VLM, ~$0.001/image)<br><strong>Purpose:</strong> Cost-effective bulk product photo analysis</div>
+    </div>
+    <div class="tier-box tier-secondary">
+      <div class="tier-title">Gridlines</div>
+      <div class="tier-desc">Udyam Registry Verification API<br><strong>Purpose:</strong> Official government document cross-validation</div>
+    </div>
+  </div>
+</div>
+</div>
+
+</div>
+</body>
+</html>
