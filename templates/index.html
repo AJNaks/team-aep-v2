@@ -1851,8 +1851,8 @@ const I18N = {
     vjVerifyFailed: "Could not verify that number. Let me ask for your mobile number instead.",
     vjNetworkError: "Network error. Let's try your mobile number instead.",
     vjOtpWrong: "That OTP didn't match. Please try again.",
-    vjInvalidMobile: "That doesn't seem like a valid mobile number. Please tell me your 10-digit mobile number.",
-    vjInvalidOTP: 'I need a 6-digit code. Please tell me the OTP again.',
+    vjInvalidMobile: "That doesn't seem like a valid mobile number. Please tell me your ten digit mobile number.",
+    vjInvalidOTP: 'I need a six digit code. Please tell me the OTP again.',
     vjPhotoAnalyzed: "I've analyzed the photo and extracted some details.",
     vjPhotoError: "Couldn't analyze the photo, but let's continue.",
     vjNoSNP: 'No matching platforms found. You can switch to form mode to search manually.',
@@ -5469,6 +5469,13 @@ function ttsClean(text) {
     .replace(/\bNIC\b/g,  'N. I. C.')
     .replace(/\bPAN\b/g,  'P. A. N.');
 
+  // Numbers before "digit" — TTS reads "10-digit" as "1 0 D I G I T"
+  const digitWords = { '1': 'one', '2': 'two', '3': 'three', '4': 'four', '5': 'five',
+    '6': 'six', '7': 'seven', '8': 'eight', '9': 'nine', '10': 'ten',
+    '11': 'eleven', '12': 'twelve', '13': 'thirteen', '14': 'fourteen', '15': 'fifteen',
+    '16': 'sixteen' };
+  text = text.replace(/\b(\d{1,2})[- ]?digit\b/gi, (_, n) => (digitWords[n] || n) + ' digit');
+
   // Native-script: replace BAD transliterations (sound like a word, e.g. "on-dee-see")
   // with GOOD ones (spell out letters, e.g. "o-en-dee-see") in the SAME script,
   // so the TTS engine stays in the correct language context.
@@ -8852,7 +8859,7 @@ const VJ_PROMPTS = {
   ask_location: { en: 'Where is your business located? Please tell me your city or village name.', hi: 'आपका व्यापार कहाँ है? अपने शहर या गाँव का नाम बताइए।' },
   ask_udyam: { en: 'Do you have a Udyam registration number? If yes, please tell me the number. If not, say "no".', hi: 'क्या आपके पास उद्यम रजिस्ट्रेशन नंबर है? हाँ तो नंबर बताइए, नहीं तो "नहीं" बोलिए।' },
   ask_mobile: { en: 'What is your mobile number? We\'ll send an OTP to verify it.', hi: 'आपका मोबाइल नंबर क्या है? हम OTP भेजकर वेरिफाई करेंगे।' },
-  otp_sent: { en: 'I\'ve sent an OTP to your mobile. Please tell me the 6-digit code.', hi: 'आपके मोबाइल पर OTP भेज दिया है। कृपया 6 अंकों का कोड बताइए।' },
+  otp_sent: { en: 'I\'ve sent an OTP to your mobile. Please tell me the six digit code.', hi: 'आपके मोबाइल पर OTP भेज दिया है। कृपया 6 अंकों का कोड बताइए।' },
   otp_verified: { en: 'Great! Your identity is verified. Now let\'s look at your documents.', hi: 'बहुत अच्छा! आपकी पहचान वेरिफाई हो गई। अब कागज़ात देखते हैं।' },
   // Documents
   ask_gst: { en: 'Do you have a GST number? If yes, please tell me. If not, say "no" — it\'s optional.', hi: 'क्या आपके पास GST नंबर है? हाँ तो बताइए, नहीं तो "नहीं" बोलिए — यह ज़रूरी नहीं है।' },
@@ -9166,7 +9173,7 @@ class VoiceJourneyController {
           this.state = 'send_otp';
           await this.processState();
         } else {
-          await this.aiSay(t('vjInvalidMobile') || 'That doesn\'t seem like a valid mobile number. Please tell me your 10-digit mobile number.');
+          await this.aiSay(t('vjInvalidMobile') || 'That doesn\'t seem like a valid mobile number. Please tell me your ten digit mobile number.');
           this.showMic();
         }
         break;
@@ -9179,7 +9186,7 @@ class VoiceJourneyController {
           this.state = 'verify_otp';
           await this.processState();
         } else {
-          await this.aiSay(t('vjInvalidOTP') || 'I need a 6-digit code. Please tell me the OTP again.');
+          await this.aiSay(t('vjInvalidOTP') || 'I need a six digit code. Please tell me the OTP again.');
           this.showMic();
         }
         break;
