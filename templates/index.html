@@ -4797,6 +4797,7 @@ let mediaRecorder = null;
 let audioChunks = [];
 let lastTTSAudio = null;     // for replay
 let currentAudioEl = null;   // currently playing audio element
+let ttsGeneration = 0;       // incremented on navigation to cancel stale TTS callbacks
 
 // Role state
 let currentRole = null;      // 'msme' | 'snp' | 'nsic'
@@ -5027,10 +5028,18 @@ function goToPage(id) {
 }
 
 function stopAllAudio() {
+  // Increment generation to cancel any in-flight TTS fetches
+  ttsGeneration++;
+  // Stop form-mode audio (System A)
   if (currentAudioEl) {
     currentAudioEl.pause();
     currentAudioEl.currentTime = 0;
     currentAudioEl = null;
+  }
+  // Stop voice-journey audio (System B)
+  if (typeof voiceJourney !== 'undefined' && voiceJourney && voiceJourney.currentAudio) {
+    voiceJourney.currentAudio.pause();
+    voiceJourney.currentAudio = null;
   }
   const btn = document.getElementById('replayBtn');
   if (btn) btn.className = 'speaker-btn';
@@ -5541,6 +5550,7 @@ function prefetchWelcomeTTS(langCode) {
 async function speakTTS(text) {
   if (!TTS_SUPPORTED.includes(currentLang)) return;
 
+  const gen = ttsGeneration;  // capture current generation before async fetch
   try {
     const resp = await fetch('/api/tts', {
       method: 'POST',
@@ -5551,7 +5561,10 @@ async function speakTTS(text) {
         speaker: 'anushka',
       }),
     });
+    // If page navigated away while we were fetching, discard this audio
+    if (gen !== ttsGeneration) return;
     const data = await resp.json();
+    if (gen !== ttsGeneration) return;
     if (data.status === 'success' && data.audio_base64 && data.audio_base64.length > 100) {
       playBase64Audio(data.audio_base64);
     }
@@ -8882,6 +8895,8 @@ class VoiceJourneyController {
   }
 
   start() {
+    // Stop any lingering audio from previous pages (mode picker TTS, etc.)
+    stopAllAudio();
     this.phase = 0;
     this.state = 'welcome';
     goToPage('pageVoiceJourney');
