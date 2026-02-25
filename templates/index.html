@@ -8955,11 +8955,8 @@ const VJ_PHASES = [
 
 // Voice prompts per phase/state — keys resolve via t() or fallback to English
 const VJ_PROMPTS = {
-  // Registration
-  welcome: { en: 'Welcome! I\'ll help you register your business on ONDC. Let\'s start — what is the name of your business?', hi: 'नमस्ते! मैं आपके व्यापार को ONDC पर रजिस्टर करने में मदद करूँगा। चलिए शुरू करते हैं — आपके व्यापार का नाम क्या है?' },
-  ask_business_type: { en: 'What type of products or services does your business offer?', hi: 'आपका व्यापार किस तरह के उत्पाद या सेवाएं देता है?' },
-  ask_location: { en: 'Where is your business located? Please tell me your city or village name.', hi: 'आपका व्यापार कहाँ है? अपने शहर या गाँव का नाम बताइए।' },
-  ask_udyam: { en: 'Do you have a Udyam registration number? If yes, please tell me the number. If not, say "no".', hi: 'क्या आपके पास उद्यम रजिस्ट्रेशन नंबर है? हाँ तो नंबर बताइए, नहीं तो "नहीं" बोलिए।' },
+  // Registration — welcome now goes directly to Udyam/mobile verification
+  welcome: { en: 'Welcome! I\'ll help you register your business on ONDC. Do you have a Udyam registration number? If yes, please tell me the number. If not, say "no" and I\'ll ask for your mobile number.', hi: 'नमस्ते! मैं आपके व्यापार को ONDC पर रजिस्टर करने में मदद करूँगा। क्या आपके पास उद्यम रजिस्ट्रेशन नंबर है? हाँ तो नंबर बताइए, नहीं तो "नहीं" बोलिए।' },
   ask_mobile: { en: 'What is your mobile number? We\'ll send an OTP to verify it.', hi: 'आपका मोबाइल नंबर क्या है? हम OTP भेजकर वेरिफाई करेंगे।' },
   otp_sent: { en: 'I\'ve sent an OTP to your mobile. Please tell me the six digit code.', hi: 'आपके मोबाइल पर OTP भेज दिया है। कृपया 6 अंकों का कोड बताइए।' },
   otp_verified: { en: 'Great! Your identity is verified. Now let\'s look at your documents.', hi: 'बहुत अच्छा! आपकी पहचान वेरिफाई हो गई। अब कागज़ात देखते हैं।' },
@@ -9023,35 +9020,8 @@ class VoiceJourneyController {
     switch (s) {
       // ── Registration Phase ──
       case 'welcome':
+        // Skip business name/type/location — Gridlines returns all that data
         await this.aiSay(this.getPrompt('welcome'));
-        this.state = 'wait_business_name';
-        this.showMic();
-        break;
-
-      case 'wait_business_name':
-        // Wait for voice input — handled by onVoiceResult
-        break;
-
-      case 'ask_business_type':
-        await this.aiSay(this.getPrompt('ask_business_type'));
-        this.state = 'wait_business_type';
-        this.showMic();
-        break;
-
-      case 'wait_business_type':
-        break;
-
-      case 'ask_location':
-        await this.aiSay(this.getPrompt('ask_location'));
-        this.state = 'wait_location';
-        this.showMic();
-        break;
-
-      case 'wait_location':
-        break;
-
-      case 'ask_udyam':
-        await this.aiSay(this.getPrompt('ask_udyam'));
         this.state = 'wait_udyam';
         this.showMic();
         break;
@@ -9207,26 +9177,7 @@ class VoiceJourneyController {
     this.addMessage('user', transcript);
 
     switch (this.state) {
-      case 'wait_business_name':
-        this.data.business_name = transcript;
-        this.addFieldBadge('Business Name', transcript);
-        this.state = 'ask_business_type';
-        await this.processState();
-        break;
-
-      case 'wait_business_type':
-        this.data.business_type = transcript;
-        this.addFieldBadge('Business Type', transcript);
-        this.state = 'ask_location';
-        await this.processState();
-        break;
-
-      case 'wait_location':
-        this.data.location = transcript;
-        this.addFieldBadge('Location', transcript);
-        this.state = 'ask_udyam';
-        await this.processState();
-        break;
+      // Business name/type/location removed — Gridlines returns this data from Udyam/mobile lookup
 
       case 'wait_udyam': {
         const lower = transcript.toLowerCase().replace(/\s/g, '');
