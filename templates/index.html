@@ -1452,8 +1452,12 @@ body::before{
 }
 </style>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 </head>
 <body>
+<!-- Hidden reCAPTCHA container for Firebase Phone Auth -->
+<div id="recaptcha-container"></div>
 
 <!-- ═══ HEADER BAR (hidden on page 1) ═══ -->
 <div class="header-bar hidden" id="headerBar">
@@ -4821,6 +4825,11 @@ let lastTTSAudio = null;     // for replay
 let currentAudioEl = null;   // currently playing audio element
 let ttsGeneration = 0;       // incremented on navigation to cancel stale TTS callbacks
 
+// Firebase Phone Auth state
+let firebaseEnabled = false;
+let firebaseAuth = null;
+let firebaseConfirmation = null;  // confirmationResult from signInWithPhoneNumber
+
 // Role state
 let currentRole = null;      // 'msme' | 'snp' | 'nsic'
 let roleSessionToken = '';
@@ -4840,10 +4849,54 @@ function init() {
   buildLangSwitcher();
   buildLangCarousel();
   setupOTPInputs();
+  initFirebase();  // Firebase Phone Auth (non-blocking)
   // Enter key on main input
   document.getElementById('mainInput').addEventListener('keydown', e => {
     if (e.key === 'Enter') submitInput();
   });
+}
+
+// ═══════════════════════════════════════════════════════════
+// FIREBASE PHONE AUTH
+// ═══════════════════════════════════════════════════════════
+async function initFirebase() {
+  try {
+    const resp = await fetch('/api/config/firebase');
+    const cfg = await resp.json();
+    if (!cfg.enabled) { console.log('[Firebase] Not enabled — using demo OTP'); return; }
+    firebase.initializeApp({
+      apiKey: cfg.apiKey,
+      authDomain: cfg.authDomain,
+      projectId: cfg.projectId,
+    });
+    firebaseAuth = firebase.auth();
+    firebaseEnabled = true;
+    // Invisible reCAPTCHA — required by Firebase Phone Auth
+    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+      size: 'invisible',
+      callback: () => {},
+    });
+    console.log('[Firebase] Phone Auth ready');
+  } catch (e) {
+    console.warn('[Firebase] Init failed:', e);
+  }
+}
+
+async function sendFirebaseOTP(mobile) {
+  // Auto-prepend +91 for Indian numbers
+  let phone = mobile.replace(/\D/g, '');
+  if (phone.length === 10) phone = '+91' + phone;
+  else if (!phone.startsWith('+')) phone = '+91' + phone;
+  else phone = '+' + phone;
+  console.log('[Firebase] Sending OTP to', phone);
+  firebaseConfirmation = await firebaseAuth.signInWithPhoneNumber(phone, window.recaptchaVerifier);
+  return true;
+}
+
+async function verifyFirebaseOTP(code) {
+  const result = await firebaseConfirmation.confirm(code);
+  const token = await result.user.getIdToken();
+  return token;  // ID token to send to backend for verification
 }
 
 function buildLangGrid() {
@@ -5224,6 +5277,10 @@ async function submitInput() {
       sessionId = data.session_id;
       demoOtp = data.demo_otp;
       maskedMobile = data.masked_mobile;
+      // Send Firebase OTP if enabled
+      if (firebaseEnabled && data.mobile) {
+        try { await sendFirebaseOTP(data.mobile); } catch (e) { console.warn('[Firebase] OTP send failed, using demo:', e); }
+      }
       goToPage('page3');
       renderOTPPage();
     } else {
@@ -5636,7 +5693,12 @@ function renderOTPPage() {
   document.getElementById('otpTitle').textContent = t('otpTitle');
   document.getElementById('otpSubtitle').innerHTML = t('otpSubtitle').replace('{mobile}', maskedMobile);
   document.getElementById('otpBtnText').textContent = t('otpBtnText');
-  document.getElementById('demoOtpHint').innerHTML = t('demoHint').replace('{otp}', demoOtp);
+  // Hide demo OTP hint when Firebase is sending real SMS
+  if (firebaseEnabled && firebaseConfirmation) {
+    document.getElementById('demoOtpHint').innerHTML = '<span style="color:#10b981;font-weight:600">✓ OTP sent via SMS</span>';
+  } else {
+    document.getElementById('demoOtpHint').innerHTML = t('demoHint').replace('{otp}', demoOtp);
+  }
   document.getElementById('otpStatus').textContent = '';
 
   // Clear OTP inputs and filled states
@@ -5971,10 +6033,28 @@ async function verifyOTP() {
   document.getElementById('otpStatus').textContent = '';
 
   try {
+    // If Firebase is active, verify code via Firebase first to get ID token
+    let firebaseToken = null;
+    if (firebaseEnabled && firebaseConfirmation) {
+      try {
+        firebaseToken = await verifyFirebaseOTP(otp);
+      } catch (fbErr) {
+        document.getElementById('otpStatus').textContent = 'Invalid OTP. Please try again.';
+        document.getElementById('otpStatus').className = 'status-msg error';
+        document.getElementById('otpBtnText').textContent = t('otpBtnText');
+        document.getElementById('otpVerifyBtn').disabled = false;
+        return;
+      }
+    }
+
     const resp = await fetch('/api/verify-otp', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ otp, session_id: sessionId }),
+      body: JSON.stringify({
+        session_id: sessionId,
+        otp: firebaseToken ? null : otp,
+        firebase_token: firebaseToken,
+      }),
     });
     const data = await resp.json();
 
@@ -9409,8 +9489,14 @@ class VoiceJourneyController {
             this.addFieldBadge('Location (verified)', this.data.location);
           }
         }
+        // Send Firebase OTP if enabled
+        if (firebaseEnabled && data.mobile) {
+          try { await sendFirebaseOTP(data.mobile); } catch (e) { console.warn('[Firebase] OTP send failed, using demo:', e); }
+        }
         await this.aiSay((t('vjOtpSent') || 'Verified! OTP sent to {mobile}. Please tell me the code.').replace('{mobile}', data.masked_mobile));
-        this.addMessage('system', `Demo OTP: ${data.demo_otp}`);
+        if (!firebaseEnabled) {
+          this.addMessage('system', `Demo OTP: ${data.demo_otp}`);
+        }
         this.state = 'wait_otp';
         this.showMic();
       } else {
@@ -9442,8 +9528,14 @@ class VoiceJourneyController {
         this.demoOtp = data.demo_otp;
         sessionId = data.session_id;
         demoOtp = data.demo_otp;
+        // Send Firebase OTP if enabled
+        if (firebaseEnabled && data.mobile) {
+          try { await sendFirebaseOTP(data.mobile); } catch (e) { console.warn('[Firebase] OTP send failed, using demo:', e); }
+        }
         await this.aiSay(this.getPrompt('otp_sent'));
-        this.addMessage('system', `Demo OTP: ${data.demo_otp}`);
+        if (!firebaseEnabled) {
+          this.addMessage('system', `Demo OTP: ${data.demo_otp}`);
+        }
         this.state = 'wait_otp';
         this.showMic();
       } else {
@@ -9462,10 +9554,28 @@ class VoiceJourneyController {
   async doVerifyOTP() {
     this.showTyping();
     try {
+      // If Firebase active, verify code via Firebase first
+      let firebaseToken = null;
+      if (firebaseEnabled && firebaseConfirmation) {
+        try {
+          firebaseToken = await verifyFirebaseOTP(this.data.otp);
+        } catch (fbErr) {
+          this.hideTyping();
+          await this.aiSay(t('vjOtpWrong') || 'That OTP didn\'t match. Please try again.');
+          this.state = 'wait_otp';
+          this.showMic();
+          return;
+        }
+      }
+
       const resp = await fetch('/api/verify-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ session_id: this.sessionId, otp: this.data.otp }),
+        body: JSON.stringify({
+          session_id: this.sessionId,
+          otp: firebaseToken ? null : this.data.otp,
+          firebase_token: firebaseToken,
+        }),
       });
       const data = await resp.json();
       this.hideTyping();
