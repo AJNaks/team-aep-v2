@@ -545,7 +545,23 @@ body::before{
   background:#ef4444;animation:pulse 1.2s infinite;
   box-shadow:0 4px 20px rgba(239,68,68,0.4);
 }
-.vj-mic-btn svg{width:32px;height:32px}
+.vj-mic-btn svg{width:36px;height:36px}
+/* Animated face: mouth talks when recording */
+.vj-face-mouth{transition:all 0.15s}
+.vj-mic-btn.recording .vj-face-mouth{animation:mouth-talk 0.45s ease-in-out infinite}
+@keyframes mouth-talk{
+  0%,100%{ry:1.5;cy:16}
+  50%{ry:3;cy:16.5}
+}
+/* Sound waves pulse when recording */
+.vj-face-wave{opacity:0;transition:opacity 0.2s}
+.vj-mic-btn.recording .vj-face-wave{animation:wave-pulse 1.2s ease-in-out infinite}
+.vj-mic-btn.recording .vj-face-wave:nth-child(2){animation-delay:0.3s}
+.vj-mic-btn.recording .vj-face-wave:nth-child(3){animation-delay:0.6s}
+@keyframes wave-pulse{
+  0%,100%{opacity:0;transform:scale(0.9)}
+  50%{opacity:1;transform:scale(1)}
+}
 .vj-mic-hint{font-size:12px;color:var(--text2)}
 .vj-action-row{
   display:flex;gap:10px;width:100%;justify-content:center;flex-wrap:wrap;
@@ -1531,10 +1547,16 @@ body::before{
     <div class="vj-controls" id="vjControls">
       <button class="vj-mic-btn" id="vjMicBtn" onclick="vjToggleRecording()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-          <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-          <line x1="12" y1="19" x2="12" y2="23"/>
-          <line x1="8" y1="23" x2="16" y2="23"/>
+          <!-- Face outline -->
+          <circle cx="11" cy="11" r="9"/>
+          <!-- Eyes -->
+          <circle cx="8" cy="9.5" r="1" fill="currentColor" stroke="none"/>
+          <circle cx="14" cy="9.5" r="1" fill="currentColor" stroke="none"/>
+          <!-- Mouth (animates when recording) -->
+          <ellipse class="vj-face-mouth" cx="11" cy="15" rx="3" ry="1.5" fill="currentColor" stroke="none"/>
+          <!-- Sound waves (visible only when recording) -->
+          <path class="vj-face-wave" d="M21 8.5c1.5 1.5 1.5 5.5 0 7" stroke-width="1.5"/>
+          <path class="vj-face-wave" d="M23 6.5c2.5 2.5 2.5 9.5 0 12" stroke-width="1.5"/>
         </svg>
       </button>
       <div class="vj-mic-hint" id="vjMicHint">Tap to speak</div>
@@ -9367,7 +9389,7 @@ class VoiceJourneyController {
       const data = await resp.json();
       this.hideTyping();
 
-      if (data.status === 'success') {
+      if (data.status === 'otp_sent') {
         this.sessionId = data.session_id;
         this.demoOtp = data.demo_otp;
         this.data.maskedMobile = data.masked_mobile;
@@ -9415,7 +9437,7 @@ class VoiceJourneyController {
       const data = await resp.json();
       this.hideTyping();
 
-      if (data.status === 'success') {
+      if (data.status === 'otp_sent') {
         this.sessionId = data.session_id;
         this.demoOtp = data.demo_otp;
         sessionId = data.session_id;
@@ -9448,7 +9470,7 @@ class VoiceJourneyController {
       const data = await resp.json();
       this.hideTyping();
 
-      if (data.status === 'success') {
+      if (data.status === 'verified') {
         if (data.enterprise) enterpriseData = data.enterprise;
         this.state = 'start_documents';
         await this.processState();
