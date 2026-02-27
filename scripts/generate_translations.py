@@ -185,6 +185,14 @@ EN_STRINGS = {
     "reject": "Reject",
     "noData": "No data available",
     "loading": "Loading...",
+    # TEAM Registration ID
+    "teamRegIdLabel": "Your TEAM Registration ID",
+    "teamRegIdHint": "Save this ID. You will need it for all future TEAM correspondence.",
+    "copyId": "Copy ID",
+    "readAloud": "Read aloud",
+    "idCopied": "Registration ID copied!",
+    "idReadAloud": "Reading your registration ID...",
+    "teamRegIdSpoken": "Your TEAM registration ID is",
 }
 
 # Keys that should NOT be translated (they are codes, symbols, or formats)

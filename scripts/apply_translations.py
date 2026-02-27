@@ -166,6 +166,14 @@ KEY_ORDER = [
     "reject",
     "noData",
     "loading",
+    # TEAM Registration ID
+    "teamRegIdLabel",
+    "teamRegIdHint",
+    "copyId",
+    "readAloud",
+    "idCopied",
+    "idReadAloud",
+    "teamRegIdSpoken",
 ]
 
 # ---------------------------------------------------------------------------
