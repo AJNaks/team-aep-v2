@@ -53,6 +53,7 @@ from services.database import (
     get_snp_dashboard_stats, get_platform_analytics,
     get_all_mses, get_snps_with_metrics, check_claim_eligibility,
     save_document_verification, get_document_verifications, save_claim_verification,
+    generate_team_registration_id, get_team_registration,
 )
 
 load_dotenv()
@@ -345,35 +346,42 @@ async def firebase_config():
 
 @app.post("/api/verify-udyam")
 async def verify_udyam(req: VerifyUdyamRequest, request: Request, _=Depends(require_auth)):
-    """Verify MSME via Udyam registration number using Gridlines API."""
-    try:
-        async with httpx.AsyncClient(timeout=15) as client:
-            resp = await client.post(
-                f"{GRIDLINES_BASE}/msme-api/udyam",
-                headers={
-                    "Content-Type": "application/json",
-                    "X-API-Key": GRIDLINES_KEY,
-                    "X-Auth-Type": "API-Key",
-                },
-                json={
-                    "udyam_reference_number": req.udyam_number,
-                    "consent": "Y",
-                },
-            )
-            data = resp.json()
-    except Exception as e:
-        return JSONResponse({"status": "error", "message": f"Gridlines API error: {str(e)}"}, status_code=502)
+    """Verify MSME via Udyam registration number using Gridlines API with local mock fallback."""
+    inner = None
 
-    # Unwrap mock server 'data' envelope if present
-    inner = data.get("data", data)
+    # Check local mock data first (takes priority for known test entries)
+    local_ent = MOCK_UDYAM.get("enterprises", {}).get(req.udyam_number.upper())
+    if local_ent:
+        inner = mock_to_gridlines_response(req.udyam_number.upper(), local_ent)
+    else:
+        try:
+            async with httpx.AsyncClient(timeout=15) as client:
+                resp = await client.post(
+                    f"{GRIDLINES_BASE}/msme-api/udyam",
+                    headers={
+                        "Content-Type": "application/json",
+                        "X-API-Key": GRIDLINES_KEY,
+                        "X-Auth-Type": "API-Key",
+                    },
+                    json={
+                        "udyam_reference_number": req.udyam_number,
+                        "consent": "Y",
+                    },
+                )
+                data = resp.json()
+                inner = data.get("data", data)
+        except Exception as e:
+            return JSONResponse({"status": "error", "message": f"Gridlines API error: {str(e)}"}, status_code=502)
 
-    if inner.get("code") != "1000":
+    if not inner or inner.get("code") != "1000":
         return JSONResponse({"status": "not_found", "message": "Enterprise not found. Please check the number."})
 
     # Create OTP session
     session_id = secrets.token_hex(16)
     enterprise = inner.get("enterprise_data", {})
-    masked_mobile = enterprise.get("mobile", "N/A")
+    mobile = enterprise.get("mobile", "")
+    masked_mobile = (mobile[:2] + "****" + mobile[-2:]) if mobile and len(mobile) >= 4 else "N/A"
+    mobile_last_digits = mobile[-2:] if mobile and len(mobile) >= 2 else ""
     otp_code = str(secrets.randbelow(900000) + 100000)  # 6-digit OTP
 
     OTP_STORE[session_id] = {
@@ -391,7 +399,8 @@ async def verify_udyam(req: VerifyUdyamRequest, request: Request, _=Depends(requ
         "status": "otp_sent",
         "session_id": session_id,
         "masked_mobile": masked_mobile,
-        "mobile": enterprise.get("mobile", ""),  # unmasked — for Firebase OTP
+        "mobile_last_digits": mobile_last_digits,
+        "mobile": mobile,  # unmasked — for Firebase OTP
         "enterprise_name": enterprise.get("name", ""),
         "demo_otp": otp_code,  # REMOVE IN PRODUCTION — shown for demo purposes
     }
@@ -443,11 +452,16 @@ async def verify_mobile(req: VerifyMobileRequest, request: Request, _=Depends(re
         "enterprise_type_data": inner.get("enterprise_type_data", []),
     }
 
+    mobile = enterprise.get("mobile", "")
+    masked_mobile = (mobile[:2] + "****" + mobile[-2:]) if mobile and len(mobile) >= 4 else "N/A"
+    mobile_last_digits = mobile[-2:] if mobile and len(mobile) >= 2 else ""
+
     return {
         "status": "otp_sent",
         "session_id": session_id,
-        "masked_mobile": enterprise.get("mobile", "N/A"),
-        "mobile": enterprise.get("mobile", ""),  # unmasked — for Firebase OTP
+        "masked_mobile": masked_mobile,
+        "mobile_last_digits": mobile_last_digits,
+        "mobile": mobile,  # unmasked — for Firebase OTP
         "enterprise_name": enterprise.get("name", ""),
         "udyam_number": enterprise.get("document_id", ""),
         "demo_otp": otp_code,
@@ -500,11 +514,16 @@ async def verify_pan(req: VerifyPANRequest, request: Request, _=Depends(require_
         "enterprise_type_data": inner.get("enterprise_type_data", []),
     }
 
+    mobile = enterprise.get("mobile", "")
+    masked_mobile = (mobile[:2] + "****" + mobile[-2:]) if mobile and len(mobile) >= 4 else "N/A"
+    mobile_last_digits = mobile[-2:] if mobile and len(mobile) >= 2 else ""
+
     return {
         "status": "otp_sent",
         "session_id": session_id,
-        "masked_mobile": enterprise.get("mobile", "N/A"),
-        "mobile": enterprise.get("mobile", ""),  # unmasked — for Firebase OTP
+        "masked_mobile": masked_mobile,
+        "mobile_last_digits": mobile_last_digits,
+        "mobile": mobile,  # unmasked — for Firebase OTP
         "enterprise_name": enterprise.get("name", ""),
         "udyam_number": enterprise.get("document_id", ""),
         "demo_otp": otp_code,
@@ -2557,7 +2576,25 @@ async def msme_progress(udyam: str, request: Request, _=Depends(require_auth)):
 async def msme_save(req: SaveProgressRequest, request: Request, _=Depends(require_auth)):
     """Save MSME step progress."""
     save_msme_progress(req.udyam_number, req.step, req.data)
-    return {"status": "saved"}
+
+    result = {"status": "saved"}
+
+    # Generate TEAM Registration ID on completion
+    if req.step == "summary":
+        enterprise_data = req.data.get("enterprise_data") if req.data else None
+        team_reg_id = generate_team_registration_id(req.udyam_number, enterprise_data)
+        result["team_reg_id"] = team_reg_id
+
+    return result
+
+
+@app.get("/api/msme/registration-id")
+async def get_registration_id(udyam: str, request: Request, _=Depends(require_auth)):
+    """Get TEAM Registration ID for a completed MSE."""
+    reg = get_team_registration(udyam)
+    if not reg:
+        return {"status": "not_found"}
+    return {"status": "found", "team_reg_id": reg["team_reg_id"], "created_at": reg["created_at"]}
 
 
 # ── Routes: SNP Dashboard ───────────────────────────────
