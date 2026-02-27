@@ -90,6 +90,16 @@ CREATE TABLE IF NOT EXISTS document_verifications (
     raw_ocr_text TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS team_registrations (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    team_reg_id TEXT UNIQUE NOT NULL,
+    udyam_number TEXT NOT NULL UNIQUE,
+    state_code TEXT NOT NULL,
+    year INTEGER NOT NULL,
+    seq_number INTEGER NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 """
 
 
@@ -104,6 +114,11 @@ def get_db():
 def init_db():
     conn = get_db()
     conn.executescript(SCHEMA_SQL)
+    # Migration: add team_reg_id column to msme_sessions if not present
+    try:
+        conn.execute("ALTER TABLE msme_sessions ADD COLUMN team_reg_id TEXT")
+    except sqlite3.OperationalError:
+        pass  # Column already exists
     conn.commit()
     conn.close()
 
@@ -561,3 +576,92 @@ def save_claim_verification(claim_id: int, verification_result: dict):
         )
         conn.commit()
     conn.close()
+
+
+# ── TEAM Registration ID ────────────────────────────────
+
+STATE_CODE_MAP = {
+    "Andhra Pradesh": "AP", "Arunachal Pradesh": "AR", "Assam": "AS",
+    "Bihar": "BR", "Chhattisgarh": "CG", "Goa": "GA", "Gujarat": "GJ",
+    "Haryana": "HR", "Himachal Pradesh": "HP", "Jharkhand": "JH",
+    "Karnataka": "KA", "Kerala": "KL", "Madhya Pradesh": "MP",
+    "Maharashtra": "MH", "Manipur": "MN", "Meghalaya": "ML",
+    "Mizoram": "MZ", "Nagaland": "NL", "Odisha": "OD", "Punjab": "PB",
+    "Rajasthan": "RJ", "Sikkim": "SK", "Tamil Nadu": "TN",
+    "Telangana": "TS", "Tripura": "TR", "Uttar Pradesh": "UP",
+    "Uttarakhand": "UK", "West Bengal": "WB", "Delhi": "DL",
+    "Jammu and Kashmir": "JK", "Ladakh": "LA", "Puducherry": "PY",
+    "Chandigarh": "CH",
+    "Dadra and Nagar Haveli and Daman and Diu": "DD",
+    "Lakshadweep": "LD", "Andaman and Nicobar Islands": "AN",
+}
+
+
+def generate_team_registration_id(udyam_number: str, enterprise_data: dict = None) -> str:
+    """Generate a unique TEAM Registration ID for a completed onboarding.
+
+    Format: TEAM-{STATE}-{YEAR}-{SEQUENCE}
+    Returns existing ID if one already exists for this udyam_number (idempotent).
+    """
+    conn = get_db()
+
+    # Check if already generated
+    existing = conn.execute(
+        "SELECT team_reg_id FROM team_registrations WHERE udyam_number=?",
+        (udyam_number,),
+    ).fetchone()
+    if existing:
+        conn.close()
+        return existing["team_reg_id"]
+
+    # Extract state code from Udyam number (UDYAM-XX-...)
+    state_code = "XX"
+    parts = udyam_number.replace(" ", "-").split("-")
+    if len(parts) >= 2 and len(parts[1]) == 2 and parts[1].isalpha():
+        state_code = parts[1].upper()
+
+    # Fallback: try enterprise_data state name → STATE_CODE_MAP
+    if state_code == "XX" and enterprise_data:
+        state_name = ""
+        if isinstance(enterprise_data, dict):
+            state_name = (enterprise_data.get("address", {}).get("state", "")
+                          or enterprise_data.get("state", ""))
+        if state_name:
+            state_code = STATE_CODE_MAP.get(state_name, state_code)
+
+    year = datetime.utcnow().year
+
+    # Get next sequence number
+    max_seq = conn.execute(
+        "SELECT COALESCE(MAX(seq_number), 0) FROM team_registrations WHERE state_code=? AND year=?",
+        (state_code, year),
+    ).fetchone()[0]
+    next_seq = max_seq + 1
+
+    team_reg_id = f"TEAM-{state_code}-{year}-{next_seq:05d}"
+
+    conn.execute(
+        "INSERT INTO team_registrations (team_reg_id, udyam_number, state_code, year, seq_number) VALUES (?,?,?,?,?)",
+        (team_reg_id, udyam_number, state_code, year, next_seq),
+    )
+
+    # Also store in msme_sessions for convenient retrieval
+    conn.execute(
+        "UPDATE msme_sessions SET team_reg_id=? WHERE udyam_number=?",
+        (team_reg_id, udyam_number),
+    )
+
+    conn.commit()
+    conn.close()
+    return team_reg_id
+
+
+def get_team_registration(udyam_number: str) -> dict | None:
+    """Look up the TEAM Registration ID for an MSE."""
+    conn = get_db()
+    row = conn.execute(
+        "SELECT * FROM team_registrations WHERE udyam_number=?",
+        (udyam_number,),
+    ).fetchone()
+    conn.close()
+    return dict(row) if row else None
