@@ -193,6 +193,18 @@ EN_STRINGS = {
     "idCopied": "Registration ID copied!",
     "idReadAloud": "Reading your registration ID...",
     "teamRegIdSpoken": "Your TEAM registration ID is",
+    # Voice journey UI
+    "vjPhaseReg": "Registration",
+    "vjPhaseDocs": "Documents",
+    "vjPhaseCat": "Catalogue",
+    "vjPhaseSnp": "SNP Match",
+    "vjVerifying": "Verifying your Udyam number...",
+    "vjOtpSent": "Verified! OTP sent to number ending in {digits}. Please tell me the six digit code.",
+    "vjVerifyFailed": "Could not verify that number. Let me ask for your mobile number instead.",
+    "vjNetworkError": "Network error. Let's try your mobile number instead.",
+    "vjTapToSpeak": "Tap to speak",
+    "vjListening": "Listening... tap to stop",
+    "vjDidntCatch": "Sorry, I didn't catch that. Please try again.",
 }
 
 # Keys that should NOT be translated (they are codes, symbols, or formats)

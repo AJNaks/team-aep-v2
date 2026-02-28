@@ -174,6 +174,18 @@ KEY_ORDER = [
     "idCopied",
     "idReadAloud",
     "teamRegIdSpoken",
+    # Voice journey UI
+    "vjPhaseReg",
+    "vjPhaseDocs",
+    "vjPhaseCat",
+    "vjPhaseSnp",
+    "vjVerifying",
+    "vjOtpSent",
+    "vjVerifyFailed",
+    "vjNetworkError",
+    "vjTapToSpeak",
+    "vjListening",
+    "vjDidntCatch",
 ]
 
 # ---------------------------------------------------------------------------
